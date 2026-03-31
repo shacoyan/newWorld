@@ -1,68 +1,65 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>給料計算アプリ</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>給料計算</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <div id="app">
-
-        <!-- ヘッダー -->
-        <header id="header">
-            <h1>給料計算アプリ</h1>
-            <div id="total-salary" role="status" aria-live="polite" aria-label="月間給料">¥0</div>
-        </header>
-
-        <!-- 設定パネル -->
-        <section id="settings-panel">
-            <div class="setting-item">
-                <label>給与タイプ</label>
-                <div class="radio-group">
-                    <label>
-                        <input type="radio" name="salary-type" value="fixed" checked>
-                        固定給
-                    </label>
-                    <label>
-                        <input type="radio" name="salary-type" value="hourly">
-                        時給
-                    </label>
-                </div>
-            </div>
-            <div id="fixed-salary-block" class="setting-item">
-                <label for="base-salary">固定給</label>
-                <input type="number" id="base-salary" value="200000" min="0" max="100000000" step="1">
-            </div>
-            <div id="hourly-salary-block" class="setting-item" style="display:none;">
-                <label for="hourly-rate">時給</label>
-                <input type="number" id="hourly-rate" value="1500" min="0" max="1000000" step="1">
-            </div>
-            <div class="setting-item items-section">
-                <label class="items-section-title">品目設定</label>
-                <div id="items-list"></div>
-                <button type="button" id="add-item">+ 品目を追加</button>
-            </div>
-        </section>
-
-        <!-- カレンダーセクション -->
-        <section id="calendar-section">
-
-            <!-- 月ナビゲーション -->
-            <nav id="month-nav">
-                <button id="prev-month">&lt;</button>
-                <span id="current-month-label"></span>
-                <button id="next-month">&gt;</button>
-            </nav>
-
-            <!-- カレンダーグリッド -->
-            <div id="calendar-grid"></div>
-
-        </section>
-
+  <header>
+    <div class="header-left">
+      <span class="header-label">月間給料</span>
+      <span id="total-salary" role="status" aria-live="polite">¥0</span>
     </div>
+    <button id="goto-settings">設定</button>
+  </header>
 
-    <script src="app.js"></script>
+  <main>
+    <!-- 今日セクション -->
+    <section id="today-section">
+      <h2 id="today-label"></h2>
+      <div class="section">
+        <div class="time-group">
+          <span>出勤</span>
+          <input type="time" class="time-start" aria-label="出勤時刻">
+          <span>〜</span>
+          <span>退勤</span>
+          <input type="time" class="time-end" aria-label="退勤時刻">
+        </div>
+        <div class="time-group">
+          <span>時給</span>
+          <input type="number" class="daily-hourly-rate" min="0" step="1" aria-label="時給">
+          <span>円</span>
+        </div>
+      </div>
+      <div class="section">
+        <div id="item-rows"></div>
+      </div>
+      <div id="today-summary" class="section">
+        <div class="total-line"><span>時給分</span><span id="today-wage">¥0</span></div>
+        <div class="total-line"><span>バック</span><span id="today-back">¥0</span></div>
+        <div class="total-line grand"><span>今日の合計</span><span class="amount" id="today-total">¥0</span></div>
+      </div>
+    </section>
+
+    <!-- カレンダー -->
+    <section class="section" id="calendar-section">
+      <div class="calendar-header">
+        <span id="calendar-month-label" style="font-size:16px;font-weight:700;"></span>
+        <div class="calendar-nav">
+          <button id="prev-month" aria-label="前月">&#8249;</button>
+          <button id="next-month" aria-label="次月">&#8250;</button>
+        </div>
+      </div>
+      <div id="calendar-weekdays">
+        <span>日</span><span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span>土</span>
+      </div>
+      <div id="calendar-grid"></div>
+    </section>
+  </main>
+
+  <script src="common.js"></script>
+  <script src="index.js"></script>
 </body>
 </html>

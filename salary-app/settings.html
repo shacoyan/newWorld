@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>設定 - 給料計算</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a href="index.html" class="btn-back">← 戻る</a>
+    <h1 class="header-title">設定</h1>
+  </header>
+
+  <main>
+    <div class="section">
+      <div class="section-title">給与タイプ</div>
+      <div class="radio-group">
+        <label><input type="radio" name="salaryType" value="fixed"> 固定給</label>
+        <label><input type="radio" name="salaryType" value="hourly"> 時給</label>
+      </div>
+      <div id="fixed-section">
+        <div class="time-group">
+          <span>固定給</span>
+          <input type="number" id="base-salary" min="0" step="1">
+          <span>円</span>
+        </div>
+      </div>
+      <div id="hourly-section" style="display:none;">
+        <div class="time-group">
+          <span>デフォルト時給</span>
+          <input type="number" id="default-hourly-rate" min="0" step="1">
+          <span>円</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">品目一覧</div>
+      <div id="items-list"></div>
+      <button id="add-item" class="add-item-btn">+ 品目を追加</button>
+    </div>
+  </main>
+
+  <script src="common.js"></script>
+  <script src="settings.js"></script>
+</body>
+</html>
