@@ -29,6 +29,7 @@ document.addEventListener('app:ready', function () {
   var gotoDashboardBtn   = document.getElementById('goto-dashboard');
   var userInitialEl = document.getElementById('user-initial');
   var userNameEl    = document.getElementById('user-name');
+  var checkinBtnEl  = document.getElementById('checkin-btn');
 
   ensureRecord(data, todayKey);
   persistData(data);
@@ -47,6 +48,9 @@ document.addEventListener('app:ready', function () {
   function renderToday() {
     todayLabelEl.textContent = '今日: ' + formatDateLabel(todayKey);
     var rec = data.records[todayKey];
+    var step = (data.settings.timeStep || 1) === 15 ? 900 : 60;
+    timeStartEl.setAttribute('step', step);
+    timeEndEl.setAttribute('step', step);
     timeStartEl.value  = rec.startTime  || '';
     timeEndEl.value    = rec.endTime    || '';
     hourlyRateEl.value = rec.hourlyRate != null ? rec.hourlyRate : (data.settings.defaultHourlyRate || '');
@@ -56,27 +60,61 @@ document.addEventListener('app:ready', function () {
 
   function renderItemRows() {
     itemRowsEl.innerHTML = '';
-    if (data.settings.items.length === 0) {
+    var items = data.settings.items || [];
+
+    if (items.length === 0) {
       var msg = document.createElement('p');
       msg.textContent = '品目がありません。設定から追加してください。';
       msg.style.cssText = 'color:var(--text-muted);font-size:13px;text-align:center;padding:8px 0;';
       itemRowsEl.appendChild(msg);
       return;
     }
-    var rec = data.records[todayKey];
-    data.settings.items.forEach(function (item) {
+
+    var rec       = data.records[todayKey];
+    var castItems  = items.filter(function(i) { return i.category !== 'champagne'; });
+    var champItems = items.filter(function(i) { return i.category === 'champagne'; });
+
+    function makeRow(item) {
       var count = (rec.items && rec.items[item.id]) || 0;
       var back  = (Number(item.back) || 0) * count;
       var row = document.createElement('div');
       row.className = 'item-count-row';
       row.innerHTML =
-        '<span class="item-back-label">¥' + formatMoney(back).replace('¥','') + '</span>' +
+        '<span class="item-back-label">' + formatMoney(back) + '</span>' +
         '<span class="item-name">' + escapeHtml(item.name) + '</span>' +
-        '<button class="item-dec" data-id="' + item.id + '" aria-label="' + escapeHtml(item.name) + 'を減らす">−</button>' +
+        '<button class="item-dec" data-id="' + item.id + '" aria-label="減らす">−</button>' +
         '<span class="item-count-val" data-id="' + item.id + '">' + count + '</span>' +
-        '<button class="item-inc" data-id="' + item.id + '" aria-label="' + escapeHtml(item.name) + 'を増やす">+</button>';
-      itemRowsEl.appendChild(row);
+        '<button class="item-inc" data-id="' + item.id + '" aria-label="増やす">+</button>';
+      return row;
+    }
+
+    castItems.forEach(function(item) {
+      itemRowsEl.appendChild(makeRow(item));
     });
+
+    if (champItems.length > 0) {
+      var toggleBtn = document.createElement('button');
+      toggleBtn.className = 'btn-champagne-toggle';
+      toggleBtn.innerHTML = 'シャンパン <span>▼</span>';
+      toggleBtn.dataset.open = 'true';
+
+      var champWrap = document.createElement('div');
+      champWrap.className = 'champagne-items-wrap';
+
+      champItems.forEach(function(item) {
+        champWrap.appendChild(makeRow(item));
+      });
+
+      toggleBtn.addEventListener('click', function() {
+        var isOpen = this.dataset.open === 'true';
+        champWrap.style.display = isOpen ? 'none' : '';
+        this.dataset.open = isOpen ? 'false' : 'true';
+        this.querySelector('span').textContent = isOpen ? '▶' : '▼';
+      });
+
+      itemRowsEl.appendChild(toggleBtn);
+      itemRowsEl.appendChild(champWrap);
+    }
   }
 
   function updateTodayTotals() {
@@ -115,13 +153,6 @@ document.addEventListener('app:ready', function () {
       totalDiv.textContent = (daily && daily.total > 0) ? formatMoney(daily.total) : '';
       cell.appendChild(dateDiv);
       cell.appendChild(totalDiv);
-      // 出勤ボタン
-      var checkinBtn = document.createElement('button');
-      checkinBtn.className = 'btn-checkin';
-      checkinBtn.dataset.key = dateKey;
-      checkinBtn.textContent = '出勤';
-      checkinBtn.setAttribute('aria-label', d + '日 出勤登録');
-      cell.appendChild(checkinBtn);
       calendarGridEl.appendChild(cell);
     }
   }
@@ -172,24 +203,26 @@ document.addEventListener('app:ready', function () {
       }
     });
     calendarGridEl.addEventListener('click', function(e) {
-      if (e.target.classList.contains('btn-checkin')) return; // ← 追加
       var cell = e.target.closest('.day-cell');
       if (!cell || !cell.dataset.key) return;
       window.location.href = 'day.html?date=' + cell.dataset.key;
     });
-    calendarGridEl.addEventListener('click', function(e) {
-      if (!e.target.classList.contains('btn-checkin')) return;
-      var dateKey = e.target.dataset.key;
-      var defaultStart = data.settings.defaultStartTime || '';
-      if (!defaultStart) {
-        alert('デフォルト出勤時刻が設定されていません。設定画面で登録してください。');
-        return;
-      }
-      ensureRecord(data, dateKey).startTime = defaultStart;
-      persistData(data);
-      renderCalendar();
-      if (dateKey === todayKey) renderToday();
-    });
+    if (checkinBtnEl) {
+      checkinBtnEl.addEventListener('click', function() {
+        var start = data.settings.defaultStartTime || '';
+        var end   = data.settings.defaultEndTime   || '';
+        if (!start && !end) {
+          alert('デフォルト出勤・退勤時刻が設定されていません。設定画面から登録してください。');
+          return;
+        }
+        var rec = ensureRecord(data, todayKey);
+        if (start) rec.startTime = start;
+        if (end)   rec.endTime   = end;
+        persistData(data);
+        renderToday();
+        renderHeader();
+      });
+    }
     gotoSettingsBtn.addEventListener('click', function () { window.location.href = 'settings.html'; });
     gotoDashboardBtn.addEventListener('click', function () { window.location.href = 'dashboard.html'; });
     prevMonthBtn.addEventListener('click', function () {

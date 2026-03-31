@@ -47,6 +47,10 @@
         <span>デフォルト出勤時刻</span>
         <input type="time" id="default-start-time">
       </div>
+      <div class="time-group" style="margin-top:8px;">
+        <span>デフォルト退勤時刻</span>
+        <input type="time" id="default-end-time">
+      </div>
       <div class="time-group" style="margin-top:12px;">
         <span>時刻単位</span>
         <label style="display:inline-flex;align-items:center;gap:4px;"><input type="radio" name="timeStep" value="1"> 1分</label>
@@ -63,8 +67,14 @@
     </div>
     <div class="section">
       <div class="section-title">品目一覧</div>
-      <div id="items-list"></div>
-      <button id="add-item" class="add-item-btn">+ 品目を追加</button>
+
+      <div class="item-category-label">キャストメニュー</div>
+      <div id="items-list-cast"></div>
+      <button id="add-item-cast" class="add-item-btn">+ キャストメニューを追加</button>
+
+      <div class="item-category-label">シャンパン類</div>
+      <div id="items-list-champagne"></div>
+      <button id="add-item-champagne" class="add-item-btn">+ シャンパンを追加</button>
     </div>
     <div class="section" style="margin-top:8px;">
       <button id="logout-btn" class="btn-logout-section">ログアウト</button>
