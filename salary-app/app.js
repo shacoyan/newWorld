@@ -1,7 +1,7 @@
 (function () {
   const STORAGE_KEY = 'salary-app';
   const DAY_LABELS = ['日', '月', '火', '水', '木', '金', '土'];
-  const MAX_ACHIEVEMENT = 9999;
+  const MAX_ITEM_COUNT = 9999;
 
   let appData;
   let currentYear;
@@ -15,17 +15,36 @@
       try {
         appData = JSON.parse(raw);
         if (!appData.settings) appData.settings = {};
-        if (!appData.achievements) appData.achievements = {};
-        if (typeof appData.settings.baseSalary !== 'number')
-          appData.settings.baseSalary = 200000;
-        if (typeof appData.settings.rewardPerAchievement !== 'number')
-          appData.settings.rewardPerAchievement = 1000;
+
+        // v1 データ移行 (achievements -> records)
+        if (appData.achievements && !appData.records) {
+          appData.records = {};
+          Object.keys(appData.achievements).forEach(function (key) {
+            if (appData.achievements[key] > 0) {
+              appData.records[key] = { startTime: '', endTime: '', items: {} };
+            }
+          });
+          delete appData.achievements;
+        }
+
+        if (!appData.records) appData.records = {};
+        if (typeof appData.settings.salaryType !== 'string') appData.settings.salaryType = 'fixed';
+        if (typeof appData.settings.baseSalary !== 'number') appData.settings.baseSalary = 200000;
+        if (typeof appData.settings.hourlyRate !== 'number') appData.settings.hourlyRate = 1500;
+        if (!Array.isArray(appData.settings.items)) appData.settings.items = [];
+
+        saveData();
         return;
       } catch (e) { /* fall through */ }
     }
     appData = {
-      settings: { baseSalary: 200000, rewardPerAchievement: 1000 },
-      achievements: {}
+      settings: {
+        salaryType: 'fixed',
+        baseSalary: 200000,
+        hourlyRate: 1500,
+        items: []
+      },
+      records: {}
     };
   }
 
@@ -39,50 +58,80 @@
 
   /* ---------- Utility ---------- */
 
+  function generateId() {
+    return Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
+  }
+
   function formatDateKey(year, month, day) {
-    const m = String(month + 1).padStart(2, '0');
-    const d = String(day).padStart(2, '0');
-    return year + '-' + m + '-' + d;
+    return year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
   }
 
   function getDaysInMonth(year, month) {
     return new Date(year, month + 1, 0).getDate();
   }
 
-  // タイムゾーン依存を避けるため、文字列比較で判定
   function isToday(year, month, day) {
     const now = new Date();
-    const todayStr =
-      now.getFullYear() + '-' +
+    const todayStr = now.getFullYear() + '-' +
       String(now.getMonth() + 1).padStart(2, '0') + '-' +
       String(now.getDate()).padStart(2, '0');
     return formatDateKey(year, month, day) === todayStr;
   }
 
-  function getAchievementCount(key) {
-    return appData.achievements[key] || 0;
-  }
-
   function formatNumber(n) {
-    return n.toLocaleString('ja-JP');
+    return Math.round(n).toLocaleString('ja-JP');
   }
 
-  function getAchievementClass(count) {
-    if (count >= 5) return 'achievement-high';
-    if (count >= 3) return 'achievement-mid';
-    if (count >= 1) return 'achievement-low';
-    return '';
+  function getRecord(key) {
+    return appData.records[key] || { startTime: '', endTime: '', items: {} };
+  }
+
+  function ensureRecord(key) {
+    if (!appData.records[key]) {
+      appData.records[key] = { startTime: '', endTime: '', items: {} };
+    }
+    if (!appData.records[key].items) {
+      appData.records[key].items = {};
+    }
+    return appData.records[key];
+  }
+
+  function getWorkHours(startTime, endTime) {
+    if (!startTime || !endTime) return 0;
+    const [sh, sm] = startTime.split(':').map(Number);
+    const [eh, em] = endTime.split(':').map(Number);
+    if (isNaN(sh) || isNaN(sm) || isNaN(eh) || isNaN(em)) return 0;
+    const diff = (eh * 60 + em) - (sh * 60 + sm);
+    return diff > 0 ? diff / 60 : 0;
+  }
+
+  function sanitizeInput(value, max) {
+    const val = parseInt(value, 10);
+    if (!Number.isSafeInteger(val) || val < 0 || val > max) return null;
+    return val;
   }
 
   /* ---------- Calculation ---------- */
 
   function calculateSalary() {
     const daysInMonth = getDaysInMonth(currentYear, currentMonth);
-    let total = 0;
+    let total = appData.settings.salaryType === 'fixed' ? appData.settings.baseSalary : 0;
+
     for (let day = 1; day <= daysInMonth; day++) {
-      total += getAchievementCount(formatDateKey(currentYear, currentMonth, day));
+      const key = formatDateKey(currentYear, currentMonth, day);
+      const record = getRecord(key);
+
+      if (appData.settings.salaryType === 'hourly') {
+        total += getWorkHours(record.startTime, record.endTime) * appData.settings.hourlyRate;
+      }
+
+      appData.settings.items.forEach(function (item) {
+        const count = (record.items && record.items[item.id]) || 0;
+        total += count * item.back;
+      });
     }
-    return appData.settings.baseSalary + total * appData.settings.rewardPerAchievement;
+
+    return total;
   }
 
   /* ---------- Rendering ---------- */
@@ -97,95 +146,166 @@
     if (el) el.textContent = currentYear + '年' + (currentMonth + 1) + '月';
   }
 
-  // セル1つだけを部分更新（+/-クリック時に使用）
-  function updateCell(key) {
+  function updateSalaryTypeUI() {
+    const fixedBlock = document.getElementById('fixed-salary-block');
+    const hourlyBlock = document.getElementById('hourly-salary-block');
+    if (fixedBlock) fixedBlock.style.display = appData.settings.salaryType === 'fixed' ? '' : 'none';
+    if (hourlyBlock) hourlyBlock.style.display = appData.settings.salaryType === 'hourly' ? '' : 'none';
+  }
+
+  // +/- クリック時にセルの品目カウントのみ部分更新
+  function updateCellItemCount(key, itemId) {
     const cell = document.querySelector('[data-key="' + key + '"]');
     if (!cell) return;
+    const row = cell.querySelector('.item-count-row[data-item-id="' + itemId + '"]');
+    if (!row) return;
+    const countEl = row.querySelector('.item-count');
+    if (!countEl) return;
+    const record = getRecord(key);
+    const count = (record.items && record.items[itemId]) || 0;
+    countEl.textContent = count;
+    countEl.setAttribute('aria-label', '件数 ' + count);
+    // 合計カウントに応じてセルの色クラスを更新
+    updateCellAchievementClass(cell, key);
+  }
 
-    const count = getAchievementCount(key);
-
-    // カウント表示を更新
-    const countEl = cell.querySelector('.achievement-count');
-    if (countEl) {
-      countEl.textContent = count;
-      countEl.setAttribute('aria-label', '成果数 ' + count);
-    }
-
-    // 色クラスを更新
+  // 品目合計カウントに応じてセルの色クラスを更新
+  function updateCellAchievementClass(cell, key) {
+    const record = getRecord(key);
+    let total = 0;
+    appData.settings.items.forEach(function (item) {
+      total += (record.items && record.items[item.id]) || 0;
+    });
     cell.classList.remove('achievement-low', 'achievement-mid', 'achievement-high');
-    const achClass = getAchievementClass(count);
-    if (achClass) cell.classList.add(achClass);
+    if (total >= 5) cell.classList.add('achievement-high');
+    else if (total >= 3) cell.classList.add('achievement-mid');
+    else if (total >= 1) cell.classList.add('achievement-low');
+  }
+
+  // 品目名変更時: カレンダー内の品目名テキストのみ部分更新
+  function updateItemNamesInCalendar(itemId, newName) {
+    document.querySelectorAll('.item-count-row[data-item-id="' + itemId + '"] .item-count-name')
+      .forEach(function (el) { el.textContent = newName; el.title = newName; });
   }
 
   function createDayCell(year, month, day, isCurrentMonth) {
     const cell = document.createElement('div');
     cell.className = 'day-cell';
-
     const key = formatDateKey(year, month, day);
-    cell.dataset.key = key; // 部分更新用
+    cell.dataset.key = key;
 
-    if (!isCurrentMonth) {
-      cell.classList.add('other-month');
-    }
-    if (isCurrentMonth && isToday(year, month, day)) {
-      cell.classList.add('today');
-    }
+    if (!isCurrentMonth) cell.classList.add('other-month');
+    if (isCurrentMonth && isToday(year, month, day)) cell.classList.add('today');
+    if (isCurrentMonth) updateCellAchievementClass(cell, key);
 
+    // 日付
     const dateLabel = document.createElement('span');
     dateLabel.className = 'date-label';
     dateLabel.textContent = day;
+    cell.appendChild(dateLabel);
 
-    const count = getAchievementCount(key);
-    const countEl = document.createElement('span');
-    countEl.className = 'achievement-count';
-    countEl.textContent = count;
-    countEl.setAttribute('aria-label', '成果数 ' + count);
+    const record = getRecord(key);
 
-    const achClass = getAchievementClass(count);
-    if (achClass) cell.classList.add(achClass);
+    // 時給モード: 出退勤時刻
+    if (appData.settings.salaryType === 'hourly') {
+      const timeRow = document.createElement('div');
+      timeRow.className = 'time-row';
 
-    const dateStr = year + '年' + (month + 1) + '月' + day + '日';
-    const btnPlus = document.createElement('button');
-    btnPlus.className = 'btn-plus';
-    btnPlus.textContent = '+';
-    btnPlus.setAttribute('aria-label', dateStr + 'の成果を増やす');
+      const startInput = document.createElement('input');
+      startInput.type = 'time';
+      startInput.className = 'time-start';
+      startInput.value = record.startTime || '';
+      startInput.disabled = !isCurrentMonth;
+      startInput.setAttribute('aria-label', year + '年' + (month + 1) + '月' + day + '日 出勤時刻');
 
-    const btnMinus = document.createElement('button');
-    btnMinus.className = 'btn-minus';
-    btnMinus.textContent = '-';
-    btnMinus.setAttribute('aria-label', dateStr + 'の成果を減らす');
+      const sep = document.createElement('span');
+      sep.textContent = '〜';
+      sep.style.fontSize = '0.6rem';
 
-    if (isCurrentMonth) {
-      btnPlus.addEventListener('click', function () {
-        const c = (appData.achievements[key] || 0);
-        if (c >= MAX_ACHIEVEMENT) return; // 上限チェック
-        appData.achievements[key] = c + 1;
-        saveData();
-        updateCell(key);       // 対象セルのみ更新
-        updateSalaryDisplay(); // 合計金額のみ更新
-      });
-      btnMinus.addEventListener('click', function () {
-        const c = appData.achievements[key] || 0;
-        if (c <= 0) return;
-        const next = c - 1;
-        if (next === 0) {
-          delete appData.achievements[key];
-        } else {
-          appData.achievements[key] = next;
-        }
-        saveData();
-        updateCell(key);       // 対象セルのみ更新
-        updateSalaryDisplay(); // 合計金額のみ更新
-      });
-    } else {
-      btnPlus.disabled = true;
-      btnMinus.disabled = true;
+      const endInput = document.createElement('input');
+      endInput.type = 'time';
+      endInput.className = 'time-end';
+      endInput.value = record.endTime || '';
+      endInput.disabled = !isCurrentMonth;
+      endInput.setAttribute('aria-label', year + '年' + (month + 1) + '月' + day + '日 退勤時刻');
+
+      if (isCurrentMonth) {
+        startInput.addEventListener('change', function () {
+          ensureRecord(key).startTime = this.value;
+          saveData();
+          updateSalaryDisplay();
+        });
+        endInput.addEventListener('change', function () {
+          ensureRecord(key).endTime = this.value;
+          saveData();
+          updateSalaryDisplay();
+        });
+      }
+
+      timeRow.appendChild(startInput);
+      timeRow.appendChild(sep);
+      timeRow.appendChild(endInput);
+      cell.appendChild(timeRow);
     }
 
-    cell.appendChild(dateLabel);
-    cell.appendChild(countEl);
-    cell.appendChild(btnPlus);
-    cell.appendChild(btnMinus);
+    // 品目カウント行
+    appData.settings.items.forEach(function (item) {
+      const row = document.createElement('div');
+      row.className = 'item-count-row';
+      row.dataset.itemId = item.id;
+
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'item-count-name';
+      nameSpan.textContent = item.name;
+      nameSpan.title = item.name;
+
+      const count = (record.items && record.items[item.id]) || 0;
+      const countSpan = document.createElement('span');
+      countSpan.className = 'item-count';
+      countSpan.textContent = count;
+      countSpan.setAttribute('aria-label', '件数 ' + count);
+
+      const btnMinus = document.createElement('button');
+      btnMinus.className = 'btn-minus';
+      btnMinus.textContent = '-';
+      btnMinus.disabled = !isCurrentMonth;
+      btnMinus.setAttribute('aria-label', item.name + 'を減らす');
+
+      const btnPlus = document.createElement('button');
+      btnPlus.className = 'btn-plus';
+      btnPlus.textContent = '+';
+      btnPlus.disabled = !isCurrentMonth;
+      btnPlus.setAttribute('aria-label', item.name + 'を増やす');
+
+      if (isCurrentMonth) {
+        btnMinus.addEventListener('click', function () {
+          const rec = ensureRecord(key);
+          const c = rec.items[item.id] || 0;
+          if (c <= 0) return;
+          const next = c - 1;
+          if (next === 0) delete rec.items[item.id];
+          else rec.items[item.id] = next;
+          saveData();
+          updateCellItemCount(key, item.id);
+          updateSalaryDisplay();
+        });
+        btnPlus.addEventListener('click', function () {
+          const rec = ensureRecord(key);
+          const c = rec.items[item.id] || 0;
+          if (c >= MAX_ITEM_COUNT) return;
+          rec.items[item.id] = c + 1;
+          saveData();
+          updateCellItemCount(key, item.id);
+          updateSalaryDisplay();
+        });
+      }
+
+      row.appendChild(nameSpan);
+      row.appendChild(btnMinus);
+      row.appendChild(countSpan);
+      row.appendChild(btnPlus);
+      cell.appendChild(row);
+    });
 
     return cell;
   }
@@ -195,98 +315,162 @@
     if (!grid) return;
     grid.innerHTML = '';
 
-    // 曜日ヘッダー行
     DAY_LABELS.forEach(function (label) {
-      const headerEl = document.createElement('div');
-      headerEl.className = 'day-header';
-      headerEl.textContent = label;
-      grid.appendChild(headerEl);
+      const h = document.createElement('div');
+      h.className = 'day-header';
+      h.textContent = label;
+      grid.appendChild(h);
     });
 
     const firstDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
 
-    // 前月の末尾セル
-    let prevMonth = currentMonth - 1;
-    let prevYear = currentYear;
-    if (prevMonth < 0) { prevMonth = 11; prevYear = currentYear - 1; }
+    let prevMonth = currentMonth - 1, prevYear = currentYear;
+    if (prevMonth < 0) { prevMonth = 11; prevYear--; }
     const prevMonthDays = getDaysInMonth(prevYear, prevMonth);
     for (let i = firstDayOfWeek - 1; i >= 0; i--) {
       grid.appendChild(createDayCell(prevYear, prevMonth, prevMonthDays - i, false));
     }
 
-    // 当月セル
     const daysInMonth = getDaysInMonth(currentYear, currentMonth);
-    for (let day = 1; day <= daysInMonth; day++) {
-      grid.appendChild(createDayCell(currentYear, currentMonth, day, true));
+    for (let d = 1; d <= daysInMonth; d++) {
+      grid.appendChild(createDayCell(currentYear, currentMonth, d, true));
     }
 
-    // 翌月の先頭セルで行を埋める
     const totalCells = firstDayOfWeek + daysInMonth;
     const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
-    let nextMonth = currentMonth + 1;
-    let nextYear = currentYear;
-    if (nextMonth > 11) { nextMonth = 0; nextYear = currentYear + 1; }
+    let nextMonth = currentMonth + 1, nextYear = currentYear;
+    if (nextMonth > 11) { nextMonth = 0; nextYear++; }
     for (let nd = 1; nd <= remaining; nd++) {
       grid.appendChild(createDayCell(nextYear, nextMonth, nd, false));
     }
   }
 
+  function renderItemsList() {
+    const list = document.getElementById('items-list');
+    if (!list) return;
+    list.innerHTML = '';
+
+    appData.settings.items.forEach(function (item) {
+      const row = document.createElement('div');
+      row.className = 'item-row';
+      row.dataset.id = item.id;
+
+      const nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.className = 'item-name';
+      nameInput.value = item.name;
+      nameInput.placeholder = '品目名';
+      nameInput.setAttribute('aria-label', '品目名');
+      nameInput.addEventListener('input', function () {
+        item.name = this.value;
+        saveData();
+        // カレンダー全再描画せず品目名テキストのみ部分更新（フォーカス維持）
+        updateItemNamesInCalendar(item.id, this.value);
+        updateSalaryDisplay();
+      });
+
+      const backLabel = document.createElement('span');
+      backLabel.textContent = 'バック';
+      backLabel.style.cssText = 'font-size:0.75rem;color:var(--color-text-secondary);white-space:nowrap;';
+
+      const backInput = document.createElement('input');
+      backInput.type = 'number';
+      backInput.className = 'item-back';
+      backInput.value = item.back;
+      backInput.min = '0';
+      backInput.step = '1';
+      backInput.setAttribute('aria-label', item.name + ' バック単価');
+      backInput.addEventListener('input', function () {
+        const val = sanitizeInput(this.value, 10000000);
+        if (val !== null) { item.back = val; saveData(); updateSalaryDisplay(); }
+      });
+      backInput.addEventListener('blur', function () { this.value = item.back; });
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'item-delete';
+      deleteBtn.textContent = '削除';
+      deleteBtn.setAttribute('aria-label', item.name + 'を削除');
+      deleteBtn.addEventListener('click', function () {
+        if (!confirm('"' + item.name + '" を削除してもよいですか？')) return;
+        appData.settings.items = appData.settings.items.filter(function (i) { return i.id !== item.id; });
+        saveData();
+        renderItemsList();
+        renderCalendar();
+        updateSalaryDisplay();
+      });
+
+      row.appendChild(nameInput);
+      row.appendChild(backLabel);
+      row.appendChild(backInput);
+      row.appendChild(deleteBtn);
+      list.appendChild(row);
+    });
+  }
+
   function refresh() {
     updateMonthLabel();
+    updateSalaryTypeUI();
+    renderItemsList();
     renderCalendar();
     updateSalaryDisplay();
   }
 
   /* ---------- Event Listeners ---------- */
 
-  function sanitizeInput(value, max) {
-    const val = parseInt(value, 10);
-    if (!Number.isSafeInteger(val) || val < 0) return null;
-    if (val > max) return null;
-    return val;
-  }
-
   function setupEventListeners() {
     document.getElementById('prev-month').addEventListener('click', function () {
-      currentMonth -= 1;
-      if (currentMonth < 0) { currentMonth = 11; currentYear -= 1; }
+      currentMonth--;
+      if (currentMonth < 0) { currentMonth = 11; currentYear--; }
       refresh();
     });
 
     document.getElementById('next-month').addEventListener('click', function () {
-      currentMonth += 1;
-      if (currentMonth > 11) { currentMonth = 0; currentYear += 1; }
+      currentMonth++;
+      if (currentMonth > 11) { currentMonth = 0; currentYear++; }
       refresh();
     });
 
-    const baseSalaryInput = document.getElementById('base-salary');
-    baseSalaryInput.value = appData.settings.baseSalary;
-    baseSalaryInput.addEventListener('input', function () {
-      const val = sanitizeInput(this.value, 100000000);
-      if (val !== null) {
-        appData.settings.baseSalary = val;
+    // 給与タイプ切り替え
+    document.querySelectorAll('input[name="salary-type"]').forEach(function (radio) {
+      if (radio.value === appData.settings.salaryType) radio.checked = true;
+      radio.addEventListener('change', function () {
+        appData.settings.salaryType = this.value;
         saveData();
+        updateSalaryTypeUI();
+        renderCalendar();
         updateSalaryDisplay();
-      }
-    });
-    // 空欄になったら現在値に戻す
-    baseSalaryInput.addEventListener('blur', function () {
-      this.value = appData.settings.baseSalary;
+      });
     });
 
-    const rewardInput = document.getElementById('reward-per-achievement');
-    rewardInput.value = appData.settings.rewardPerAchievement;
-    rewardInput.addEventListener('input', function () {
-      const val = sanitizeInput(this.value, 1000000);
-      if (val !== null) {
-        appData.settings.rewardPerAchievement = val;
-        saveData();
-        updateSalaryDisplay();
-      }
-    });
-    // 空欄になったら現在値に戻す
-    rewardInput.addEventListener('blur', function () {
-      this.value = appData.settings.rewardPerAchievement;
+    // 固定給
+    const baseSalaryInput = document.getElementById('base-salary');
+    if (baseSalaryInput) {
+      baseSalaryInput.value = appData.settings.baseSalary;
+      baseSalaryInput.addEventListener('input', function () {
+        const val = sanitizeInput(this.value, 100000000);
+        if (val !== null) { appData.settings.baseSalary = val; saveData(); updateSalaryDisplay(); }
+      });
+      baseSalaryInput.addEventListener('blur', function () { this.value = appData.settings.baseSalary; });
+    }
+
+    // 時給
+    const hourlyRateInput = document.getElementById('hourly-rate');
+    if (hourlyRateInput) {
+      hourlyRateInput.value = appData.settings.hourlyRate;
+      hourlyRateInput.addEventListener('input', function () {
+        const val = sanitizeInput(this.value, 1000000);
+        if (val !== null) { appData.settings.hourlyRate = val; saveData(); updateSalaryDisplay(); }
+      });
+      hourlyRateInput.addEventListener('blur', function () { this.value = appData.settings.hourlyRate; });
+    }
+
+    // 品目追加
+    document.getElementById('add-item').addEventListener('click', function () {
+      appData.settings.items.push({ id: generateId(), name: '新品目', back: 0 });
+      saveData();
+      renderItemsList();
+      renderCalendar();
+      updateSalaryDisplay();
     });
   }
 

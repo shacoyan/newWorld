@@ -397,3 +397,235 @@ header h1 {
   .btn-plus, .btn-minus { width: 22px; height: 22px; font-size: 0.8rem; }
   .achievement-count { font-size: 1rem; }
 }
+
+/* ============================================
+   v2 追加スタイル
+   ============================================ */
+
+.radio-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.radio-group input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-white);
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+
+.radio-group input[type="radio"]:checked {
+  border-color: var(--color-primary);
+}
+
+.radio-group input[type="radio"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  background: var(--color-primary);
+  border-radius: 50%;
+}
+
+.radio-group input[type="radio"]:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* --- 品目設定セクション --- */
+.items-section {
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  border-top: 1px solid var(--color-border);
+  padding-top: 16px;
+  margin-top: 4px;
+}
+
+.items-section-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 8px;
+}
+
+#items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--color-bg);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+
+.item-name {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  color: var(--color-text);
+  background: var(--color-white);
+  outline: none;
+}
+
+.item-name:focus { border-color: var(--color-primary); }
+.item-name:focus-visible { outline: 3px solid var(--color-primary); outline-offset: 2px; }
+
+.item-back {
+  width: 90px;
+  padding: 6px 10px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+  background: var(--color-white);
+  outline: none;
+}
+
+.item-back:focus { border-color: var(--color-primary); }
+.item-back:focus-visible { outline: 3px solid var(--color-primary); outline-offset: 2px; }
+
+.item-delete {
+  width: 48px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: #fee2e2;
+  color: #dc2626;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+
+.item-delete:hover { background: #dc2626; color: var(--color-white); }
+.item-delete:active { transform: scale(0.9); }
+.item-delete:focus-visible { outline: 3px solid #dc2626; outline-offset: 2px; }
+
+#add-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1.5px dashed var(--color-primary);
+  border-radius: var(--radius-sm);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+#add-item:hover { background: var(--color-primary); color: var(--color-white); border-style: solid; }
+#add-item:focus-visible { outline: 3px solid var(--color-primary); outline-offset: 2px; }
+
+/* --- 時刻入力（カレンダーセル内） --- */
+.time-row {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  width: 100%;
+  justify-content: center;
+  padding: 2px 0;
+}
+
+.time-start,
+.time-end {
+  width: 66px;
+  padding: 2px 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-size: 0.68rem;
+  color: var(--color-text);
+  background: var(--color-white);
+  outline: none;
+  text-align: center;
+}
+
+.time-start:focus, .time-end:focus { border-color: var(--color-primary); }
+.time-start:focus-visible, .time-end:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 1px; }
+
+/* --- カレンダーセル内の品目カウント行 --- */
+.item-count-row {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  width: 100%;
+  padding: 1px 2px;
+  justify-content: center;
+}
+
+.item-count-name {
+  font-size: 0.58rem;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 38px;
+}
+
+.item-count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text);
+  min-width: 14px;
+  text-align: center;
+}
+
+#base-salary,
+#hourly-rate {
+  width: 140px;
+  padding: 8px 12px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
+  background: var(--color-bg);
+  outline: none;
+}
+
+#hourly-rate:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+#hourly-rate:focus-visible { outline: 3px solid var(--color-primary); outline-offset: 2px; }
+
+@media (max-width: 600px) {
+  .items-section { padding-top: 12px; }
+  .item-row { flex-wrap: wrap; }
+  .item-name { flex: 1 1 100%; }
+  .item-back { flex: 1; }
+  #add-item { width: 100%; justify-content: center; }
+  .time-start, .time-end { width: 56px; font-size: 0.62rem; }
+}
