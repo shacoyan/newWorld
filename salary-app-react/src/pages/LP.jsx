@@ -19,7 +19,7 @@ export default function LP() {
     <div className="lp-body">
       <section className="lp-hero">
         <div className="lp-hero-inner">
-          <h1 className="lp-logo-heading"><img src="/logo.png" alt="こんまに" className="lp-logo" /></h1>
+          <h1 className="lp-logo-heading"><img src="./logo.png" alt="こんまに" className="lp-logo" /></h1>
           <p className="lp-subtitle">バック・時給・出勤を記録して<br />今月いくら稼いだか一目でわかる</p>
           <button className="lp-login-btn" onClick={handleLogin} disabled={loading}>
             {loading ? 'ログイン中…' : 'Googleでログイン'}

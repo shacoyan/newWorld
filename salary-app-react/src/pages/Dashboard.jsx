@@ -100,7 +100,7 @@ export default function Dashboard() {
     <div>
       <header>
         <Link to="/" className="header-logo-link">
-          <img src="/logo.png" alt="こんまに" className="header-logo" />
+          <img src="./logo.png" alt="こんまに" className="header-logo" />
         </Link>
         <h1 className="header-title">統計</h1>
         <div className="user-chip-small">
