@@ -1,41 +1,59 @@
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
+import { signOut } from 'firebase/auth'
+import { auth } from '../lib/firebase'
 
-export default function Header({ type = 'main', title }) {
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const displayName = user?.displayName || user?.email || '';
-  const initial = displayName ? displayName.charAt(0).toUpperCase() : '';
+export default function Header({ type, title, onBack }) {
+  const user = useAuth()
+  const navigate = useNavigate()
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  const handleLogout = async () => {
+    setMenuOpen(false)
+    await signOut(auth)
+    navigate('/lp')
+  }
+
+  const closeMenu = () => setMenuOpen(false)
+
+  if (type === 'sub') {
+    return (
+      <header className="header">
+        <button className="back-btn" onClick={() => (onBack ? onBack() : navigate(-1))}>
+          ←
+        </button>
+        <h1 className="header-title">{title}</h1>
+        <div style={{ width: 32 }}></div>
+      </header>
+    )
+  }
 
   return (
-    <header className="header">
-      {type === 'main' ? (
+    <>
+      <header className="header">
+        <div style={{ width: 32 }}></div>
+        <Link to="/" className="header-logo">こんまに</Link>
+        <button className="hamburger-btn" onClick={() => setMenuOpen(prev => !prev)}>
+          ☰
+        </button>
+      </header>
+
+      {menuOpen && (
         <>
-          <div className="header-left">
-            <a href="/" className="logo-link">Logo</a>
-          </div>
-          <div className="header-right">
-            <div className="user-chip">
-              <span className="user-chip-initial">{initial}</span>
-              <span className="user-chip-name">{displayName}</span>
-            </div>
-            <button className="btn-icon btn-stats" onClick={() => navigate('/stats')} aria-label="統計">統計</button>
-            <button className="btn-icon btn-settings" onClick={() => navigate('/settings')} aria-label="設定">設定</button>
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="header-left">
-            <button className="btn-back" onClick={() => navigate(-1)}>← 戻る</button>
-          </div>
-          <h1 className="header-title">{title}</h1>
-          <div className="header-right">
-            <div className="user-chip-small">
-              <span className="user-chip-initial">{initial}</span>
-            </div>
+          <div className="hamburger-overlay" onClick={closeMenu}></div>
+          <div className="hamburger-menu">
+            {user && (
+              <div className="menu-user">
+                {user.displayName || user.email}
+              </div>
+            )}
+            <button onClick={() => { navigate('/dashboard'); closeMenu(); }}>統計</button>
+            <button onClick={() => { navigate('/settings'); closeMenu(); }}>設定</button>
+            <button className="btn-logout" onClick={handleLogout}>ログアウト</button>
           </div>
         </>
       )}
-    </header>
-  );
+    </>
+  )
 }

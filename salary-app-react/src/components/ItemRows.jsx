@@ -4,7 +4,7 @@ import { formatMoney } from '../lib/calc';
 export default function ItemRows({ items, record, onCountChange }) {
   const castItems = items.filter(i => i.category !== 'champagne');
   const champItems = items.filter(i => i.category === 'champagne');
-  const [champOpen, setChampOpen] = useState(true);
+  const [champOpen, setChampOpen] = useState(false);
 
   function makeRow(item) {
     const count = record.items?.[item.id] || 0;

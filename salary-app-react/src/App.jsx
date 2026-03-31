@@ -2,7 +2,6 @@ import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import LP from './pages/LP'
 import Today from './pages/Today'
-import Day from './pages/Day'
 import Settings from './pages/Settings'
 import Dashboard from './pages/Dashboard'
 
@@ -27,7 +26,6 @@ export default function App() {
         <Routes>
           <Route path="/lp" element={<LPGuard><LP /></LPGuard>} />
           <Route path="/" element={<AuthGuard><Today /></AuthGuard>} />
-          <Route path="/day" element={<AuthGuard><Day /></AuthGuard>} />
           <Route path="/settings" element={<AuthGuard><Settings /></AuthGuard>} />
           <Route path="/dashboard" element={<AuthGuard><Dashboard /></AuthGuard>} />
           <Route path="*" element={<Navigate to="/" replace />} />

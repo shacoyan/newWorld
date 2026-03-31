@@ -17,104 +17,113 @@ export function getDefaultSettings() {
     items: [
       { id: 'default-drink', name: 'ドリンク', back: 0, category: 'cast' },
       { id: 'default-shot',  name: 'ショット',  back: 0, category: 'cast' },
-      { id: 'default-cheki', name: 'チェキ',    back: 0, category: 'cast' }
+      { id: 'default-cheki', name: 'チェキ',    back: 0, category: 'cast' },
+      { id: 'default-orishan', name: 'オリシャン', back: 0, category: 'champagne' }
     ]
   };
 }
 
 export function getTodayKey() {
   const d = new Date();
-  return d.getFullYear() + '-' +
-    String(d.getMonth() + 1).padStart(2, '0') + '-' +
-    String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
 export function getDaysInMonth(year, month) {
   return new Date(year, month, 0).getDate();
 }
 
-export function formatDateLabel(dateKey) {
-  const [y, m, d] = dateKey.split('-').map(Number);
-  const w = new Date(y, m - 1, d).getDay();
-  return m + '月' + d + '日(' + WEEKDAYS[w] + ')';
+export function formatDateLabel(key) {
+  if (!key) return '';
+  const [y, m, d] = key.split('-').map(Number);
+  const date = new Date(y, m - 1, d);
+  return `${m}/${d}(${WEEKDAYS[date.getDay()]})`;
 }
 
-export function formatDateFull(dateKey) {
-  const [y, m, d] = dateKey.split('-').map(Number);
-  const w = new Date(y, m - 1, d).getDay();
-  return y + '年' + m + '月' + d + '日(' + WEEKDAYS[w] + ')';
+export function formatDateFull(key) {
+  if (!key) return '';
+  const [y, m, d] = key.split('-').map(Number);
+  const date = new Date(y, m - 1, d);
+  return `${y}年${m}月${d}日(${WEEKDAYS[date.getDay()]})`;
 }
 
-export function formatMoney(n) {
-  return '¥' + Math.round(n).toLocaleString('ja-JP');
+export function formatMoney(amount) {
+  return amount.toLocaleString();
 }
 
-export function escapeHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+export function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 export function calcHours(startTime, endTime) {
   if (!startTime || !endTime) return 0;
   const [sh, sm] = startTime.split(':').map(Number);
   const [eh, em] = endTime.split(':').map(Number);
-  const diff = (eh * 60 + em) - (sh * 60 + sm);
-  return diff > 0 ? diff / 60 : 0;
+  let startMins = sh * 60 + sm;
+  let endMins = eh * 60 + em;
+  
+  if (endMins <= startMins) {
+    endMins += 24 * 60;
+  }
+  
+  const diff = endMins - startMins;
+  return Math.max(0, diff / 60);
 }
 
-export function calcDailyWage(record, settings) {
-  if (!record) return { wage: 0, back: 0, total: 0 };
+export function calcDailyWage(settings, record) {
   const hours = calcHours(record.startTime, record.endTime);
-  const rate   = Number(record.hourlyRate) || 0;
-  const wage   = Math.round(hours * rate);
-  let   back   = 0;
-  if (record.items && Array.isArray(settings.items)) {
-    settings.items.forEach(function (item) {
-      back += (Number(item.back) || 0) * ((record.items[item.id]) || 0);
-    });
+  let wage = 0;
+  
+  if (settings.salaryType === 'hourly') {
+    wage = Math.round(hours * (settings.defaultHourlyRate || 0));
+  } else {
+    const daysInMonth = getDaysInMonth(new Date().getFullYear(), new Date().getMonth() + 1);
+    wage = Math.round((settings.baseSalary || 0) / daysInMonth);
   }
-  return { wage: wage, back: back, total: wage + back };
+  
+  let back = 0;
+  if (record.items) {
+    for (const itemId in record.items) {
+      const count = record.items[itemId] || 0;
+      const item = (settings.items || []).find(i => i.id === itemId);
+      if (item && item.back) {
+        back += item.back * count;
+      }
+    }
+  }
+  
+  const avgHourlyRate = hours > 0 ? Math.round((wage + back) / hours) : 0;
+
+  return { wage, back, total: wage + back, hours, avgHourlyRate };
 }
 
-export function calcPeriodRange(year, month, startDay) {
-  if (!startDay || startDay <= 1) {
-    return {
-      startDate: new Date(year, month - 1, 1),
-      endDate:   new Date(year, month, 0)
-    };
+export function calcPeriodRange(payPeriodStart, targetYear, targetMonth) {
+  const endDate = new Date(targetYear, targetMonth, 0);
+  const startDate = new Date(targetYear, targetMonth - 1, payPeriodStart);
+  return { startDate, endDate };
+}
+
+export function calcMonthlyTotal(settings, records) {
+  let totalWage = 0;
+  let totalBack = 0;
+  let totalHours = 0;
+  
+  for (const key in records) {
+    const record = records[key];
+    const { wage, back, hours } = calcDailyWage(settings, record);
+    totalWage += wage;
+    totalBack += back;
+    totalHours += hours;
   }
+  
+  return { totalWage, totalBack, totalHours, totalAll: totalWage + totalBack };
+}
+
+export function ensureRecord(record) {
   return {
-    startDate: new Date(year, month - 2, startDay),
-    endDate:   new Date(year, month - 1, startDay - 1)
+    startTime: '',
+    endTime: '',
+    items: {},
+    memo: '',
+    ...record
   };
-}
-
-export function calcMonthlyTotal(year, month, data) {
-  const startDay = (data.settings && data.settings.payPeriodStart) || 1;
-  const range = calcPeriodRange(year, month, startDay);
-  let wageTotal = 0, backTotal = 0;
-  const d = new Date(range.startDate);
-  while (d <= range.endDate) {
-    const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-    const rec = data.records[key];
-    if (rec) { const r = calcDailyWage(rec, data.settings); wageTotal += r.wage; backTotal += r.back; }
-    d.setDate(d.getDate() + 1);
-  }
-  if (data.settings.salaryType === 'fixed') {
-    return { total: Number(data.settings.baseSalary) + backTotal, wageTotal: Number(data.settings.baseSalary), backTotal: backTotal };
-  }
-  return { total: wageTotal + backTotal, wageTotal: wageTotal, backTotal: backTotal };
-}
-
-export function ensureRecord(data, dateKey) {
-  const records = { ...data.records };
-  if (!records[dateKey]) {
-    records[dateKey] = {
-      startTime: '', endTime: '',
-      hourlyRate: data.settings.defaultHourlyRate || 0,
-      items: {}
-    };
-  } else if (!records[dateKey].items) {
-    records[dateKey] = { ...records[dateKey], items: {} };
-  }
-  return { ...data, records };
 }

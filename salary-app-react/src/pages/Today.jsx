@@ -1,142 +1,218 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { useAppData } from '../hooks/useAppData';
-import { getTodayKey, formatDateLabel, formatMoney, ensureRecord, calcDailyWage, getDaysInMonth, calcMonthlyTotal } from '../lib/calc';
-import ItemRows from '../components/ItemRows';
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
+import { useAppData } from '../hooks/useAppData'
+import { getTodayKey, formatDateFull, formatMoney, ensureRecord, calcDailyWage, getDaysInMonth, WEEKDAYS } from '../lib/calc'
+import Header from '../components/Header'
+import ItemRows from '../components/ItemRows'
 
 export default function Today() {
-  const user = useAuth();
-  const { data, persistData } = useAppData(user);
-  const navigate = useNavigate();
-  const todayKey = getTodayKey();
-  const [calYear, setCalYear] = useState(() => parseInt(todayKey.split('-')[0]));
-  const [calMonth, setCalMonth] = useState(() => parseInt(todayKey.split('-')[1]));
+  const user = useAuth()
+  const { data, persistData } = useAppData(user)
+  const navigate = useNavigate()
 
-  if (!data) return null;
+  const todayKey = getTodayKey()
+  const [selectedDate, setSelectedDate] = useState(todayKey)
+  const [calYear, setCalYear] = useState(() => parseInt(selectedDate.split('-')[0]))
+  const [calMonth, setCalMonth] = useState(() => parseInt(selectedDate.split('-')[1]))
 
-  const todayRec = data.records[todayKey] || { startTime: '', endTime: '', hourlyRate: data.settings.defaultHourlyRate || 0, items: {} };
-  const daily = calcDailyWage(todayRec, data.settings);
-  const monthly = calcMonthlyTotal(calYear, calMonth, data);
-  const step = (data.settings.timeStep || 1) === 15 ? 900 : 60;
-  const displayName = user ? (user.displayName || user.email || '') : '';
+  if (!data) return null
 
-  function handleTimeChange(field, value) {
-    const newData = ensureRecord(data, todayKey);
-    newData.records[todayKey][field] = value;
-    persistData(newData);
+  const settings = data.settings || {}
+  const defaultStartTime = settings.defaultStartTime || ''
+  const defaultEndTime = settings.defaultEndTime || ''
+  const defaultHourlyRate = settings.defaultHourlyRate || 0
+  const salaryType = settings.salaryType || 'monthly'
+  const timeStep = settings.timeStep || 15
+  const stepSeconds = timeStep === 1 ? 60 : 900
+
+  const selectedRec = data.records[selectedDate] || { startTime: '', endTime: '', hourlyRate: defaultHourlyRate, items: {} }
+  const daily = calcDailyWage(selectedRec, settings)
+
+  const handleTimeChange = (field, value) => {
+    const newData = ensureRecord(data, selectedDate)
+    newData.records[selectedDate][field] = value
+    persistData(newData)
   }
 
-  function handleRateChange(value) {
-    const v = parseInt(value, 10);
-    if (!isNaN(v) && v >= 0) {
-      const newData = ensureRecord(data, todayKey);
-      newData.records[todayKey].hourlyRate = v;
-      persistData(newData);
+  const handleRateChange = (value) => {
+    const newData = ensureRecord(data, selectedDate)
+    newData.records[selectedDate].hourlyRate = parseFloat(value) || 0
+    persistData(newData)
+  }
+
+  const handleCheckin = () => {
+    if (!defaultStartTime || !defaultEndTime) return
+    const newData = ensureRecord(data, selectedDate)
+    newData.records[selectedDate].startTime = defaultStartTime
+    newData.records[selectedDate].endTime = defaultEndTime
+    persistData(newData)
+  }
+
+  const handleItemCount = (itemId, newCount) => {
+    const newData = ensureRecord(data, selectedDate)
+    if (newCount <= 0) {
+      delete newData.records[selectedDate].items[itemId]
+    } else {
+      newData.records[selectedDate].items[itemId] = newCount
     }
+    persistData(newData)
   }
 
-  function handleCheckin() {
-    const start = data.settings.defaultStartTime || '';
-    const end = data.settings.defaultEndTime || '';
-    if (!start && !end) {
-      alert('デフォルト出勤・退勤時刻が設定されていません。設定画面から登録してください。');
-      return;
-    }
-    const newData = ensureRecord(data, todayKey);
-    if (start) newData.records[todayKey].startTime = start;
-    if (end) newData.records[todayKey].endTime = end;
-    persistData(newData);
+  const goToPrevMonth = () => {
+    let m = calMonth - 1
+    let y = calYear
+    if (m < 1) { m = 12; y-- }
+    setCalMonth(m)
+    setCalYear(y)
   }
 
-  function handleItemCount(itemId, newCount) {
-    const newData = ensureRecord(data, todayKey);
-    if (newCount <= 0) delete newData.records[todayKey].items[itemId];
-    else newData.records[todayKey].items[itemId] = Math.min(newCount, 9999);
-    persistData(newData);
+  const goToNextMonth = () => {
+    let m = calMonth + 1
+    let y = calYear
+    if (m > 12) { m = 1; y++ }
+    setCalMonth(m)
+    setCalYear(y)
   }
 
-  const firstDow = new Date(calYear, calMonth - 1, 1).getDay();
-  const daysInMon = getDaysInMonth(calYear, calMonth);
-  const calCells = [];
-  
-  for (let i = 0; i < firstDow; i++) calCells.push(null);
-  for (let d = 1; d <= daysInMon; d++) {
-    const dk = calYear + '-' + String(calMonth).padStart(2, '0') + '-' + String(d).padStart(2, '0');
-    const rec = data.records[dk];
-    const dw = new Date(calYear, calMonth - 1, d).getDay();
-    const dly = rec ? calcDailyWage(rec, data.settings) : null;
-    calCells.push({ d, dk, rec, dly, dw, isToday: dk === todayKey });
+  const handleDateClick = (dateKey) => {
+    setSelectedDate(dateKey)
+    const [y, m] = dateKey.split('-').map(Number)
+    setCalYear(y)
+    setCalMonth(m)
+  }
+
+  const daysInMonth = getDaysInMonth(calYear, calMonth)
+  const firstDayOfWeek = new Date(calYear, calMonth - 1, 1).getDay()
+  const calendarCells = []
+  for (let i = 0; i < firstDayOfWeek; i++) {
+    calendarCells.push(null)
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    calendarCells.push(d)
   }
 
   return (
-    <div id="app-content">
-      <header>
-        <Link to="/" className="header-logo-link" aria-label="今日の画面へ">
-          <img src="/logo.png" alt="こんまに" className="header-logo" />
-        </Link>
-        <div className="header-right">
-          <div className="user-chip">
-            <span className="user-initial">{displayName ? displayName.charAt(0).toUpperCase() : '?'}</span>
-            <span>{displayName}</span>
-          </div>
-          <button onClick={() => navigate('/dashboard')}>統計</button>
-          <button onClick={() => navigate('/settings')}>設定</button>
+    <>
+      <Header type="main" />
+      <main style={{ paddingTop: '56px' }}>
+        <div className="date-display-section">
+          <h2>{formatDateFull(selectedDate)}{selectedDate === todayKey && ' (今日)'}</h2>
         </div>
-      </header>
-      <main>
-        <section id="today-section">
-          <h2 id="today-label">今日: {formatDateLabel(todayKey)}</h2>
-          <div className="section">
-            <div className="time-group">
-              <span>出勤</span>
-              <input type="time" className="time-start" step={step} value={todayRec.startTime || ''} onChange={e => handleTimeChange('startTime', e.target.value)} aria-label="出勤時刻" />
-              <span>〜</span>
-              <span>退勤</span>
-              <input type="time" className="time-end" step={step} value={todayRec.endTime || ''} onChange={e => handleTimeChange('endTime', e.target.value)} aria-label="退勤時刻" />
-            </div>
-            <div className="time-group">
-              <span>時給</span>
-              <input type="number" className="daily-hourly-rate" min="0" step="1" value={todayRec.hourlyRate || ''} onChange={e => handleRateChange(e.target.value)} aria-label="時給" />
-              <span>円</span>
-            </div>
-            <button className="btn-checkin-today" onClick={handleCheckin}>出勤登録（デフォルト時刻をセット）</button>
+
+        <div className="section calendar-section">
+          <div className="calendar-nav">
+            <button onClick={goToPrevMonth}>&lt;</button>
+            <span>{calYear}年{calMonth}月</span>
+            <button onClick={goToNextMonth}>&gt;</button>
           </div>
-          <div className="section">
-            <ItemRows items={data.settings.items || []} record={todayRec} onCountChange={handleItemCount} />
+          <div className="calendar-weekdays">
+            {WEEKDAYS.map((wd, i) => (
+              <span key={i} className={['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][i]}>{wd}</span>
+            ))}
           </div>
-          <div id="today-summary" className="section">
-            <div className="total-line"><span>時給分</span><span>{formatMoney(daily.wage)}</span></div>
-            <div className="total-line"><span>バック</span><span>{formatMoney(daily.back)}</span></div>
-            <div className="total-line grand"><span>今日の合計</span><span className="amount">{formatMoney(daily.total)}</span></div>
-          </div>
-        </section>
-        <section className="section" id="calendar-section">
-          <div className="calendar-header">
-            <span style={{ fontSize: '16px', fontWeight: '700' }}>{calYear}年{calMonth}月</span>
-            <div className="calendar-nav">
-              <button onClick={() => { if (calMonth <= 1) { setCalMonth(12); setCalYear(y => y - 1); } else setCalMonth(m => m - 1); }}>&#8249;</button>
-              <button onClick={() => { if (calMonth >= 12) { setCalMonth(1); setCalYear(y => y + 1); } else setCalMonth(m => m + 1); }}>&#8250;</button>
-            </div>
-          </div>
-          <div id="calendar-weekdays">
-            {['日', '月', '火', '水', '木', '金', '土'].map(w => <span key={w}>{w}</span>)}
-          </div>
-          <div id="calendar-grid">
-            {calCells.map((cell, i) => {
-              if (!cell) return <div key={'e' + i} className="day-cell empty" />;
-              const cls = ['day-cell', cell.isToday ? 'today' : '', cell.dw === 0 ? 'sunday' : '', cell.dw === 6 ? 'saturday' : ''].filter(Boolean).join(' ');
+          <div className="calendar-grid">
+            {calendarCells.map((day, idx) => {
+              if (day === null) {
+                return <div key={`empty-${idx}`} className="calendar-cell empty"></div>
+              }
+              const dateKey = `${calYear}-${String(calMonth).padStart(2,'0')}-${String(day).padStart(2,'0')}`
+              const dayOfWeek = new Date(calYear, calMonth - 1, day).getDay()
+              const isSelected = dateKey === selectedDate
+              const isToday = dateKey === todayKey
+              const record = data.records[dateKey]
+              let cellTotal = 0
+              if (record) {
+                const dw = calcDailyWage(data.records[dateKey], settings)
+                cellTotal = dw.total
+              }
+
+              let cls = 'calendar-cell'
+              if (dayOfWeek === 0) cls += ' sunday'
+              if (dayOfWeek === 6) cls += ' saturday'
+              if (isToday) cls += ' today'
+              if (isSelected) cls += ' selected'
+
               return (
-                <div key={cell.dk} className={cls} onClick={() => navigate('/day?date=' + cell.dk)}>
-                  <div className="cell-date">{cell.d}</div>
-                  <div className="cell-total">{cell.dly && cell.dly.total > 0 ? formatMoney(cell.dly.total) : ''}</div>
+                <div
+                  key={dateKey}
+                  className={cls}
+                  onClick={() => handleDateClick(dateKey)}
+                >
+                  <span className="cell-day">{day}</span>
+                  {record && cellTotal > 0 && <span className="cell-total">{formatMoney(cellTotal)}</span>}
                 </div>
-              );
+              )
             })}
           </div>
-        </section>
-      </main>
-    </div>
-  );
-}
+        </div>
 
+        <div className="section summary-section">
+          <h3>{selectedDate === todayKey ? '本日の合計' : 'この日の合計'}</h3>
+          <div className="summary-row">
+            <span>時給分</span>
+            <span>{formatMoney(daily.wage)}</span>
+          </div>
+          <div className="summary-row">
+            <span>バック</span>
+            <span>{formatMoney(daily.back)}</span>
+          </div>
+          <div className="summary-row">
+            <span>合計</span>
+            <span>{formatMoney(daily.total)}</span>
+          </div>
+          {daily.hours > 0 && (
+            <div className="summary-row">
+              <span>平均時給</span>
+              <span>{formatMoney(daily.avgHourlyRate)}/h</span>
+            </div>
+          )}
+        </div>
+
+        <div className="section items-section">
+          <ItemRows items={data.settings.items} record={selectedRec} onCountChange={handleItemCount} />
+        </div>
+
+        <div className="section work-section">
+          {!defaultStartTime && (
+            <div className="warning-banner">
+              ⚠ デフォルト出勤時刻が未設定です
+              <button className="btn-link" onClick={() => navigate('/settings')}>設定する →</button>
+            </div>
+          )}
+          <button className="btn-checkin-today" onClick={handleCheckin}>出勤登録</button>
+          <div className="time-input-group">
+            <label>
+              出勤
+              <input
+                type="time"
+                value={selectedRec.startTime}
+                step={stepSeconds}
+                onChange={(e) => handleTimeChange('startTime', e.target.value)}
+              />
+            </label>
+            <label>
+              退勤
+              <input
+                type="time"
+                value={selectedRec.endTime}
+                step={stepSeconds}
+                onChange={(e) => handleTimeChange('endTime', e.target.value)}
+              />
+            </label>
+          </div>
+          {salaryType === 'hourly' && (
+            <label>
+              時給
+              <input
+                type="number"
+                value={selectedRec.hourlyRate}
+                onChange={(e) => handleRateChange(e.target.value)}
+              />
+            </label>
+          )}
+        </div>
+      </main>
+    </>
+  )
+}
