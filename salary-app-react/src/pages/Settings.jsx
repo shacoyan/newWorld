@@ -1,0 +1,240 @@
+import { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import { signOut } from 'firebase/auth'
+import { auth } from '../lib/firebase'
+import { useAuth } from '../contexts/AuthContext'
+import { useAppData } from '../hooks/useAppData'
+import { generateId } from '../lib/calc'
+
+export default function Settings() {
+  const user = useAuth();
+  const { data, persistData } = useAppData(user);
+  const navigate = useNavigate();
+
+  if (!data) return null;
+
+  const s = data.settings;
+  const displayName = user?.displayName || user?.email || 'User';
+
+  const castItems = s.items.filter(i => i.category !== 'champagne');
+  const champItems = s.items.filter(i => i.category === 'champagne');
+
+  const updateSettings = (updater) => {
+    const newSettings = typeof updater === 'function' ? updater(data.settings) : { ...data.settings, ...updater };
+    persistData({ ...data, settings: newSettings });
+  };
+
+  const handleAddItem = (category) => {
+    const newItem = {
+      id: generateId(),
+      name: '',
+      back: 0,
+      category: category
+    };
+    updateSettings(prev => ({
+      ...prev,
+      items: [...prev.items, newItem]
+    }));
+  };
+
+  const handleDeleteItem = (id) => {
+    updateSettings(prev => ({
+      ...prev,
+      items: prev.items.filter(i => i.id !== id)
+    }));
+  };
+
+  const handleItemChange = (id, field, value) => {
+    updateSettings(prev => ({
+      ...prev,
+      items: prev.items.map(i =>
+        i.id === id ? { ...i, [field]: field === 'back' ? Number(value) : value } : i
+      )
+    }));
+  };
+
+  const handleLogout = () => {
+    signOut(auth).then(() => navigate('/lp'));
+  };
+
+  const salaryType = s.salaryType || 'hourly';
+
+  return (
+    <div>
+      <header>
+        <Link to="/" className="btn-back">← 戻る</Link>
+        <h1 className="header-title">設定</h1>
+        <div className="user-chip-small">
+          <span className="user-initial">{displayName.charAt(0) || '?'}</span>
+          <span>{displayName}</span>
+        </div>
+      </header>
+
+      <main>
+        <section>
+          <h2 className="section-title">給与タイプ</h2>
+          <div className="radio-group">
+            <label>
+              <input
+                type="radio"
+                name="salaryType"
+                value="hourly"
+                checked={salaryType === 'hourly'}
+                onChange={() => updateSettings({ salaryType: 'hourly' })}
+              />
+              時給
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="salaryType"
+                value="fixed"
+                checked={salaryType === 'fixed'}
+                onChange={() => updateSettings({ salaryType: 'fixed' })}
+              />
+              固定給
+            </label>
+          </div>
+
+          {salaryType === 'hourly' && (
+            <div className="form-group">
+              <label>デフォルト時給</label>
+              <input
+                type="number"
+                value={s.defaultHourlyWage || ''}
+                onChange={(e) => updateSettings({ defaultHourlyWage: Number(e.target.value) })}
+                onBlur={() => persistData(data)}
+              />
+            </div>
+          )}
+
+          {salaryType === 'fixed' && (
+            <div className="form-group">
+              <label>固定給</label>
+              <input
+                type="number"
+                value={s.fixedSalary || ''}
+                onChange={(e) => updateSettings({ fixedSalary: Number(e.target.value) })}
+                onBlur={() => persistData(data)}
+              />
+            </div>
+          )}
+        </section>
+
+        <section>
+          <h2 className="section-title">出勤設定</h2>
+          <div className="form-group">
+            <label>デフォルト出勤時刻</label>
+            <input
+              type="time"
+              value={s.defaultClockIn || ''}
+              onChange={(e) => updateSettings({ defaultClockIn: e.target.value })}
+              onBlur={() => persistData(data)}
+            />
+          </div>
+          <div className="form-group">
+            <label>デフォルト退勤時刻</label>
+            <input
+              type="time"
+              value={s.defaultClockOut || ''}
+              onChange={(e) => updateSettings({ defaultClockOut: e.target.value })}
+              onBlur={() => persistData(data)}
+            />
+          </div>
+          <div className="form-group">
+            <label>時刻単位</label>
+            <div className="radio-group">
+              <label>
+                <input
+                  type="radio"
+                  name="timeUnit"
+                  value="1"
+                  checked={(s.timeUnit || 1) === 1}
+                  onChange={() => updateSettings({ timeUnit: 1 })}
+                />
+                1分
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="timeUnit"
+                  value="15"
+                  checked={s.timeUnit === 15}
+                  onChange={() => updateSettings({ timeUnit: 15 })}
+                />
+                15分
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2 className="section-title">締め期間設定</h2>
+          <div className="form-group">
+            <label>開始日</label>
+            <input
+              type="number"
+              min="1"
+              max="28"
+              value={s.cutoffStartDay || ''}
+              onChange={(e) => updateSettings({ cutoffStartDay: Number(e.target.value) })}
+              onBlur={() => persistData(data)}
+            />
+          </div>
+        </section>
+
+        <section>
+          <h2 className="section-title">品目一覧</h2>
+
+          <div className="item-category-label">キャストメニュー</div>
+          {castItems.map(item => (
+            <div key={item.id} className="item-row">
+              <input
+                type="text"
+                placeholder="品目名"
+                value={item.name}
+                onChange={(e) => handleItemChange(item.id, 'name', e.target.value)}
+                onBlur={() => persistData(data)}
+              />
+              <input
+                type="number"
+                placeholder="バック"
+                value={item.back || ''}
+                onChange={(e) => handleItemChange(item.id, 'back', e.target.value)}
+                onBlur={() => persistData(data)}
+              />
+              <button className="btn-delete" onClick={() => handleDeleteItem(item.id)}>削除</button>
+            </div>
+          ))}
+          <button id="add-item-cast" className="add-item-btn" onClick={() => handleAddItem('cast')}>+ キャストメニューを追加</button>
+
+          <div className="item-category-label">シャンパン類</div>
+          {champItems.map(item => (
+            <div key={item.id} className="item-row">
+              <input
+                type="text"
+                placeholder="品目名"
+                value={item.name}
+                onChange={(e) => handleItemChange(item.id, 'name', e.target.value)}
+                onBlur={() => persistData(data)}
+              />
+              <input
+                type="number"
+                placeholder="バック"
+                value={item.back || ''}
+                onChange={(e) => handleItemChange(item.id, 'back', e.target.value)}
+                onBlur={() => persistData(data)}
+              />
+              <button className="btn-delete" onClick={() => handleDeleteItem(item.id)}>削除</button>
+            </div>
+          ))}
+          <button id="add-item-champagne" className="add-item-btn" onClick={() => handleAddItem('champagne')}>+ シャンパンを追加</button>
+        </section>
+
+        <section>
+          <button className="btn-logout-section" onClick={handleLogout}>ログアウト</button>
+        </section>
+      </main>
+    </div>
+  );
+}
