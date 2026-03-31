@@ -27,6 +27,8 @@
   renderAll();
   bindEvents();
 
+  window.addEventListener('pageshow', function() { data = loadData(); renderAll(); });
+
   /* ---------- render ---------- */
   function renderAll() {
     renderHeader();
@@ -118,9 +120,6 @@
 
       cell.appendChild(dateDiv);
       cell.appendChild(totalDiv);
-      cell.addEventListener('click', function (key) {
-        return function () { window.location.href = 'day.html?date=' + key; };
-      }(dateKey));
       calendarGridEl.appendChild(cell);
     }
   }
@@ -170,6 +169,12 @@
       }
     });
 
+    calendarGridEl.addEventListener('click', function(e) {
+      var cell = e.target.closest('.day-cell');
+      if (!cell || !cell.dataset.key) return;
+      window.location.href = 'day.html?date=' + cell.dataset.key;
+    });
+
     gotoSettingsBtn.addEventListener('click', function () {
       window.location.href = 'settings.html';
     });
@@ -184,10 +189,5 @@
       if (currentMonth > 12) { currentMonth = 1; currentYear++; }
       renderHeader(); renderCalendar();
     });
-  }
-
-  /* ---------- util ---------- */
-  function escapeHtml(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 })();

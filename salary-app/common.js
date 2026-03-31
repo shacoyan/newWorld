@@ -112,6 +112,10 @@ function formatMoney(n) {
   return '¥' + Math.round(n).toLocaleString('ja-JP');
 }
 
+function escapeHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 /* ---------- Calculation ---------- */
 function calcHours(startTime, endTime) {
   if (!startTime || !endTime) return 0;

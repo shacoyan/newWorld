@@ -371,7 +371,7 @@ input[type="time"] { width: 120px; }
   box-shadow: var(--shadow);
 }
 
-.day-cell:active { transform: scale(0.94); }
+.day-cell:active { opacity: 0.7; }
 
 .day-cell.empty {
   background: transparent;

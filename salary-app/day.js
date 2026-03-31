@@ -1,7 +1,7 @@
 (function () {
   var params  = new URLSearchParams(window.location.search);
   var dateKey = params.get('date');
-  if (!dateKey) { window.location.href = 'index.html'; return; }
+  if (!dateKey || !/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) { window.location.href = 'index.html'; return; }
 
   var data = loadData();
   ensureRecord(data, dateKey);
@@ -44,13 +44,16 @@
     var rec = data.records[dateKey];
     data.settings.items.forEach(function (item) {
       var count = (rec.items && rec.items[item.id]) || 0;
+      var back    = (Number(item.back) || 0) * count;
+
       var row = document.createElement('div');
       row.className = 'item-count-row';
       row.innerHTML =
         '<span class="item-name">' + escapeHtml(item.name) + '</span>' +
         '<button class="item-dec" data-id="' + item.id + '" aria-label="' + escapeHtml(item.name) + 'を減らす">−</button>' +
         '<span class="item-count-val" data-id="' + item.id + '">' + count + '</span>' +
-        '<button class="item-inc" data-id="' + item.id + '" aria-label="' + escapeHtml(item.name) + 'を増やす">+</button>';
+        '<button class="item-inc" data-id="' + item.id + '" aria-label="' + escapeHtml(item.name) + 'を増やす">+</button>' +
+        '<span class="item-back-label">¥' + formatMoney(back).replace('¥','') + '</span>';
       itemRowsEl.appendChild(row);
     });
   }
@@ -95,14 +98,8 @@
         if (rec.items[id] === 0) delete rec.items[id];
       } else return;
       saveData(data);
-      // カウント表示を部分更新
-      var countEl = itemRowsEl.querySelector('.item-count-val[data-id="' + id + '"]');
-      if (countEl) countEl.textContent = rec.items[id] || 0;
+      renderItemRows();
       updateTotals();
     });
-  }
-
-  function escapeHtml(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 })();

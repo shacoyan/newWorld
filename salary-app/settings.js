@@ -41,6 +41,7 @@
       nameInput.placeholder = '品目名';
       nameInput.setAttribute('aria-label', '品目名');
       nameInput.dataset.idx = idx;
+      nameInput.dataset.type = 'name';
 
       var backLabel = document.createElement('span');
       backLabel.className = 'back-label';
@@ -53,6 +54,7 @@
       backInput.step = '1';
       backInput.setAttribute('aria-label', 'バック単価');
       backInput.dataset.idx = idx;
+      backInput.dataset.type = 'back';
 
       var yenLabel = document.createElement('span');
       yenLabel.className = 'back-label';
@@ -62,6 +64,7 @@
       deleteBtn.className = 'btn-delete';
       deleteBtn.textContent = '削除';
       deleteBtn.dataset.idx = idx;
+      deleteBtn.dataset.type = 'delete';
       deleteBtn.setAttribute('aria-label', item.name + 'を削除');
 
       row.appendChild(nameInput);
@@ -70,28 +73,6 @@
       row.appendChild(yenLabel);
       row.appendChild(deleteBtn);
       itemsListEl.appendChild(row);
-
-      nameInput.addEventListener('change', function () {
-        data.settings.items[Number(this.dataset.idx)].name = this.value;
-        saveData(data);
-      });
-      backInput.addEventListener('change', function () {
-        var v = parseInt(this.value, 10);
-        if (!isNaN(v) && v >= 0) {
-          data.settings.items[Number(this.dataset.idx)].back = v;
-          saveData(data);
-        }
-      });
-      backInput.addEventListener('blur', function () {
-        this.value = data.settings.items[Number(this.dataset.idx)].back;
-      });
-      deleteBtn.addEventListener('click', function () {
-        var i = Number(this.dataset.idx);
-        if (!confirm('"' + data.settings.items[i].name + '" を削除しますか？')) return;
-        data.settings.items.splice(i, 1);
-        saveData(data);
-        renderItems();
-      });
     });
   }
 
@@ -124,5 +105,51 @@
       var inputs = itemsListEl.querySelectorAll('input[type="text"]');
       if (inputs.length > 0) inputs[inputs.length - 1].focus();
     });
+
+    itemsListEl.addEventListener('click', function(e) {
+      var target = e.target;
+      var type = target.dataset.type;
+      if (!type) return;
+
+      var idx = Number(target.dataset.idx);
+
+      if (type === 'delete') {
+        if (!confirm('"' + data.settings.items[idx].name + '" を削除しますか？')) return;
+        data.settings.items.splice(idx, 1);
+        saveData(data);
+        renderItems();
+      }
+    });
+
+    itemsListEl.addEventListener('change', function(e) {
+      var target = e.target;
+      var type = target.dataset.type;
+      if (!type) return;
+
+      var idx = Number(target.dataset.idx);
+
+      if (type === 'name') {
+        data.settings.items[idx].name = target.value;
+        saveData(data);
+      } else if (type === 'back') {
+        var v = parseInt(target.value, 10);
+        if (!isNaN(v) && v >= 0) {
+          data.settings.items[idx].back = v;
+          saveData(data);
+        }
+      }
+    });
+
+    itemsListEl.addEventListener('blur', function(e) {
+      var target = e.target;
+      var type = target.dataset.type;
+      if (!type) return;
+
+      var idx = Number(target.dataset.idx);
+
+      if (type === 'back') {
+        target.value = data.settings.items[idx].back;
+      }
+    }, true);
   }
 })();
