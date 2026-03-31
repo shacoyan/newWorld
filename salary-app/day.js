@@ -1,11 +1,18 @@
-(function () {
+document.addEventListener('app:ready', function () {
+  function persistData(data) {
+    saveData(data);
+    if (window.currentUser && window.saveDataAsync) {
+      window.saveDataAsync(window.currentUser.uid, data);
+    }
+  }
+
   var params  = new URLSearchParams(window.location.search);
   var dateKey = params.get('date');
   if (!dateKey || !/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) { window.location.href = 'index.html'; return; }
 
-  var data = loadData();
+  var data = window.appData || loadData();
   ensureRecord(data, dateKey);
-  saveData(data);
+  persistData(data);
 
   /* DOM refs */
   var dayLabelEl    = document.getElementById('day-label');
@@ -49,11 +56,11 @@
       var row = document.createElement('div');
       row.className = 'item-count-row';
       row.innerHTML =
+        '<span class="item-back-label">¥' + formatMoney(back).replace('¥','') + '</span>' +
         '<span class="item-name">' + escapeHtml(item.name) + '</span>' +
         '<button class="item-dec" data-id="' + item.id + '" aria-label="' + escapeHtml(item.name) + 'を減らす">−</button>' +
         '<span class="item-count-val" data-id="' + item.id + '">' + count + '</span>' +
-        '<button class="item-inc" data-id="' + item.id + '" aria-label="' + escapeHtml(item.name) + 'を増やす">+</button>' +
-        '<span class="item-back-label">¥' + formatMoney(back).replace('¥','') + '</span>';
+        '<button class="item-inc" data-id="' + item.id + '" aria-label="' + escapeHtml(item.name) + 'を増やす">+</button>';
       itemRowsEl.appendChild(row);
     });
   }
@@ -68,17 +75,17 @@
   function bindEvents() {
     timeStartEl.addEventListener('change', function () {
       ensureRecord(data, dateKey).startTime = this.value;
-      saveData(data); updateTotals();
+      persistData(data); updateTotals();
     });
     timeEndEl.addEventListener('change', function () {
       ensureRecord(data, dateKey).endTime = this.value;
-      saveData(data); updateTotals();
+      persistData(data); updateTotals();
     });
     hourlyRateEl.addEventListener('change', function () {
       var v = parseInt(this.value, 10);
       if (!isNaN(v) && v >= 0) {
         ensureRecord(data, dateKey).hourlyRate = v;
-        saveData(data); updateTotals();
+        persistData(data); updateTotals();
       }
     });
     hourlyRateEl.addEventListener('blur', function () {
@@ -97,9 +104,9 @@
         rec.items[id] = cur - 1;
         if (rec.items[id] === 0) delete rec.items[id];
       } else return;
-      saveData(data);
+      persistData(data);
       renderItemRows();
       updateTotals();
     });
   }
-})();
+});

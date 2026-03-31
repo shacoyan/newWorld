@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ダッシュボード - 給料計算</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ログインオーバーレイ -->
+<div id="login-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; flex-direction:column; gap:16px;">
+  <div style="background:#fff; border-radius:16px; padding:32px 24px; text-align:center; max-width:320px; width:90%;">
+    <h2 style="margin-bottom:8px; font-size:20px;">給料計算</h2>
+    <p style="color:#6b7280; font-size:14px; margin-bottom:24px;">Googleアカウントでログインしてください</p>
+    <button id="login-btn" style="background:#4285f4; color:#fff; border:none; border-radius:8px; padding:12px 24px; font-size:15px; cursor:pointer; width:100%;">Googleでログイン</button>
+  </div>
+</div>
+
+<!-- アプリ本体（ログイン後に表示） -->
+<div id="app-content" style="display:none;">
+  <header>
+    <div class="header-left">
+      <a href="index.html" class="btn-back">← 戻る</a>
+    </div>
+    <h1 class="header-title">ダッシュボード</h1>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span id="user-name" style="font-size:12px; color:#6b7280;"></span>
+      <button id="logout-btn" style="font-size:12px; padding:4px 10px;">ログアウト</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="calendar-header">
+      <button id="prev-month" aria-label="前月">&#8249;</button>
+      <div>
+        <div id="dash-month-label" style="font-size:16px;font-weight:700;"></div>
+        <div id="period-label" style="font-size:12px;color:var(--text-muted);text-align:center;"></div>
+      </div>
+      <button id="next-month" aria-label="次月">&#8250;</button>
+    </div>
+
+    <!-- ① サマリーカード -->
+    <div class="section">
+      <div class="dash-cards">
+        <div class="dash-card">
+          <div class="dash-card-label">合計</div>
+          <div class="dash-card-value" id="stat-total">¥0</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-label">時給計</div>
+          <div class="dash-card-value" id="stat-wage">¥0</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-label">バック計</div>
+          <div class="dash-card-value" id="stat-back">¥0</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-label">バック比率</div>
+          <div class="dash-card-value" id="stat-back-ratio">0.0%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ② 稼働情報 -->
+    <div class="section">
+      <div class="section-title">稼働情報</div>
+      <div class="total-line">
+        <span>稼働日数</span>
+        <span id="stat-work-days">0日</span>
+      </div>
+      <div class="total-line">
+        <span>平均日給</span>
+        <span id="stat-avg-daily">¥0</span>
+      </div>
+      <div class="total-line">
+        <span>最高収入日</span>
+        <span id="stat-best-day">—</span>
+      </div>
+    </div>
+
+    <!-- ③ 品目別バック内訳 -->
+    <div class="section">
+      <div class="section-title">品目別バック</div>
+      <div id="item-breakdown"></div>
+    </div>
+
+    <!-- ④ 時給 vs バック 比率バー -->
+    <div class="section">
+      <div class="section-title">内訳比率</div>
+      <div class="ratio-bar-wrap">
+        <div class="ratio-bar-wage" id="ratio-bar-wage" style="width:50%">時給 50%</div>
+        <div class="ratio-bar-back" id="ratio-bar-back" style="width:50%">バック 50%</div>
+      </div>
+    </div>
+  </main>
+</div><!-- /app-content -->
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="common.js"></script>
+<script src="firestore-sync.js"></script>
+<script src="auth.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>

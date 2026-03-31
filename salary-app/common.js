@@ -4,43 +4,35 @@
 const STORAGE_KEY = 'salary-app-v3';
 const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
 
-/* ---------- ID ---------- */
 function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
 }
 
-/* ---------- Default ---------- */
 function getDefaultSettings() {
   return {
     salaryType: 'fixed',
     baseSalary: 200000,
     defaultHourlyRate: 1500,
+    payPeriodStart: 1,
     items: []
   };
 }
 
-/* ---------- localStorage ---------- */
 function loadData() {
-  // v1/v2 移行
   const oldRaw = localStorage.getItem('salary-app');
   if (oldRaw) {
     try {
       const old = JSON.parse(oldRaw);
       const newData = { settings: getDefaultSettings(), records: {} };
       if (old.settings) {
-        if (old.settings.baseSalary != null)        newData.settings.baseSalary = Number(old.settings.baseSalary);
-        if (old.settings.hourlyRate != null)         newData.settings.defaultHourlyRate = Number(old.settings.hourlyRate);
-        if (old.settings.salaryType)                 newData.settings.salaryType = old.settings.salaryType;
-        if (Array.isArray(old.settings.items))       newData.settings.items = old.settings.items;
+        if (old.settings.baseSalary != null) newData.settings.baseSalary = Number(old.settings.baseSalary);
+        if (old.settings.hourlyRate != null) newData.settings.defaultHourlyRate = Number(old.settings.hourlyRate);
+        if (old.settings.salaryType) newData.settings.salaryType = old.settings.salaryType;
+        if (Array.isArray(old.settings.items)) newData.settings.items = old.settings.items;
       }
       if (old.records) {
         for (const [k, r] of Object.entries(old.records)) {
-          newData.records[k] = {
-            startTime: r.startTime || '',
-            endTime:   r.endTime   || '',
-            hourlyRate: Number(r.hourlyRate) || newData.settings.defaultHourlyRate,
-            items: r.items || {}
-          };
+          newData.records[k] = { startTime: r.startTime || '', endTime: r.endTime || '', hourlyRate: Number(r.hourlyRate) || newData.settings.defaultHourlyRate, items: r.items || {} };
         }
       }
       saveData(newData);
@@ -48,7 +40,6 @@ function loadData() {
       return newData;
     } catch (e) { /* fall through */ }
   }
-
   const raw = localStorage.getItem(STORAGE_KEY);
   if (raw) {
     try {
@@ -58,26 +49,17 @@ function loadData() {
       return data;
     } catch (e) { /* fall through */ }
   }
-
   return { settings: getDefaultSettings(), records: {} };
 }
 
 function saveData(data) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  } catch (e) {
-    console.warn('保存失敗: localStorage の容量が不足している可能性があります。');
-  }
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+  catch (e) { console.warn('保存失敗: localStorage の容量が不足している可能性があります。'); }
 }
 
 function ensureRecord(data, dateKey) {
   if (!data.records[dateKey]) {
-    data.records[dateKey] = {
-      startTime:  '',
-      endTime:    '',
-      hourlyRate: data.settings.defaultHourlyRate || 0,
-      items:      {}
-    };
+    data.records[dateKey] = { startTime: '', endTime: '', hourlyRate: data.settings.defaultHourlyRate || 0, items: {} };
   }
   if (!data.records[dateKey].items) data.records[dateKey].items = {};
   return data.records[dateKey];
@@ -139,18 +121,29 @@ function calcDailyWage(record, settings) {
   return { wage: wage, back: back, total: wage + back };
 }
 
+function calcPeriodRange(year, month, startDay) {
+  if (!startDay || startDay <= 1) {
+    return {
+      startDate: new Date(year, month - 1, 1),
+      endDate:   new Date(year, month, 0)
+    };
+  }
+  return {
+    startDate: new Date(year, month - 2, startDay),
+    endDate:   new Date(year, month - 1, startDay - 1)
+  };
+}
+
 function calcMonthlyTotal(year, month, data) {
-  // month: 1-indexed
-  const days = getDaysInMonth(year, month);
+  const startDay = (data.settings && data.settings.payPeriodStart) || 1;
+  const range = calcPeriodRange(year, month, startDay);
   let wageTotal = 0, backTotal = 0;
-  for (let d = 1; d <= days; d++) {
-    const key = year + '-' + String(month).padStart(2, '0') + '-' + String(d).padStart(2, '0');
-    const rec  = data.records[key];
-    if (rec) {
-      const r = calcDailyWage(rec, data.settings);
-      wageTotal += r.wage;
-      backTotal += r.back;
-    }
+  const d = new Date(range.startDate);
+  while (d <= range.endDate) {
+    const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    const rec = data.records[key];
+    if (rec) { const r = calcDailyWage(rec, data.settings); wageTotal += r.wage; backTotal += r.back; }
+    d.setDate(d.getDate() + 1);
   }
   if (data.settings.salaryType === 'fixed') {
     return { total: Number(data.settings.baseSalary) + backTotal, wageTotal: Number(data.settings.baseSalary), backTotal: backTotal };

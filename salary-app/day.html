@@ -7,9 +7,25 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<!-- ログインオーバーレイ -->
+<div id="login-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; flex-direction:column; gap:16px;">
+  <div style="background:#fff; border-radius:16px; padding:32px 24px; text-align:center; max-width:320px; width:90%;">
+    <h2 style="margin-bottom:8px; font-size:20px;">給料計算</h2>
+    <p style="color:#6b7280; font-size:14px; margin-bottom:24px;">Googleアカウントでログインしてください</p>
+    <button id="login-btn" style="background:#4285f4; color:#fff; border:none; border-radius:8px; padding:12px 24px; font-size:15px; cursor:pointer; width:100%;">Googleでログイン</button>
+  </div>
+</div>
+
+<!-- アプリ本体（ログイン後に表示） -->
+<div id="app-content" style="display:none;">
   <header>
     <a href="index.html" class="btn-back">← 戻る</a>
     <h1 id="day-label" class="header-title"></h1>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span id="user-name" style="font-size:12px; color:#6b7280;"></span>
+      <button id="logout-btn" style="font-size:12px; padding:4px 10px;">ログアウト</button>
+    </div>
   </header>
 
   <main>
@@ -38,8 +54,16 @@
       <div class="total-line grand"><span>合計</span><span class="amount" id="day-total">¥0</span></div>
     </div>
   </main>
+</div><!-- /app-content -->
 
-  <script src="common.js"></script>
-  <script src="day.js"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="common.js"></script>
+<script src="firestore-sync.js"></script>
+<script src="auth.js"></script>
+<script src="day.js"></script>
 </body>
 </html>

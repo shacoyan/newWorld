@@ -222,8 +222,12 @@ input[type="time"] { width: 120px; }
 }
 
 .item-back-label {
-  font-size: 12px;
-  color: var(--text-secondary);
+  min-width: 64px;
+  text-align: right;
+  margin-right: 8px;
+  flex-shrink: 0;
+  font-size: 13px;
+  color: var(--text-muted);
   white-space: nowrap;
 }
 
@@ -516,4 +520,98 @@ input[type="time"] { width: 120px; }
   .day-cell { min-height: 68px; }
   .day-cell .cell-date { font-size: 14px; }
   .day-cell .cell-total { font-size: 11px; }
+}
+
+/* ============================================================
+   ダッシュボード
+   ============================================================ */
+.header-right { display: flex; gap: 8px; align-items: center; }
+
+/* サマリーカード */
+.dash-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.dash-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+.dash-card-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.dash-card-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* 品目別バック内訳 */
+.item-breakdown-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.item-breakdown-row:last-child { border-bottom: none; }
+.breakdown-name {
+  width: 80px;
+  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.breakdown-bar-wrap {
+  flex: 1;
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.breakdown-bar {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+.breakdown-amount {
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* 内訳比率バー */
+.ratio-bar-wrap {
+  display: flex;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  height: 36px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.ratio-bar-wage {
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.3s;
+  min-width: 40px;
+  overflow: hidden;
+}
+.ratio-bar-back {
+  background: #f59e0b;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.3s;
+  min-width: 40px;
+  overflow: hidden;
 }
