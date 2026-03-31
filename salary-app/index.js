@@ -121,16 +121,22 @@ document.addEventListener('app:ready', function () {
     timeStartEl.addEventListener('change', function () {
       ensureRecord(data, todayKey).startTime = this.value;
       persistData(data); updateTodayTotals(); renderHeader();
+      var cell = calendarGridEl.querySelector('[data-key="' + todayKey + '"] .cell-total');
+      if (cell) { var d2 = calcDailyWage(data.records[todayKey], data.settings); cell.textContent = d2.total > 0 ? formatMoney(d2.total) : ''; }
     });
     timeEndEl.addEventListener('change', function () {
       ensureRecord(data, todayKey).endTime = this.value;
       persistData(data); updateTodayTotals(); renderHeader();
+      var cell = calendarGridEl.querySelector('[data-key="' + todayKey + '"] .cell-total');
+      if (cell) { var d2 = calcDailyWage(data.records[todayKey], data.settings); cell.textContent = d2.total > 0 ? formatMoney(d2.total) : ''; }
     });
     hourlyRateEl.addEventListener('change', function () {
       var v = parseInt(this.value, 10);
       if (!isNaN(v) && v >= 0) {
         ensureRecord(data, todayKey).hourlyRate = v;
         persistData(data); updateTodayTotals(); renderHeader();
+        var cell = calendarGridEl.querySelector('[data-key="' + todayKey + '"] .cell-total');
+        if (cell) { var d2 = calcDailyWage(data.records[todayKey], data.settings); cell.textContent = d2.total > 0 ? formatMoney(d2.total) : ''; }
       }
     });
     hourlyRateEl.addEventListener('blur', function () { this.value = data.records[todayKey].hourlyRate; });

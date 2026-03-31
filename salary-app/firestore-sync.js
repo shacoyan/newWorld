@@ -33,7 +33,7 @@ window.saveDataAsync = async function(uid, data) {
 window.syncFromLocalStorage = async function(uid) {
   try {
     var localData = loadData();
-    if (localData && (localData.settings || Object.keys(localData.records || {}).length > 0)) {
+    if (localData && Object.keys(localData.records || {}).length > 0) {
       await window.saveDataAsync(uid, localData);
       console.log('localStorage → Firestore 移行完了');
     }

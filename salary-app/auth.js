@@ -1,23 +1,9 @@
 // auth.js
 
 document.addEventListener('DOMContentLoaded', function() {
-  var loginOverlay = document.getElementById('login-overlay');
   var appContent   = document.getElementById('app-content');
-  var loginBtn     = document.getElementById('login-btn');
   var logoutBtn    = document.getElementById('logout-btn');
   var userNameEl   = document.getElementById('user-name');
-
-  var googleProvider = new firebase.auth.GoogleAuthProvider();
-
-  if (loginBtn) {
-    loginBtn.addEventListener('click', function() {
-      window.firebaseAuth.signInWithPopup(googleProvider).catch(function(error) {
-        if (error.code !== 'auth/popup-closed-by-user') {
-          alert('ログインに失敗しました: ' + error.message);
-        }
-      });
-    });
-  }
 
   if (logoutBtn) {
     logoutBtn.addEventListener('click', function() {
@@ -47,16 +33,11 @@ document.addEventListener('DOMContentLoaded', function() {
           window.appData = loadData();
         })
         .then(function() {
-          if (loginOverlay) loginOverlay.style.display = 'none';
           if (appContent)   appContent.style.display   = 'block';
           document.dispatchEvent(new CustomEvent('app:ready'));
         });
     } else {
-      window.currentUser = null;
-      window.appData = null;
-      if (loginOverlay) loginOverlay.style.display = 'flex';
-      if (appContent)   appContent.style.display   = 'none';
-      if (userNameEl)   userNameEl.textContent      = '';
+      window.location.href = 'lp.html';
     }
   });
 });
