@@ -13,7 +13,6 @@ document.addEventListener('app:ready', function () {
   var currentMonth = parts[1];
 
   /* DOM refs */
-  var totalSalaryEl      = document.getElementById('total-salary');
   var todayLabelEl       = document.getElementById('today-label');
   var timeStartEl        = document.querySelector('.time-start');
   var timeEndEl          = document.querySelector('.time-end');
@@ -28,6 +27,8 @@ document.addEventListener('app:ready', function () {
   var nextMonthBtn       = document.getElementById('next-month');
   var gotoSettingsBtn    = document.getElementById('goto-settings');
   var gotoDashboardBtn   = document.getElementById('goto-dashboard');
+  var userInitialEl = document.getElementById('user-initial');
+  var userNameEl    = document.getElementById('user-name');
 
   ensureRecord(data, todayKey);
   persistData(data);
@@ -38,8 +39,9 @@ document.addEventListener('app:ready', function () {
   function renderAll() { renderHeader(); renderToday(); renderCalendar(); }
 
   function renderHeader() {
-    var m = calcMonthlyTotal(currentYear, currentMonth, data);
-    totalSalaryEl.textContent = formatMoney(m.total);
+    var displayName = (window.currentUser && (window.currentUser.displayName || window.currentUser.email)) || '';
+    if (userNameEl)    userNameEl.textContent    = displayName;
+    if (userInitialEl) userInitialEl.textContent = displayName ? displayName.charAt(0).toUpperCase() : '?';
   }
 
   function renderToday() {
@@ -113,6 +115,13 @@ document.addEventListener('app:ready', function () {
       totalDiv.textContent = (daily && daily.total > 0) ? formatMoney(daily.total) : '';
       cell.appendChild(dateDiv);
       cell.appendChild(totalDiv);
+      // 出勤ボタン
+      var checkinBtn = document.createElement('button');
+      checkinBtn.className = 'btn-checkin';
+      checkinBtn.dataset.key = dateKey;
+      checkinBtn.textContent = '出勤';
+      checkinBtn.setAttribute('aria-label', d + '日 出勤登録');
+      cell.appendChild(checkinBtn);
       calendarGridEl.appendChild(cell);
     }
   }
@@ -163,9 +172,23 @@ document.addEventListener('app:ready', function () {
       }
     });
     calendarGridEl.addEventListener('click', function(e) {
+      if (e.target.classList.contains('btn-checkin')) return; // ← 追加
       var cell = e.target.closest('.day-cell');
       if (!cell || !cell.dataset.key) return;
       window.location.href = 'day.html?date=' + cell.dataset.key;
+    });
+    calendarGridEl.addEventListener('click', function(e) {
+      if (!e.target.classList.contains('btn-checkin')) return;
+      var dateKey = e.target.dataset.key;
+      var defaultStart = data.settings.defaultStartTime || '';
+      if (!defaultStart) {
+        alert('デフォルト出勤時刻が設定されていません。設定画面で登録してください。');
+        return;
+      }
+      ensureRecord(data, dateKey).startTime = defaultStart;
+      persistData(data);
+      renderCalendar();
+      if (dateKey === todayKey) renderToday();
     });
     gotoSettingsBtn.addEventListener('click', function () { window.location.href = 'settings.html'; });
     gotoDashboardBtn.addEventListener('click', function () { window.location.href = 'dashboard.html'; });

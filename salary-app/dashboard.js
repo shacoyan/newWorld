@@ -11,6 +11,13 @@ document.addEventListener('app:ready', function () {
   function renderDashboard() {
     data = window.appData || loadData();
 
+    // ユーザー名チップ
+    var displayName = (window.currentUser && (window.currentUser.displayName || window.currentUser.email)) || '';
+    var userNameEl    = document.getElementById('user-name');
+    var userInitialEl = document.getElementById('user-initial');
+    if (userNameEl)    userNameEl.textContent    = displayName;
+    if (userInitialEl) userInitialEl.textContent = displayName ? displayName.charAt(0).toUpperCase() : '?';
+
     // 月ラベル
     document.getElementById('dash-month-label').textContent = currentYear + '年' + currentMonth + '月';
 
@@ -44,6 +51,7 @@ document.addEventListener('app:ready', function () {
     var workTotal = 0;
     var bestDayAmount = 0;
     var bestDayKey = '';
+    var totalWorkMinutes = 0;
     var itemCounts = {};
 
     var cur = new Date(sd);
@@ -62,6 +70,10 @@ document.addEventListener('app:ready', function () {
             bestDayKey = key;
           }
         }
+        // 稼働時間集計
+        if (rec.startTime && rec.endTime) {
+          totalWorkMinutes += calcHours(rec.startTime, rec.endTime) * 60;
+        }
         if (rec.items) {
           Object.keys(rec.items).forEach(function(id) {
             itemCounts[id] = (itemCounts[id] || 0) + (rec.items[id] || 0);
@@ -74,6 +86,15 @@ document.addEventListener('app:ready', function () {
     document.getElementById('stat-work-days').textContent  = workDays + '日';
     document.getElementById('stat-avg-daily').textContent  = formatMoney(workDays > 0 ? Math.round(workTotal / workDays) : 0);
     document.getElementById('stat-best-day').textContent   = bestDayKey ? formatDateLabel(bestDayKey) + ' ' + formatMoney(bestDayAmount) : '—';
+
+    var totalHours = Math.floor(totalWorkMinutes / 60);
+    var totalMins  = Math.round(totalWorkMinutes % 60);
+    var workHoursEl = document.getElementById('stat-work-hours');
+    if (workHoursEl) workHoursEl.textContent = totalHours + 'h ' + totalMins + 'm';
+
+    var avgHourly = totalWorkMinutes > 0 ? Math.round(wageTotal / (totalWorkMinutes / 60)) : 0;
+    var avgHourlyEl = document.getElementById('stat-avg-hourly');
+    if (avgHourlyEl) avgHourlyEl.textContent = formatMoney(avgHourly);
 
     // 品目別バック内訳
     var itemBreakdownEl = document.getElementById('item-breakdown');
@@ -99,14 +120,21 @@ document.addEventListener('app:ready', function () {
     }
 
     // 内訳比率バー
-    var wagePercent = total > 0 ? Math.round(wageTotal / total * 100) : 50;
-    var backPercent = total > 0 ? 100 - wagePercent : 50;
+    var wagePercent = total > 0 ? Math.round(wageTotal / total * 100) : 100;
+    var backPercent = total > 0 ? 100 - wagePercent : 0;
     var ratioWageEl = document.getElementById('ratio-bar-wage');
     var ratioBackEl = document.getElementById('ratio-bar-back');
-    ratioWageEl.style.width = wagePercent + '%';
-    ratioWageEl.textContent = '時給 ' + wagePercent + '%';
-    ratioBackEl.style.width = backPercent + '%';
-    ratioBackEl.textContent = 'バック ' + backPercent + '%';
+    if (backPercent === 0) {
+      ratioWageEl.style.width = '100%';
+      ratioWageEl.textContent = '時給 100%';
+      ratioBackEl.style.display = 'none';
+    } else {
+      ratioBackEl.style.display = '';
+      ratioWageEl.style.width = wagePercent + '%';
+      ratioWageEl.textContent = '時給 ' + wagePercent + '%';
+      ratioBackEl.style.width = backPercent + '%';
+      ratioBackEl.textContent = 'バック ' + backPercent + '%';
+    }
   }
 
   function bindEvents() {

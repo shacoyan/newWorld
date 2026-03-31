@@ -15,6 +15,10 @@ document.addEventListener('app:ready', function () {
   var itemsListEl = document.getElementById('items-list');
   var addItemBtn = document.getElementById('add-item');
   var payPeriodStartEl = document.getElementById('pay-period-start');
+  var defaultStartEl   = document.getElementById('default-start-time');
+  var timeStepRadios   = document.querySelectorAll('input[name="timeStep"]');
+  var userNameEl       = document.getElementById('user-name');
+  var userInitialEl    = document.getElementById('user-initial');
 
   init();
 
@@ -24,6 +28,16 @@ document.addEventListener('app:ready', function () {
     baseSalaryEl.value = data.settings.baseSalary;
     defaultRateEl.value = data.settings.defaultHourlyRate;
     payPeriodStartEl.value = data.settings.payPeriodStart || 1;
+    // ユーザー名チップ
+    var displayName = (window.currentUser && (window.currentUser.displayName || window.currentUser.email)) || '';
+    if (userNameEl)    userNameEl.textContent    = displayName;
+    if (userInitialEl) userInitialEl.textContent = displayName ? displayName.charAt(0).toUpperCase() : '?';
+
+    // 出勤設定
+    if (defaultStartEl) defaultStartEl.value = data.settings.defaultStartTime || '';
+    timeStepRadios.forEach(function(r) {
+      r.checked = (parseInt(r.value) === (data.settings.timeStep || 1));
+    });
     renderItems();
     bindEvents();
   }
@@ -72,6 +86,28 @@ document.addEventListener('app:ready', function () {
       if (!isNaN(v) && v >= 1 && v <= 28) { data.settings.payPeriodStart = v; persistData(data); }
     });
     payPeriodStartEl.addEventListener('blur', function () { this.value = data.settings.payPeriodStart || 1; });
+    if (defaultStartEl) {
+      defaultStartEl.addEventListener('change', function() {
+        data.settings.defaultStartTime = this.value;
+        persistData(data);
+      });
+    }
+    timeStepRadios.forEach(function(r) {
+      r.addEventListener('change', function() {
+        data.settings.timeStep = parseInt(this.value, 10);
+        persistData(data);
+      });
+    });
+    var logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', function() {
+        if (window.firebaseAuth) {
+          window.firebaseAuth.signOut().then(function() {
+            window.location.href = 'lp.html';
+          });
+        }
+      });
+    }
     addItemBtn.addEventListener('click', function () {
       data.settings.items.push({ id: generateId(), name: '新品目', back: 0 });
       persistData(data);

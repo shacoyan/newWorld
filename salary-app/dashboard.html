@@ -11,24 +11,32 @@
 <!-- アプリ本体（ログイン後に表示） -->
 <div id="app-content" style="display:none;">
   <header>
-    <div class="header-left">
-      <a href="index.html" class="btn-back">← 戻る</a>
-    </div>
-    <h1 class="header-title">ダッシュボード</h1>
-    <div style="display:flex; align-items:center; gap:8px;">
-      <span id="user-name" style="font-size:12px; color:#6b7280;"></span>
-      <button id="logout-btn" style="font-size:12px; padding:4px 10px;">ログアウト</button>
+    <a href="index.html" class="header-logo-link" aria-label="今日の画面へ">
+      <img src="logo.png" alt="こんまに" class="header-logo">
+    </a>
+    <h1 class="header-title">統計</h1>
+    <div class="user-chip-small">
+      <span class="user-initial" id="user-initial"></span>
+      <span id="user-name"></span>
     </div>
   </header>
 
   <main>
-    <div class="calendar-header">
-      <button id="prev-month" aria-label="前月">&#8249;</button>
-      <div>
+    <div class="dash-month-nav">
+      <button id="prev-month" class="month-nav-btn" aria-label="前月">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M13 4L7 10L13 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="dash-month-info">
         <div id="dash-month-label" style="font-size:16px;font-weight:700;"></div>
         <div id="period-label" style="font-size:12px;color:var(--text-muted);text-align:center;"></div>
       </div>
-      <button id="next-month" aria-label="次月">&#8250;</button>
+      <button id="next-month" class="month-nav-btn" aria-label="次月">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
     </div>
 
     <!-- ① サマリーカード -->
@@ -67,6 +75,14 @@
       <div class="total-line">
         <span>最高収入日</span>
         <span id="stat-best-day">—</span>
+      </div>
+      <div class="total-line">
+        <span>稼働時間</span>
+        <span id="stat-work-hours">0h 0m</span>
+      </div>
+      <div class="total-line">
+        <span>平均時給</span>
+        <span id="stat-avg-hourly">¥0</span>
       </div>
     </div>
 

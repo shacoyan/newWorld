@@ -11,14 +11,14 @@
 <!-- アプリ本体（ログイン後に表示） -->
 <div id="app-content" style="display:none;">
   <header>
-    <div class="header-left">
-      <img src="logo.png" alt="こんまに" style="height:36px; width:auto; object-fit:contain;">
-      <span class="header-label">月間給料</span>
-      <span id="total-salary" role="status" aria-live="polite">¥0</span>
-    </div>
+    <a href="index.html" class="header-logo-link" aria-label="今日の画面へ">
+      <img src="logo.png" alt="こんまに" class="header-logo">
+    </a>
     <div class="header-right">
-      <span id="user-name" style="font-size:12px; color:#6b7280;"></span>
-      <button id="logout-btn" style="font-size:12px; padding:4px 10px;">ログアウト</button>
+      <div class="user-chip">
+        <span class="user-initial" id="user-initial"></span>
+        <span id="user-name"></span>
+      </div>
       <button id="goto-dashboard">統計</button>
       <button id="goto-settings">設定</button>
     </div>

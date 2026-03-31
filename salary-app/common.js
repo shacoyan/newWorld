@@ -10,11 +10,17 @@ function generateId() {
 
 function getDefaultSettings() {
   return {
-    salaryType: 'fixed',
+    salaryType: 'hourly',
     baseSalary: 200000,
     defaultHourlyRate: 1500,
+    defaultStartTime: '',
+    timeStep: 1,
     payPeriodStart: 1,
-    items: []
+    items: [
+      { id: 'default-drink', name: 'ドリンク', back: 0 },
+      { id: 'default-shot',  name: 'ショット',  back: 0 },
+      { id: 'default-cheki', name: 'チェキ',    back: 0 }
+    ]
   };
 }
 
