@@ -14,6 +14,7 @@ export function getDefaultSettings() {
     defaultEndTime: '',
     timeStep: 1,
     payPeriodStart: 1,
+    weekStartDay: 0,
     items: [
       { id: 'default-drink', name: 'ドリンク', back: 0, category: 'cast' },
       { id: 'default-shot',  name: 'ショット',  back: 0, category: 'cast' },
@@ -142,7 +143,10 @@ export function ensureRecord(data, dateKey) {
       items: {}
     };
   } else {
-    records[dateKey] = { ...records[dateKey], items: records[dateKey].items || {} };
+    records[dateKey] = {
+      ...records[dateKey],
+      items: { ...(records[dateKey].items || {}) }
+    };
   }
   return { ...data, records };
 }

@@ -8,9 +8,10 @@ export default function ItemRows({ items, record, onCountChange }) {
 
   function makeRow(item) {
     const count = record.items?.[item.id] || 0;
+    const backAmount = (item.back || 0) * count;
     return (
       <div className="item-count-row" key={item.id}>
-        <span className="item-back-label">{formatMoney(item.price || 0)}</span>
+        <span className="item-back-label">{backAmount > 0 ? formatMoney(backAmount) : '-'}</span>
         <span className="item-name">{item.name}</span>
         <button className="item-dec" onClick={() => onCountChange(item.id, count - 1)}>-</button>
         <span className="item-count-val">{count}</span>

@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { signOut } from 'firebase/auth'
 import { auth } from '../lib/firebase'
 
-export default function Header({ type, title, onBack }) {
+export default function Header() {
   const user = useAuth()
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -17,22 +17,10 @@ export default function Header({ type, title, onBack }) {
 
   const closeMenu = () => setMenuOpen(false)
 
-  if (type === 'sub') {
-    return (
-      <header className="header">
-        <button className="back-btn" onClick={() => (onBack ? onBack() : navigate(-1))}>
-          ←
-        </button>
-        <h1 className="header-title">{title}</h1>
-        <div style={{ width: 32 }}></div>
-      </header>
-    )
-  }
-
   return (
     <>
       <header className="header">
-        <div style={{ width: 32 }}></div>
+        <div style={{ width: 44 }}></div>
         <Link to="/" className="header-logo"><img src="./logo.png" alt="こんまに" className="header-logo-img" /></Link>
         <button className="hamburger-btn" onClick={() => setMenuOpen(prev => !prev)}>
           ☰
@@ -48,6 +36,7 @@ export default function Header({ type, title, onBack }) {
                 {user.displayName || user.email}
               </div>
             )}
+            <button onClick={() => { navigate('/'); closeMenu(); }}>ホーム</button>
             <button onClick={() => { navigate('/dashboard'); closeMenu(); }}>統計</button>
             <button onClick={() => { navigate('/settings'); closeMenu(); }}>設定</button>
             <button className="btn-logout" onClick={handleLogout}>ログアウト</button>

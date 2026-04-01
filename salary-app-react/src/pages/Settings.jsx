@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { signOut } from 'firebase/auth'
 import { auth } from '../lib/firebase'
 import { useAuth } from '../contexts/AuthContext'
@@ -62,8 +62,11 @@ export default function Settings() {
 
   return (
     <div>
-      <Header type="sub" title="設定" onBack={() => navigate('/')} />
-      <main>
+      <Header />
+      <main style={{ paddingTop: '56px' }}>
+        <div style={{ textAlign: 'center', padding: '8px 0 4px' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text)' }}>設定</h2>
+        </div>
         <section className="section">
           <h2 className="section-title">給与タイプ</h2>
           <div className="radio-group">
@@ -173,6 +176,35 @@ export default function Settings() {
               onChange={(e) => updateSettings({ payPeriodStart: Number(e.target.value) })}
               onBlur={() => persistData(data)}
             />
+          </div>
+        </section>
+
+        <section className="section">
+          <h2 className="section-title">カレンダー設定</h2>
+          <div className="form-group">
+            <label>週の始まり</label>
+            <div className="radio-group">
+              <label>
+                <input
+                  type="radio"
+                  name="weekStartDay"
+                  value="0"
+                  checked={(s.weekStartDay ?? 0) === 0}
+                  onChange={() => updateSettings({ weekStartDay: 0 })}
+                />
+                日曜始まり
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="weekStartDay"
+                  value="1"
+                  checked={(s.weekStartDay ?? 0) === 1}
+                  onChange={() => updateSettings({ weekStartDay: 1 })}
+                />
+                月曜始まり
+              </label>
+            </div>
           </div>
         </section>
 

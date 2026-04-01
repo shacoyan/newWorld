@@ -25,6 +25,7 @@ export default function Today() {
   const salaryType = settings.salaryType || 'monthly'
   const timeStep = settings.timeStep || 15
   const stepSeconds = timeStep === 1 ? 60 : 900
+  const weekStartDay = settings.weekStartDay ?? 0
 
   const selectedRec = data.records[selectedDate] || { startTime: '', endTime: '', hourlyRate: defaultHourlyRate, items: {} }
   const daily = calcDailyWage(selectedRec, settings)
@@ -83,9 +84,10 @@ export default function Today() {
   }
 
   const daysInMonth = getDaysInMonth(calYear, calMonth)
-  const firstDayOfWeek = new Date(calYear, calMonth - 1, 1).getDay()
+  const rawFirstDay = new Date(calYear, calMonth - 1, 1).getDay()
+  const firstDayOffset = (rawFirstDay - weekStartDay + 7) % 7
   const calendarCells = []
-  for (let i = 0; i < firstDayOfWeek; i++) {
+  for (let i = 0; i < firstDayOffset; i++) {
     calendarCells.push(null)
   }
   for (let d = 1; d <= daysInMonth; d++) {
@@ -107,9 +109,11 @@ export default function Today() {
             <button onClick={goToNextMonth}>&gt;</button>
           </div>
           <div className="calendar-weekdays">
-            {WEEKDAYS.map((wd, i) => (
-              <span key={i} className={['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][i]}>{wd}</span>
-            ))}
+            {[...WEEKDAYS.slice(weekStartDay), ...WEEKDAYS.slice(0, weekStartDay)].map((wd, i) => {
+              const dayIndex = (i + weekStartDay) % 7
+              const cls = dayIndex === 0 ? 'sunday' : dayIndex === 6 ? 'saturday' : ''
+              return <span key={i} className={cls}>{wd}</span>
+            })}
           </div>
           <div className="calendar-grid">
             {calendarCells.map((day, idx) => {
@@ -175,9 +179,9 @@ export default function Today() {
 
         <div className="section work-section">
           {!defaultStartTime && (
-            <div className="warning-banner">
+            <div style={{ padding: '10px 14px', background: '#fff3cd', borderRadius: '10px', fontSize: '13px', color: '#856404', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               ⚠ デフォルト出勤時刻が未設定です
-              <button className="btn-link" onClick={() => navigate('/settings')}>設定する →</button>
+              <button onClick={() => navigate('/settings')} style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 600, cursor: 'pointer', fontSize: '13px' }}>設定する →</button>
             </div>
           )}
           <button className="btn-checkin-today" onClick={handleCheckin}>出勤登録</button>

@@ -354,7 +354,17 @@ input[type="time"] { width: 120px; }
 
 .calendar-nav {
   display: flex;
-  gap: 6px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.calendar-nav span {
+  flex: 1;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
 }
 
 .calendar-nav button {
@@ -930,7 +940,6 @@ input[type="time"] { width: 120px; }
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
-  margin-top: 8px;
   transition: all 0.15s;
 }
 .btn-checkin-today:hover { opacity: 0.9; }
@@ -984,7 +993,7 @@ input[type="time"] { width: 120px; }
 }
 
 .header-logo-img {
-  height: 36px;
+  height: 48px;
   width: auto;
   object-fit: contain;
 }
@@ -1063,3 +1072,45 @@ input[type="time"] { width: 120px; }
 }
 
 main { padding-top: 72px; }
+
+/* ===== 出勤登録セクション ===== */
+.work-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.work-section > label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.time-input-group {
+  display: flex;
+  gap: 12px;
+}
+
+.time-input-group label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ===== 選択日付 ===== */
+.date-display-section {
+  text-align: center;
+}
+
+.date-display-section h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}

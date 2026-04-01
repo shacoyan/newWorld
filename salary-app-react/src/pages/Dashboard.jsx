@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useAppData } from '../hooks/useAppData'
 import Header from '../components/Header'
@@ -8,7 +7,6 @@ import { getTodayKey, formatDateLabel, formatMoney, calcMonthlyTotal, calcPeriod
 export default function Dashboard() {
   const user = useAuth();
   const { data, persistData } = useAppData(user);
-  const navigate = useNavigate();
 
   const todayKey = getTodayKey();
   const parts = todayKey.split('-').map(Number);
@@ -100,9 +98,12 @@ export default function Dashboard() {
 
   return (
     <div>
-      <Header type="sub" title="統計" onBack={() => navigate('/')} />
+      <Header />
 
       <main style={{ paddingTop: '56px' }}>
+        <div style={{ textAlign: 'center', padding: '8px 0 4px' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text)' }}>統計</h2>
+        </div>
         <div className="dash-month-nav">
           <button className="month-nav-btn" onClick={prevMonth}>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
