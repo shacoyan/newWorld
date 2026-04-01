@@ -10,9 +10,10 @@ function loadLocal() {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
       const d = JSON.parse(raw)
-      if (!d.settings) d.settings = getDefaultSettings()
-      if (!d.records) d.records = {}
-      return d
+      return {
+        settings: { ...getDefaultSettings(), ...(d.settings || {}) },
+        records: d.records || {}
+      }
     }
   } catch (e) {}
   return { settings: getDefaultSettings(), records: {} }
@@ -28,7 +29,10 @@ async function loadFirestore(uid) {
     const snap = await getDoc(ref)
     if (snap.exists()) {
       const d = snap.data()
-      return { settings: d.settings || getDefaultSettings(), records: d.records || {} }
+      return {
+        settings: { ...getDefaultSettings(), ...(d.settings || {}) },
+        records: d.records || {}
+      }
     }
   } catch (e) { console.warn('Firestore load failed:', e) }
   return null

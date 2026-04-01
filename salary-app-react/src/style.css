@@ -261,21 +261,6 @@
   color: var(--text);
 }
 
-[data-theme="gothic"] .calendar-day {
-  border-color: rgba(192,57,43,0.15);
-}
-
-[data-theme="gothic"] .calendar-day.has-record {
-  background: #2d0a0a;
-  border-color: rgba(192,57,43,0.5);
-}
-
-[data-theme="gothic"] .calendar-day.today {
-  background: #2d0a0a;
-  border-color: #c0392b;
-  box-shadow: 0 0 12px rgba(192,57,43,0.35);
-}
-
 [data-theme="gothic"] .btn-logout-section {
   background: #1a0505;
   border-color: rgba(239,68,68,0.35);
@@ -295,21 +280,6 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 20px);
 }
 
-/* ===== Header (legacy - replaced by .header class) ===== */
-.legacy-header-unused {
-  background: linear-gradient(135deg, #f472b6 0%, #a78bfa 60%, #67e8f9 100%);
-  border-bottom: none;
-  box-shadow: 0 4px 20px rgba(232,121,160,0.25);
-  padding: 12px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  gap: 12px;
-}
-
 .header-left {
   display: flex;
   flex-direction: column;
@@ -324,16 +294,6 @@ body {
   letter-spacing: 0.5px;
 }
 
-#total-salary {
-  font-size: 22px;
-  font-weight: 800;
-  color: #ffffff;
-  letter-spacing: -0.5px;
-  text-shadow: 0 1px 8px rgba(0,0,0,0.12);
-}
-
-.legacy-header-title-unused { font-size: 17px; font-weight: 700; color: #ffffff; }
-
 .btn-back {
   color: rgba(255,255,255,0.92);
   text-decoration: none;
@@ -347,37 +307,6 @@ body {
 
 .btn-back:hover { color: #ffffff; }
 .btn-back:active { transform: scale(0.9); }
-
-#goto-settings,
-#goto-dashboard,
-#logout-btn {
-  background: rgba(255,255,255,0.22);
-  color: #ffffff;
-  border: 1.5px solid rgba(255,255,255,0.45);
-  border-radius: 9999px;
-  padding: 6px 14px;
-  font-weight: 600;
-  font-size: 13px;
-  cursor: pointer;
-  font-family: inherit;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: all 0.2s;
-}
-
-#goto-settings:hover,
-#goto-dashboard:hover,
-#logout-btn:hover { background: rgba(255,255,255,0.38); }
-
-#goto-settings:active,
-#goto-dashboard:active,
-#logout-btn:active { transform: scale(0.95); }
-
-#goto-settings:focus-visible,
-#goto-dashboard:focus-visible,
-#logout-btn:focus-visible { outline: 3px solid rgba(255,255,255,0.7); outline-offset: 2px; }
-
-.legacy-header-right-unused { display: flex; gap: 8px; align-items: center; }
 
 /* ===== Main ===== */
 main {
@@ -438,29 +367,6 @@ main {
   box-shadow: 0 0 0 3px var(--today-glow);
 }
 
-/* ===== Today Section ===== */
-#today-section {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-#today-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--today-label);
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  padding: 6px 14px;
-  background: var(--primary-bg);
-  border: 1.5px solid var(--today-border);
-  border-radius: 9999px;
-  width: fit-content;
-}
-
 /* ===== Form Inputs ===== */
 .time-group {
   display: flex;
@@ -505,9 +411,6 @@ input:focus-visible {
 }
 
 input[type="time"] { width: 120px; }
-.daily-hourly-rate { width: 100px; }
-#base-salary, #default-hourly-rate { width: 130px; }
-
 /* ===== Item Count Rows ===== */
 .item-count-row {
   display: flex;
@@ -869,9 +772,7 @@ input[type="time"] { width: 120px; }
   .day-cell .cell-date { font-size: 12px; }
   .day-cell .cell-total { font-size: 9px; }
   input[type="time"] { width: 100px; padding: 8px; font-size: 14px; }
-  .daily-hourly-rate { width: 85px; }
   .item-dec, .item-inc { width: 28px; height: 28px; font-size: 16px; }
-  #total-salary { font-size: 18px; }
 }
 
 @media (max-width: 390px) {
@@ -1137,8 +1038,6 @@ input[type="time"] { width: 120px; }
 }
 
 /* ===== ヘッダー共通 ===== */
-.legacy-header-logo-link { display: flex; align-items: center; text-decoration: none; }
-.legacy-header-logo-img { height: 32px; width: auto; object-fit: contain; }
 
 .user-chip {
   display: inline-flex;
