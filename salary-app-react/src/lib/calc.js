@@ -96,26 +96,40 @@ export function calcDailyWage(record, settings) {
   return { wage, back, total: wage + back, hours, avgHourlyRate };
 }
 
-export function calcPeriodRange(payPeriodStart, targetYear, targetMonth) {
-  const endDate = new Date(targetYear, targetMonth, 0);
-  const startDate = new Date(targetYear, targetMonth - 1, payPeriodStart);
-  return { startDate, endDate };
+export function calcPeriodRange(year, month, startDay) {
+  if (!startDay || startDay <= 1) {
+    return {
+      startDate: new Date(year, month - 1, 1),
+      endDate:   new Date(year, month, 0)
+    };
+  }
+  return {
+    startDate: new Date(year, month - 2, startDay),
+    endDate:   new Date(year, month - 1, startDay - 1)
+  };
 }
 
-export function calcMonthlyTotal(settings, records) {
-  let totalWage = 0;
-  let totalBack = 0;
-  let totalHours = 0;
-  
-  for (const key in records) {
-    const record = records[key];
-    const { wage, back, hours } = calcDailyWage(record, settings);
-    totalWage += wage;
-    totalBack += back;
-    totalHours += hours;
+export function calcMonthlyTotal(year, month, data) {
+  const startDay = (data.settings && data.settings.payPeriodStart) || 1;
+  const range = calcPeriodRange(year, month, startDay);
+  let wageTotal = 0, backTotal = 0;
+  const d = new Date(range.startDate);
+  while (d <= range.endDate) {
+    const key = d.getFullYear() + '-' +
+      String(d.getMonth() + 1).padStart(2, '0') + '-' +
+      String(d.getDate()).padStart(2, '0');
+    const rec = data.records && data.records[key];
+    if (rec) {
+      const r = calcDailyWage(rec, data.settings);
+      wageTotal += r.wage;
+      backTotal += r.back;
+    }
+    d.setDate(d.getDate() + 1);
   }
-  
-  return { totalWage, totalBack, totalHours, totalAll: totalWage + totalBack };
+  if (data.settings && data.settings.salaryType === 'fixed') {
+    return { total: Number(data.settings.baseSalary) + backTotal, wageTotal: Number(data.settings.baseSalary), backTotal };
+  }
+  return { total: wageTotal + backTotal, wageTotal, backTotal };
 }
 
 export function ensureRecord(data, dateKey) {
