@@ -133,7 +133,7 @@ export default function Theme() {
                   <img
                     src={theme.logo}
                     alt={theme.name}
-                    style={{ width: '100%', maxWidth: '100px', height: 'auto', objectFit: 'contain' }}
+                    style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
                   />
                 </div>
 
