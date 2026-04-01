@@ -90,7 +90,8 @@ export default function Settings() {
   };
 
   const handleDeactivatePremium = () => {
-    updateSettings({ isPremium: false, usePremiumLogo: false });
+    updateSettings({ isPremium: false, usePremiumLogo: false, theme: 'default' });
+    document.documentElement.removeAttribute('data-theme');
     setPremiumMsg('');
   };
 
@@ -309,31 +310,6 @@ export default function Settings() {
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                 </svg>
                 プレミアム有効
-              </div>
-              <div className="form-group" style={{ marginTop: '16px' }}>
-                <label>ロゴデザイン</label>
-                <div className="radio-group" style={{ marginTop: '8px' }}>
-                  <label>
-                    <input
-                      type="radio"
-                      name="logoType"
-                      value="default"
-                      checked={!s.usePremiumLogo}
-                      onChange={() => updateSettings({ usePremiumLogo: false })}
-                    />
-                    デフォルト
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="logoType"
-                      value="gothic"
-                      checked={!!s.usePremiumLogo}
-                      onChange={() => updateSettings({ usePremiumLogo: true })}
-                    />
-                    ゴシック
-                  </label>
-                </div>
               </div>
               <button className="btn-text-danger" onClick={handleDeactivatePremium} style={{ marginTop: '12px' }}>プレミアムを解除</button>
             </div>

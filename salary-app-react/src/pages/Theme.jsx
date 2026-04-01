@@ -72,7 +72,11 @@ export default function Theme() {
   const handleSelect = (themeId) => {
     const newSettings = { ...s, theme: themeId, usePremiumLogo: themeId === 'gothic' }
     persistData({ ...data, settings: newSettings })
-    document.documentElement.setAttribute('data-theme', themeId === 'default' ? '' : themeId)
+    if (themeId === 'default') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', themeId)
+    }
   }
 
   return (
