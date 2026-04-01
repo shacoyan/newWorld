@@ -409,8 +409,8 @@ input[type="time"] { width: 120px; }
   text-transform: uppercase;
 }
 
-.calendar-weekdays span:first-child { color: #f43f5e; }
-.calendar-weekdays span:last-child  { color: #818cf8; }
+.calendar-weekdays span.sunday { color: #f43f5e; }
+.calendar-weekdays span.saturday { color: #818cf8; }
 
 .calendar-grid {
   display: grid;
@@ -1442,23 +1442,22 @@ main { padding-top: 72px; }
   transition: width 0.3s;
 }
 
-/* ===== 品目並び替えボタン ===== */
-.btn-move {
-  width: 28px;
-  height: 28px;
-  border: 1.5px solid rgba(236,131,192,0.3);
-  border-radius: 8px;
-  background: rgba(255,255,255,0.8);
-  color: var(--text-secondary);
-  font-size: 13px;
-  cursor: pointer;
+/* ===== ドラッグハンドル ===== */
+.drag-handle {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 28px;
+  height: 28px;
+  cursor: grab;
+  color: #d1b8d0;
   flex-shrink: 0;
-  transition: all 0.15s;
-  font-family: inherit;
+  touch-action: none;
+  border-radius: 4px;
+  transition: color 0.15s ease, background 0.15s ease;
 }
-.btn-move:hover { background: var(--primary-bg); border-color: var(--primary); }
-.btn-move:active { transform: scale(0.9); }
-.btn-move:disabled { opacity: 0.3; cursor: default; }
+.drag-handle:hover {
+  color: var(--primary);
+  background: var(--primary-bg);
+}
+.drag-handle:active { cursor: grabbing; }

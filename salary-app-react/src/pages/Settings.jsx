@@ -6,6 +6,54 @@ import { useAuth } from '../contexts/AuthContext'
 import { useAppData } from '../hooks/useAppData'
 import { generateId } from '../lib/calc'
 import Header from '../components/Header'
+import { DndContext, closestCenter, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+
+function SortableItem({ item, onItemChange, onDeleteItem, onBlurSave }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id })
+
+  const style = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.4 : 1,
+    position: 'relative',
+    zIndex: isDragging ? 10 : 0,
+  }
+
+  return (
+    <div ref={setNodeRef} style={style} className="item-row">
+      <div className="drag-handle" {...attributes} {...listeners}>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <circle cx="5" cy="4" r="1.5"/>
+          <circle cx="5" cy="8" r="1.5"/>
+          <circle cx="5" cy="12" r="1.5"/>
+          <circle cx="11" cy="4" r="1.5"/>
+          <circle cx="11" cy="8" r="1.5"/>
+          <circle cx="11" cy="12" r="1.5"/>
+        </svg>
+      </div>
+      <input
+        type="text"
+        placeholder="品目名"
+        value={item.name}
+        onChange={(e) => onItemChange(item.id, 'name', e.target.value)}
+        onBlur={onBlurSave}
+      />
+      <input
+        type="number"
+        placeholder="バック"
+        value={item.back || ''}
+        onChange={(e) => onItemChange(item.id, 'back', e.target.value)}
+        onBlur={onBlurSave}
+      />
+      <button className="btn-delete" onClick={() => onDeleteItem(item.id)}>削除</button>
+    </div>
+  )
+}
 
 export default function Settings() {
   const user = useAuth();
@@ -45,19 +93,22 @@ export default function Settings() {
     }));
   };
 
-  const handleMoveItem = (id, direction) => {
-    const items = data.settings.items;
-    const index = items.findIndex(item => item.id === id);
-    if (index === -1) return;
-    const category = items[index].category;
-    const directionOffset = direction === 'up' ? -1 : 1;
-    const targetIndex = index + directionOffset;
-    if (targetIndex < 0 || targetIndex >= items.length) return;
-    if (items[targetIndex].category !== category) return;
-    const newItems = [...items];
-    [newItems[index], newItems[targetIndex]] = [newItems[targetIndex], newItems[index]];
-    updateSettings({ items: newItems });
-  };
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 150, tolerance: 5 },
+    })
+  )
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+    const items = data.settings.items
+    const oldIndex = items.findIndex(i => i.id === active.id)
+    const newIndex = items.findIndex(i => i.id === over.id)
+    if (items[oldIndex].category !== items[newIndex].category) return
+    updateSettings({ items: arrayMove(items, oldIndex, newIndex) })
+  }
 
   const handleItemChange = (id, field, value) => {
     updateSettings(prev => ({
@@ -199,57 +250,35 @@ export default function Settings() {
         <section className="section">
           <h2 className="section-title">品目一覧</h2>
 
-          <div className="item-category-label">キャストメニュー</div>
-          {castItems.map(item => (
-            <div key={item.id} className="item-row" style={{ display:'flex', alignItems:'center', gap:'6px' }}>
-              <div style={{ display:'flex', flexDirection:'column', gap:'3px' }}>
-                <button className="btn-move" onClick={() => handleMoveItem(item.id, 'up')} disabled={castItems.indexOf(item) === 0}>↑</button>
-                <button className="btn-move" onClick={() => handleMoveItem(item.id, 'down')} disabled={castItems.indexOf(item) === castItems.length - 1}>↓</button>
-              </div>
-              <input
-                type="text"
-                placeholder="品目名"
-                value={item.name}
-                onChange={(e) => handleItemChange(item.id, 'name', e.target.value)}
-                onBlur={() => persistData(data)}
-              />
-              <input
-                type="number"
-                placeholder="バック"
-                value={item.back || ''}
-                onChange={(e) => handleItemChange(item.id, 'back', e.target.value)}
-                onBlur={() => persistData(data)}
-              />
-              <button className="btn-delete" onClick={() => handleDeleteItem(item.id)}>削除</button>
-            </div>
-          ))}
-          <button id="add-item-cast" className="add-item-btn" onClick={() => handleAddItem('cast')}>+ キャストメニューを追加</button>
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <div className="item-category-label">キャストメニュー</div>
+            <SortableContext items={castItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
+              {castItems.map(item => (
+                <SortableItem
+                  key={item.id}
+                  item={item}
+                  onItemChange={handleItemChange}
+                  onDeleteItem={handleDeleteItem}
+                  onBlurSave={() => persistData(data)}
+                />
+              ))}
+            </SortableContext>
+            <button id="add-item-cast" className="add-item-btn" onClick={() => handleAddItem('cast')}>+ キャストメニューを追加</button>
 
-          <div className="item-category-label">シャンパン類</div>
-          {champItems.map(item => (
-            <div key={item.id} className="item-row" style={{ display:'flex', alignItems:'center', gap:'6px' }}>
-              <div style={{ display:'flex', flexDirection:'column', gap:'3px' }}>
-                <button className="btn-move" onClick={() => handleMoveItem(item.id, 'up')} disabled={champItems.indexOf(item) === 0}>↑</button>
-                <button className="btn-move" onClick={() => handleMoveItem(item.id, 'down')} disabled={champItems.indexOf(item) === champItems.length - 1}>↓</button>
-              </div>
-              <input
-                type="text"
-                placeholder="品目名"
-                value={item.name}
-                onChange={(e) => handleItemChange(item.id, 'name', e.target.value)}
-                onBlur={() => persistData(data)}
-              />
-              <input
-                type="number"
-                placeholder="バック"
-                value={item.back || ''}
-                onChange={(e) => handleItemChange(item.id, 'back', e.target.value)}
-                onBlur={() => persistData(data)}
-              />
-              <button className="btn-delete" onClick={() => handleDeleteItem(item.id)}>削除</button>
-            </div>
-          ))}
-          <button id="add-item-champagne" className="add-item-btn" onClick={() => handleAddItem('champagne')}>+ シャンパンを追加</button>
+            <div className="item-category-label">シャンパン類</div>
+            <SortableContext items={champItems.map(i => i.id)} strategy={verticalListSortingStrategy}>
+              {champItems.map(item => (
+                <SortableItem
+                  key={item.id}
+                  item={item}
+                  onItemChange={handleItemChange}
+                  onDeleteItem={handleDeleteItem}
+                  onBlurSave={() => persistData(data)}
+                />
+              ))}
+            </SortableContext>
+            <button id="add-item-champagne" className="add-item-btn" onClick={() => handleAddItem('champagne')}>+ シャンパンを追加</button>
+          </DndContext>
         </section>
 
         <section className="section">
