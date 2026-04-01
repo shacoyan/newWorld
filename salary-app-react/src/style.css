@@ -51,7 +51,7 @@
 
 /* ===== Gothic Theme ===== */
 [data-theme="gothic"] {
-  --primary: #c0392b;
+  --primary: #d44030;
   --primary-hover: #922b21;
   --primary-bg: #2d0a0a;
   --primary-light: #1a0505;
@@ -67,27 +67,27 @@
   --today-glow: rgba(192,57,43,0.25);
   --text: #f5f0eb;
   --text-secondary: #d4a017;
-  --text-muted: #9e7070;
-  --border: rgba(192,57,43,0.35);
+  --text-muted: #bf8a8a;
+  --border: rgba(200,70,50,0.55);
   --bg: #0d0d0d;
   --white: #1c0a0a;
   --shadow-sm: 0 2px 8px rgba(0,0,0,0.5);
   --shadow: 0 4px 24px rgba(0,0,0,0.6);
   /* Backgrounds - gothic */
   --body-bg: linear-gradient(135deg, #0d0505 0%, #120808 50%, #0d0505 100%);
-  --section-bg: #1c0a0a;
-  --card-bg: rgba(28,10,10,0.8);
-  --item-row-bg: rgba(45,10,10,0.7);
+  --section-bg: #2a1010;
+  --card-bg: rgba(48,15,15,0.90);
+  --item-row-bg: rgba(60,18,18,0.85);
   /* Gradients - gothic */
   --header-gradient: linear-gradient(135deg, #1a0505 0%, #2d0a0a 60%, #1a0505 100%);
   --menu-header-gradient: linear-gradient(135deg, #1a0505 0%, #2d0a0a 100%);
   --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
-  --selected-day-gradient: linear-gradient(135deg, #3d0a0a, #2d0a0a);
+  --selected-day-gradient: linear-gradient(135deg, #7a1818, #551010);
   /* UI colors - gothic */
   --nav-text: #f5f0eb;
-  --separator-color: rgba(192,57,43,0.2);
+  --separator-color: rgba(192,57,43,0.45);
   --saturday-color: #b16fc9;
-  --drag-handle-color: #7a4545;
+  --drag-handle-color: #aa6262;
   /* Danger/logout - gothic */
   --danger-bg: #1a0505;
   --danger-bg-hover: #2d0a0a;
