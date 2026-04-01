@@ -122,22 +122,22 @@ export default function Dashboard() {
         </div>
 
         <div className="section">
-          <div className="dash-cards">
-            <div className="dash-card">
-              <div className="dash-card-label">合計</div>
-              <div className="dash-card-value">{formatMoney(total)}</div>
+          <div className="dash-total-hero">
+            <div className="dash-total-label">今月の合計</div>
+            <div className="dash-total-value">¥{formatMoney(total)}</div>
+          </div>
+          <div className="dash-sub-cards">
+            <div className="dash-sub-card">
+              <div className="dash-sub-label">時給計</div>
+              <div className="dash-sub-value">¥{formatMoney(wageTotal)}</div>
             </div>
-            <div className="dash-card">
-              <div className="dash-card-label">時給計</div>
-              <div className="dash-card-value">{formatMoney(wageTotal)}</div>
+            <div className="dash-sub-card">
+              <div className="dash-sub-label">バック計</div>
+              <div className="dash-sub-value">¥{formatMoney(backTotal)}</div>
             </div>
-            <div className="dash-card">
-              <div className="dash-card-label">バック計</div>
-              <div className="dash-card-value">{formatMoney(backTotal)}</div>
-            </div>
-            <div className="dash-card">
-              <div className="dash-card-label">バック比率</div>
-              <div className="dash-card-value">{backPercent.toFixed(1)}%</div>
+            <div className="dash-sub-card">
+              <div className="dash-sub-label">バック比率</div>
+              <div className="dash-sub-value">{backPercent.toFixed(1)}%</div>
             </div>
           </div>
         </div>
@@ -150,7 +150,7 @@ export default function Dashboard() {
           </div>
           <div className="total-line">
             <span className="total-label">平均日給</span>
-            <span className="total-value">{formatMoney(avgDaily)}</span>
+            <span className="total-value">{formatMoney(Math.round(avgDaily))}</span>
           </div>
           <div className="total-line">
             <span className="total-label">最高収入日</span>
@@ -158,48 +158,47 @@ export default function Dashboard() {
           </div>
           <div className="total-line">
             <span className="total-label">稼働時間</span>
-            <span className="total-value">{totalHours.toFixed(1)}時間</span>
+            <span className="total-value">{Math.round(totalHours)}時間</span>
           </div>
           <div className="total-line">
             <span className="total-label">平均時給</span>
-            <span className="total-value">{formatMoney(avgHourly)}</span>
+            <span className="total-value">{formatMoney(Math.round(avgHourly))}</span>
           </div>
         </div>
 
         <div className="section">
           <h2 className="section-title">品目別バック</h2>
-          <div className="item-breakdown">
-            {Object.entries(itemCounts).sort((a, b) => b[1].back - a[1].back).map(([name, val]) => (
-              <div className="item-row" key={name}>
-                <div className="item-info">
-                  <span className="item-name">{name}</span>
-                  <span className="item-count">{val.count}回</span>
-                  <span className="item-back">{formatMoney(val.back)}</span>
-                </div>
-                <div className="item-bar-bg">
-                  <div className="item-bar" style={{ width: (val.back / maxItemBack * 100) + '%' }}></div>
-                </div>
+          {Object.entries(itemCounts).sort((a, b) => b[1].back - a[1].back).map(([name, val]) => (
+            <div className="dash-item-row" key={name}>
+              <div className="dash-item-header">
+                <span className="dash-item-name">{name}</span>
+                <span className="dash-item-stats">{val.count}回 · ¥{formatMoney(val.back)}</span>
               </div>
-            ))}
-            {Object.keys(itemCounts).length === 0 && <div className="item-empty">データなし</div>}
-          </div>
+              <div className="dash-bar-bg">
+                <div className="dash-bar-fill" style={{ width: (val.back / maxItemBack * 100) + '%' }}></div>
+              </div>
+            </div>
+          ))}
+          {Object.keys(itemCounts).length === 0 && <div className="dash-empty">データなし</div>}
         </div>
 
         <div className="section">
           <h2 className="section-title">内訳比率</h2>
-          <div className="ratio-bar-wrap">
+          <div className="ratio-labels">
+            <span className="ratio-label-wage">時給 {wagePercent.toFixed(1)}%</span>
+            {backPercent > 0 && <span className="ratio-label-back">バック {backPercent.toFixed(1)}%</span>}
+          </div>
+          <div className="ratio-bar-wrap-new">
             <div
-              className="ratio-bar ratio-bar-wage"
+              className="ratio-bar-wage-new"
               style={{ width: (backPercent === 0 ? 100 : wagePercent) + '%' }}
-            >
-              時給 {wagePercent.toFixed(1)}%
-            </div>
-            <div
-              className="ratio-bar ratio-bar-back"
-              style={{ width: backPercent.toFixed(1) + '%', display: backPercent === 0 ? 'none' : undefined }}
-            >
-              バック {backPercent.toFixed(1)}%
-            </div>
+            />
+            {backPercent > 0 && (
+              <div
+                className="ratio-bar-back-new"
+                style={{ width: backPercent + '%' }}
+              />
+            )}
           </div>
         </div>
       </main>

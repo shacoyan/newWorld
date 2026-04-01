@@ -45,6 +45,20 @@ export default function Settings() {
     }));
   };
 
+  const handleMoveItem = (id, direction) => {
+    const items = data.settings.items;
+    const index = items.findIndex(item => item.id === id);
+    if (index === -1) return;
+    const category = items[index].category;
+    const directionOffset = direction === 'up' ? -1 : 1;
+    const targetIndex = index + directionOffset;
+    if (targetIndex < 0 || targetIndex >= items.length) return;
+    if (items[targetIndex].category !== category) return;
+    const newItems = [...items];
+    [newItems[index], newItems[targetIndex]] = [newItems[targetIndex], newItems[index]];
+    updateSettings({ items: newItems });
+  };
+
   const handleItemChange = (id, field, value) => {
     updateSettings(prev => ({
       ...prev,
@@ -137,31 +151,6 @@ export default function Settings() {
               onBlur={() => persistData(data)}
             />
           </div>
-          <div className="form-group">
-            <label>時刻単位</label>
-            <div className="radio-group">
-              <label>
-                <input
-                  type="radio"
-                  name="timeStep"
-                  value="1"
-                  checked={(s.timeStep || 1) === 1}
-                  onChange={() => updateSettings({ timeStep: 1 })}
-                />
-                1分
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="timeStep"
-                  value="15"
-                  checked={s.timeStep === 15}
-                  onChange={() => updateSettings({ timeStep: 15 })}
-                />
-                15分
-              </label>
-            </div>
-          </div>
         </section>
 
         <section className="section">
@@ -180,31 +169,30 @@ export default function Settings() {
         </section>
 
         <section className="section">
-          <h2 className="section-title">カレンダー設定</h2>
-          <div className="form-group">
-            <label>週の始まり</label>
-            <div className="radio-group">
-              <label>
-                <input
-                  type="radio"
-                  name="weekStartDay"
-                  value="0"
-                  checked={(s.weekStartDay ?? 0) === 0}
-                  onChange={() => updateSettings({ weekStartDay: 0 })}
-                />
-                日曜始まり
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="weekStartDay"
-                  value="1"
-                  checked={(s.weekStartDay ?? 0) === 1}
-                  onChange={() => updateSettings({ weekStartDay: 1 })}
-                />
-                月曜始まり
-              </label>
-            </div>
+          <h2 id="week-start-title" className="section-title">週の始まり</h2>
+          <div className="radio-group" role="radiogroup" aria-labelledby="week-start-title" style={{ display:'flex', gap:'16px', marginTop:'12px', padding:'4px 0' }}>
+            <label style={{ display:'flex', alignItems:'center', gap:'8px', fontSize:'14px', fontWeight:600, color:'var(--text)', cursor:'pointer' }}>
+              <input
+                type="radio"
+                name="weekStartDay"
+                value="0"
+                checked={(s.weekStartDay ?? 0) === 0}
+                onChange={() => updateSettings({ weekStartDay: 0 })}
+                style={{ accentColor:'var(--primary)', width:'16px', height:'16px' }}
+              />
+              日曜始まり
+            </label>
+            <label style={{ display:'flex', alignItems:'center', gap:'8px', fontSize:'14px', fontWeight:600, color:'var(--text)', cursor:'pointer' }}>
+              <input
+                type="radio"
+                name="weekStartDay"
+                value="1"
+                checked={(s.weekStartDay ?? 0) === 1}
+                onChange={() => updateSettings({ weekStartDay: 1 })}
+                style={{ accentColor:'var(--primary)', width:'16px', height:'16px' }}
+              />
+              月曜始まり
+            </label>
           </div>
         </section>
 
@@ -213,7 +201,11 @@ export default function Settings() {
 
           <div className="item-category-label">キャストメニュー</div>
           {castItems.map(item => (
-            <div key={item.id} className="item-row">
+            <div key={item.id} className="item-row" style={{ display:'flex', alignItems:'center', gap:'6px' }}>
+              <div style={{ display:'flex', flexDirection:'column', gap:'3px' }}>
+                <button className="btn-move" onClick={() => handleMoveItem(item.id, 'up')} disabled={castItems.indexOf(item) === 0}>↑</button>
+                <button className="btn-move" onClick={() => handleMoveItem(item.id, 'down')} disabled={castItems.indexOf(item) === castItems.length - 1}>↓</button>
+              </div>
               <input
                 type="text"
                 placeholder="品目名"
@@ -235,7 +227,11 @@ export default function Settings() {
 
           <div className="item-category-label">シャンパン類</div>
           {champItems.map(item => (
-            <div key={item.id} className="item-row">
+            <div key={item.id} className="item-row" style={{ display:'flex', alignItems:'center', gap:'6px' }}>
+              <div style={{ display:'flex', flexDirection:'column', gap:'3px' }}>
+                <button className="btn-move" onClick={() => handleMoveItem(item.id, 'up')} disabled={champItems.indexOf(item) === 0}>↑</button>
+                <button className="btn-move" onClick={() => handleMoveItem(item.id, 'down')} disabled={champItems.indexOf(item) === champItems.length - 1}>↓</button>
+              </div>
               <input
                 type="text"
                 placeholder="品目名"
