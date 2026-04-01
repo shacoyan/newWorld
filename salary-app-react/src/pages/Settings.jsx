@@ -60,6 +60,13 @@ export default function Settings() {
   const { data, persistData } = useAppData(user);
   const navigate = useNavigate();
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 150, tolerance: 5 },
+    })
+  )
+
   if (!data) return null;
 
   const s = data.settings;
@@ -92,13 +99,6 @@ export default function Settings() {
       items: prev.items.filter(i => i.id !== id)
     }));
   };
-
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(TouchSensor, {
-      activationConstraint: { delay: 150, tolerance: 5 },
-    })
-  )
 
   const handleDragEnd = (event) => {
     const { active, over } = event
