@@ -48,7 +48,7 @@ export function formatDateFull(key) {
 }
 
 export function formatMoney(amount) {
-  return amount.toLocaleString();
+  return '¥' + amount.toLocaleString();
 }
 
 export function escapeHtml(str) {

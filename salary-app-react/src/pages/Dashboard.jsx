@@ -124,16 +124,16 @@ export default function Dashboard() {
         <div className="section">
           <div className="dash-total-hero">
             <div className="dash-total-label">今月の合計</div>
-            <div className="dash-total-value">¥{formatMoney(total)}</div>
+            <div className="dash-total-value">{formatMoney(total)}</div>
           </div>
           <div className="dash-sub-cards">
             <div className="dash-sub-card">
               <div className="dash-sub-label">時給計</div>
-              <div className="dash-sub-value">¥{formatMoney(wageTotal)}</div>
+              <div className="dash-sub-value">{formatMoney(wageTotal)}</div>
             </div>
             <div className="dash-sub-card">
               <div className="dash-sub-label">バック計</div>
-              <div className="dash-sub-value">¥{formatMoney(backTotal)}</div>
+              <div className="dash-sub-value">{formatMoney(backTotal)}</div>
             </div>
             <div className="dash-sub-card">
               <div className="dash-sub-label">バック比率</div>
@@ -172,7 +172,7 @@ export default function Dashboard() {
             <div className="dash-item-row" key={name}>
               <div className="dash-item-header">
                 <span className="dash-item-name">{name}</span>
-                <span className="dash-item-stats">{val.count}回 · ¥{formatMoney(val.back)}</span>
+                <span className="dash-item-stats">{val.count}回 · {formatMoney(val.back)}</span>
               </div>
               <div className="dash-bar-bg">
                 <div className="dash-bar-fill" style={{ width: (val.back / maxItemBack * 100) + '%' }}></div>

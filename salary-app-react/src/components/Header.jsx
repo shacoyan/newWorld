@@ -35,15 +35,36 @@ export default function Header() {
 
     <div className={`hamburger-overlay${menuOpen ? ' is-open' : ''}`} onClick={closeMenu}></div>
     <div className={`hamburger-menu${menuOpen ? ' is-open' : ''}`}>
-      {user && (
-        <div className="menu-user">
-          {user.displayName || user.email}
+      <div className="menu-header">
+        <div className="menu-avatar">
+          {user?.displayName ? user.displayName[0].toUpperCase() : '?'}
         </div>
-      )}
-      <button onClick={() => { navigate('/'); closeMenu(); }}>ホーム</button>
-      <button onClick={() => { navigate('/dashboard'); closeMenu(); }}>統計</button>
-      <button onClick={() => { navigate('/settings'); closeMenu(); }}>設定</button>
-      <button className="btn-logout" onClick={handleLogout}>ログアウト</button>
+        <div className="menu-username">
+          {user?.displayName || 'ゲスト'}
+        </div>
+      </div>
+
+      <nav className="menu-nav">
+        <button className="menu-nav-item" onClick={() => { navigate('/'); closeMenu(); }}>
+          <span className="menu-nav-icon">🏠</span>
+          <span className="menu-nav-label">ホーム</span>
+        </button>
+        <button className="menu-nav-item" onClick={() => { navigate('/dashboard'); closeMenu(); }}>
+          <span className="menu-nav-icon">📊</span>
+          <span className="menu-nav-label">統計</span>
+        </button>
+        <button className="menu-nav-item" onClick={() => { navigate('/settings'); closeMenu(); }}>
+          <span className="menu-nav-icon">⚙️</span>
+          <span className="menu-nav-label">設定</span>
+        </button>
+      </nav>
+
+      <div className="menu-separator"></div>
+
+      <button className="menu-nav-item menu-logout" onClick={handleLogout}>
+        <span className="menu-nav-icon">🚪</span>
+        <span className="menu-nav-label">ログアウト</span>
+      </button>
     </div>
   </>
   )

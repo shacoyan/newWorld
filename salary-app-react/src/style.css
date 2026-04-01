@@ -1115,47 +1115,107 @@ input[type="time"] { width: 120px; }
   top: 0;
   right: 0;
   bottom: 0;
-  width: 240px;
+  width: 260px;
   z-index: 201;
   background: white;
-  padding: 24px;
-  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+  box-shadow: -4px 0 24px rgba(232, 121, 160, 0.15);
   display: flex;
   flex-direction: column;
-  gap: 16px;
   transform: translateX(100%);
   transition: transform 0.25s ease;
+  overflow: hidden;
 }
 
 .hamburger-menu.is-open {
   transform: translateX(0);
 }
 
-.hamburger-menu .menu-user {
-  font-size: 14px;
-  color: #666;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #eee;
+.menu-header {
+  background: linear-gradient(135deg, #f472b6 0%, #a78bfa 100%);
+  padding: 32px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
 }
 
-.hamburger-menu button {
+.menu-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+}
+
+.menu-username {
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+}
+
+.menu-nav {
+  padding: 10px 0;
+  flex: 1;
+}
+
+.menu-nav-item {
   width: 100%;
-  padding: 12px;
-  text-align: left;
+  padding: 13px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   border: none;
+  border-left: 3px solid transparent;
   background: none;
-  font-size: 16px;
   cursor: pointer;
-  border-radius: 8px;
-  transition: background 0.15s ease, transform 0.1s ease;
+  font-family: inherit;
+  font-size: 15px;
+  color: #374151;
+  text-align: left;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
 
-.hamburger-menu button:hover {
-  background: #f9f0f5;
+.menu-nav-item:hover {
+  background: var(--primary-bg);
+  border-left-color: var(--primary);
+  color: var(--primary);
 }
-.hamburger-menu button:active { transform: scale(0.97); }
 
-.hamburger-menu .btn-logout {
+.menu-nav-item:active {
+  transform: scale(0.97);
+}
+
+.menu-nav-icon {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.menu-nav-label {
+  font-weight: 500;
+}
+
+.menu-separator {
+  height: 1px;
+  background: #f3e8f0;
+  margin: 0 16px;
+}
+
+.menu-logout {
+  color: #e11d48;
+  margin-bottom: 16px;
+}
+
+.menu-logout:hover {
+  background: #fff0f3;
+  border-left-color: #e11d48;
   color: #e11d48;
 }
 
