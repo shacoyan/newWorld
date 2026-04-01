@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useAppData } from '../hooks/useAppData'
@@ -10,9 +10,18 @@ export default function Header() {
   const { data } = useAppData(user)
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
-  const usePremiumLogo = data?.settings?.usePremiumLogo ?? false
   const isPremium = data?.settings?.isPremium ?? false
-  const logoSrc = usePremiumLogo ? './logo-gothic.png' : './logo.png'
+  const [logoTheme, setLogoTheme] = useState(
+    () => document.documentElement.getAttribute('data-theme') || 'default'
+  )
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setLogoTheme(document.documentElement.getAttribute('data-theme') || 'default')
+    })
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+    return () => observer.disconnect()
+  }, [])
+  const logoSrc = logoTheme === 'gothic' ? './logo-gothic.png' : './logo.png'
 
   const handleLogout = async () => {
     setMenuOpen(false)

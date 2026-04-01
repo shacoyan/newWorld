@@ -114,6 +114,9 @@
   color: #ef4444;
 }
 [data-theme="gothic"] .btn-logout-section:hover { background: #2d0a0a; }
+[data-theme="gothic"] .btn-checkin-today {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+}
 
 *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
@@ -381,9 +384,9 @@ input[type="time"] { width: 120px; }
   justify-content: center;
   font-size: 18px;
   font-weight: 600;
-  background: linear-gradient(135deg, #fce7f3, #f5f3ff);
+  background: linear-gradient(135deg, var(--primary-light), var(--secondary-bg));
   color: var(--primary);
-  border: 1.5px solid rgba(236,131,192,0.4);
+  border: 1.5px solid var(--border);
   cursor: pointer;
   user-select: none;
   font-family: inherit;
@@ -393,7 +396,7 @@ input[type="time"] { width: 120px; }
 }
 
 .item-dec:hover, .item-inc:hover {
-  background: linear-gradient(135deg, #f472b6, #a78bfa);
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: #fff;
   border-color: transparent;
   transform: scale(1.1);
@@ -506,6 +509,7 @@ input[type="time"] { width: 120px; }
   grid-template-columns: repeat(7, 1fr);
   gap: 3px;
   animation: calendarFadeIn 0.25s ease;
+  overflow: hidden;
 }
 
 @keyframes calendarFadeIn {
@@ -521,6 +525,7 @@ input[type="time"] { width: 120px; }
 
 .day-cell {
   aspect-ratio: 1 / 1.15;
+  min-width: 0;
   background: rgba(255,255,255,0.7);
   border: 1.5px solid rgba(236,131,192,0.2);
   border-radius: 12px;
@@ -663,7 +668,7 @@ input[type="time"] { width: 120px; }
 .add-item-btn {
   width: 100%;
   padding: 12px;
-  border: 2px dashed rgba(236,131,192,0.4);
+  border: 2px dashed var(--border);
   border-radius: var(--radius-sm);
   color: var(--primary);
   font-weight: 600;
@@ -694,6 +699,13 @@ input[type="time"] { width: 120px; }
   .daily-hourly-rate { width: 85px; }
   .item-dec, .item-inc { width: 28px; height: 28px; font-size: 16px; }
   #total-salary { font-size: 18px; }
+}
+
+@media (max-width: 360px) {
+  .section { padding: 8px; }
+  .day-cell { min-height: 44px; }
+  .day-cell .cell-date { font-size: 10px; }
+  .day-cell .cell-total { font-size: 8px; }
 }
 
 @media (min-width: 480px) {
@@ -1091,7 +1103,7 @@ input[type="time"] { width: 120px; }
 .btn-checkin-today {
   width: 100%;
   padding: 12px;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  background: linear-gradient(135deg, #f472b6, #a78bfa);
   color: white;
   border: none;
   border-radius: var(--radius);
@@ -1422,7 +1434,7 @@ main { padding-top: 72px; }
 .summary-total {
   font-size: 52px;
   font-weight: 900;
-  background: linear-gradient(135deg, #e879a0, #a78bfa);
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1483,7 +1495,7 @@ main { padding-top: 72px; }
 .dash-total-value {
   font-size: 40px;
   font-weight: 900;
-  background: linear-gradient(135deg, #e879a0, #a78bfa);
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1562,12 +1574,12 @@ main { padding-top: 72px; }
 .ratio-label-wage {
   font-size: 12px;
   font-weight: 700;
-  color: #e879a0;
+  color: var(--primary);
 }
 .ratio-label-back {
   font-size: 12px;
   font-weight: 700;
-  color: #a78bfa;
+  color: var(--secondary);
 }
 .ratio-bar-wrap-new {
   display: flex;
@@ -1576,11 +1588,11 @@ main { padding-top: 72px; }
   height: 20px;
 }
 .ratio-bar-wage-new {
-  background: linear-gradient(90deg, #f472b6, #e879a0);
+  background: linear-gradient(90deg, var(--primary), var(--primary-hover));
   transition: width 0.3s;
 }
 .ratio-bar-back-new {
-  background: linear-gradient(90deg, #a78bfa, #818cf8);
+  background: var(--secondary);
   transition: width 0.3s;
 }
 

@@ -311,7 +311,7 @@ export default function Settings() {
                 </svg>
                 プレミアム有効
               </div>
-              <button className="btn-text-danger" onClick={handleDeactivatePremium} style={{ marginTop: '12px' }}>プレミアムを解除</button>
+              <button className="btn-text-danger" onClick={handleDeactivatePremium} style={{ marginTop: '28px', display: 'block' }}>プレミアムを解除</button>
             </div>
           ) : (
             <div>

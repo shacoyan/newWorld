@@ -87,7 +87,7 @@ export default function Theme() {
           <h1 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text)' }}>着せ替え</h1>
         </div>
 
-        <div style={{ padding: '16px' }}>
+        <div style={{ padding: '16px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
           {THEMES.map(theme => {
             const isActive = currentTheme === theme.id
             return (
@@ -96,8 +96,7 @@ export default function Theme() {
                 style={{
                   background: theme.bg,
                   borderRadius: '20px',
-                  padding: '20px',
-                  marginBottom: '16px',
+                  padding: '16px',
                   border: isActive ? `2px solid ${theme.colors[0]}` : '2px solid transparent',
                   boxShadow: isActive ? `0 4px 20px ${theme.colors[0]}40` : '0 2px 8px rgba(0,0,0,0.1)',
                   transition: 'all 0.3s ease',
@@ -108,36 +107,37 @@ export default function Theme() {
                 {isActive && (
                   <div style={{
                     position: 'absolute',
-                    top: '12px',
-                    right: '12px',
+                    top: '8px',
+                    right: '8px',
                     background: theme.colors[0],
                     color: '#fff',
-                    fontSize: '11px',
+                    fontSize: '10px',
                     fontWeight: 700,
-                    padding: '3px 10px',
+                    padding: '2px 8px',
                     borderRadius: '20px',
                   }}>
                     使用中
                   </div>
                 )}
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
+                <div style={{ textAlign: 'center', marginBottom: '10px' }}>
                   <img
                     src={theme.logo}
                     alt={theme.name}
-                    style={{ width: '80px', height: 'auto', objectFit: 'contain' }}
+                    style={{ width: '100%', maxWidth: '100px', height: 'auto', objectFit: 'contain' }}
                   />
-                  <div>
-                    <div style={{ fontSize: '18px', fontWeight: 800, color: theme.textColor, marginBottom: '4px' }}>{theme.name}</div>
-                    <div style={{ fontSize: '12px', color: theme.textColor, opacity: 0.7 }}>{theme.desc}</div>
-                  </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+                <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                  <div style={{ fontSize: '15px', fontWeight: 800, color: theme.textColor, marginBottom: '4px' }}>{theme.name}</div>
+                  <div style={{ fontSize: '10px', color: theme.textColor, opacity: 0.7, lineHeight: 1.4 }}>{theme.desc}</div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '6px', marginBottom: '12px', justifyContent: 'center' }}>
                   {theme.colors.map((color, i) => (
                     <div key={i} style={{
-                      width: '28px',
-                      height: '28px',
+                      width: '18px',
+                      height: '18px',
                       borderRadius: '50%',
                       background: color,
                       border: '2px solid rgba(255,255,255,0.3)',
@@ -151,13 +151,13 @@ export default function Theme() {
                   disabled={isActive}
                   style={{
                     width: '100%',
-                    padding: '12px',
+                    padding: '10px',
                     background: isActive ? 'rgba(255,255,255,0.2)' : theme.colors[0],
                     color: isActive ? theme.textColor : '#fff',
                     border: isActive ? `1px solid ${theme.colors[0]}60` : 'none',
                     borderRadius: '14px',
                     fontWeight: 700,
-                    fontSize: '14px',
+                    fontSize: '13px',
                     cursor: isActive ? 'default' : 'pointer',
                     transition: 'all 0.2s',
                     opacity: isActive ? 0.7 : 1,
