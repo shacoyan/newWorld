@@ -12,13 +12,12 @@ export default function ItemRows({ items, record, onCountChange }) {
     const backAmount = (item.back || 0) * count;
     return (
       <div className="item-count-row" key={item.id}>
-        {backAmount > 0
-          ? <AnimatedMoney amount={backAmount} className="item-back-label" />
-          : <span className="item-back-label">-</span>
-        }
+        <div className="item-back-label">
+          {backAmount > 0 ? <AnimatedMoney amount={backAmount} /> : '-'}
+        </div>
         <span className="item-name">{item.name}</span>
         <button className="item-dec" aria-label={`${item.name}を減らす`} onClick={() => onCountChange(item.id, count - 1)}>-</button>
-        <span className="item-count-val">{count}</span>
+        <div className="item-count-val">{count}</div>
         <button className="item-inc" aria-label={`${item.name}を増やす`} onClick={() => onCountChange(item.id, count + 1)}>+</button>
       </div>
     );
