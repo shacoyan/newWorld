@@ -47,6 +47,7 @@
   /* Warning */
   --warning-bg: #fff3cd;
   --warning-text: #856404;
+  --input-bg: rgba(255,255,255,0.9);
 }
 
 /* ===== Gothic Theme ===== */
@@ -96,6 +97,7 @@
   /* Warning - gothic */
   --warning-bg: #1a1000;
   --warning-text: #d4a017;
+  --input-bg: #0e0505;
 }
 
 /* ===== Magical Theme ===== */
@@ -145,6 +147,7 @@
   /* Warning */
   --warning-bg: #fffde7;
   --warning-text: #f57f17;
+  --input-bg: rgba(255,240,250,0.92);
 }
 
 [data-theme="magical"] .header {
@@ -208,6 +211,7 @@
   /* Warning */
   --warning-bg: #1a1400;
   --warning-text: #ffee00;
+  --input-bg: #111111;
 }
 
 [data-theme="graffiti"] .header {
@@ -252,9 +256,9 @@
 [data-theme="gothic"] input[type="text"],
 [data-theme="gothic"] input[type="number"],
 [data-theme="gothic"] input[type="time"] {
-  background: #0e0505;
-  border-color: rgba(192,57,43,0.4);
-  color: #f5f0eb;
+  background: var(--input-bg);
+  border-color: var(--border);
+  color: var(--text);
 }
 
 [data-theme="gothic"] .calendar-day {
@@ -423,7 +427,7 @@ main {
   border: 1.5px solid var(--border);
   border-radius: var(--radius-xs);
   font-size: 15px;
-  background: rgba(255,255,255,0.9);
+  background: var(--input-bg);
   color: var(--text);
   width: 100%;
 }
@@ -431,7 +435,7 @@ main {
 .form-group input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(232,121,160,0.15);
+  box-shadow: 0 0 0 3px var(--today-glow);
 }
 
 /* ===== Today Section ===== */
@@ -451,7 +455,7 @@ main {
   text-transform: uppercase;
   letter-spacing: 0.8px;
   padding: 6px 14px;
-  background: linear-gradient(135deg, rgba(244,114,182,0.15), rgba(167,139,250,0.15));
+  background: var(--primary-bg);
   border: 1.5px solid var(--today-border);
   border-radius: 9999px;
   width: fit-content;
@@ -478,12 +482,12 @@ main {
 input[type="time"],
 input[type="number"],
 input[type="text"] {
-  border: 1.5px solid rgba(236,131,192,0.35);
+  border: 1.5px solid var(--border);
   border-radius: var(--radius-xs);
   padding: 9px 12px;
   font-size: 15px;
   font-family: inherit;
-  background: rgba(255,255,255,0.9);
+  background: var(--input-bg);
   color: var(--text);
   transition: border-color 0.15s, box-shadow 0.15s;
   min-width: 0;
@@ -492,7 +496,7 @@ input[type="text"] {
 input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(236,72,153,0.18);
+  box-shadow: 0 0 0 3px var(--today-glow);
 }
 
 input:focus-visible {
@@ -510,7 +514,7 @@ input[type="time"] { width: 120px; }
   align-items: center;
   gap: 10px;
   padding: 10px 0;
-  border-bottom: 1px solid rgba(236,131,192,0.2);
+  border-bottom: 1px solid var(--border);
 }
 
 .item-count-row:last-child { border-bottom: none; }
