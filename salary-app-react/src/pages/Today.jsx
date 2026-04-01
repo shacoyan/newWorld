@@ -5,6 +5,7 @@ import { useAppData } from '../hooks/useAppData'
 import { getTodayKey, formatDateFull, formatMoney, ensureRecord, calcDailyWage, getDaysInMonth, WEEKDAYS } from '../lib/calc'
 import Header from '../components/Header'
 import ItemRows from '../components/ItemRows'
+import AnimatedMoney from '../components/AnimatedMoney'
 
 export default function Today() {
   const user = useAuth()
@@ -153,15 +154,15 @@ export default function Today() {
 
         <div className="section summary-section">
           <p className="summary-label">{selectedDate === todayKey ? '本日の合計' : 'この日の合計'}</p>
-          <div className="summary-total">{formatMoney(daily.total)}</div>
+          <AnimatedMoney amount={daily.total} className="summary-total" />
           <div className="summary-breakdown">
             <div className="summary-card">
               <span className="summary-card-label">時給分</span>
-              <span className="summary-card-value">{formatMoney(daily.wage)}</span>
+              <AnimatedMoney amount={daily.wage} className="summary-card-value" />
             </div>
             <div className="summary-card">
               <span className="summary-card-label">バック</span>
-              <span className="summary-card-value">{formatMoney(daily.back)}</span>
+              <AnimatedMoney amount={daily.back} className="summary-card-value" />
             </div>
           </div>
           {daily.hours > 0 && (
@@ -182,7 +183,7 @@ export default function Today() {
               <button onClick={() => navigate('/settings')} style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 600, cursor: 'pointer', fontSize: '13px' }}>設定する →</button>
             </div>
           )}
-          <button className="btn-checkin-today" onClick={handleCheckin}>出勤登録</button>
+          <button className="btn-checkin-today" onClick={handleCheckin}>デフォルト出勤を登録</button>
           <div className="time-input-group">
             <label>
               出勤
@@ -208,7 +209,7 @@ export default function Today() {
               時給
               <input
                 type="number"
-                value={selectedRec.hourlyRate}
+                value={selectedRec.hourlyRate || ''}
                 onChange={(e) => handleRateChange(e.target.value)}
               />
             </label>
