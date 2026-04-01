@@ -23,7 +23,7 @@ const JobSelector = ({ jobs, selectedJobId, onChange }) => {
               {job.name}
               {selectedJobId === job.id && <span className="job-selector-badge">選択中</span>}
             </span>
-            {job.hourlyRate !== null && (
+            {job.hourlyRate > 0 && (
               <span className="job-selector-rate">
                 ¥{job.hourlyRate.toLocaleString()}/h
               </span>

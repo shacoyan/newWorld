@@ -54,14 +54,11 @@ export default function Today() {
   const handleJobSelect = (jobId) => {
     setSelectedJobId(jobId)
     const selectedJob = jobs.find(j => j.id === jobId)
-    if (selectedJob) {
-      if (selectedJob.defaultStartTime) {
-        handleTimeChange('startTime', selectedJob.defaultStartTime)
-      }
-      if (selectedJob.defaultEndTime) {
-        handleTimeChange('endTime', selectedJob.defaultEndTime)
-      }
-    }
+    const newData = ensureRecord(data, selectedDate)
+    newData.records[selectedDate].jobId = jobId
+    if (selectedJob?.defaultStartTime) newData.records[selectedDate].startTime = selectedJob.defaultStartTime
+    if (selectedJob?.defaultEndTime) newData.records[selectedDate].endTime = selectedJob.defaultEndTime
+    persistData(newData)
   }
 
   const handleCheckin = () => {
@@ -104,6 +101,8 @@ export default function Today() {
     const [y, m] = dateKey.split('-').map(Number)
     setCalYear(y)
     setCalMonth(m)
+    const rec = data.records[dateKey]
+    setSelectedJobId(rec?.jobId || null)
   }
 
   const daysInMonth = getDaysInMonth(calYear, calMonth)

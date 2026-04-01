@@ -76,11 +76,11 @@ export default function Dashboard() {
   const jobMap = {};
   jobs.forEach(j => { jobMap[j.id] = j; });
   const jobStats = {};
-  const daysInMonth = new Date(year, month, 0).getDate();
-  for (let d = 1; d <= daysInMonth; d++) {
-    const mStr = String(month).padStart(2, '0');
-    const dStr = String(d).padStart(2, '0');
-    const key = `${year}-${mStr}-${dStr}`;
+  for (let d = new Date(range.startDate); d <= range.endDate; d.setDate(d.getDate() + 1)) {
+    const y2 = d.getFullYear();
+    const m2 = String(d.getMonth() + 1).padStart(2, '0');
+    const d2 = String(d.getDate()).padStart(2, '0');
+    const key = `${y2}-${m2}-${d2}`;
     const rec = data.records ? data.records[key] : null;
     if (rec) {
       const dw = calcDailyWage(rec, data.settings);
