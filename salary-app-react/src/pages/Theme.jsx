@@ -31,6 +31,15 @@ const THEMES = [
     bg: 'linear-gradient(135deg, #fff0f7 0%, #f5f0ff 40%, #e0faff 70%, #fffde7 100%)',
     textColor: '#4a0072',
   },
+  {
+    id: 'graffiti',
+    name: 'グラフィティ',
+    desc: 'ストリートアート×ネオンのアーバンデザイン',
+    logo: './logo-graffiti.png',
+    colors: ['#ff0080', '#aaff00', '#ffee00', '#0a0a0a'],
+    bg: 'linear-gradient(135deg, #0a0a0a 0%, #120010 50%, #0a0a0a 100%)',
+    textColor: '#f0f0f0',
+  },
 ]
 
 export default function Theme() {

@@ -36,7 +36,9 @@ export default function Header() {
     ? './logo-gothic.png'
     : logoTheme === 'magical'
       ? './logo-magical.png'
-      : './logo.png'
+      : logoTheme === 'graffiti'
+        ? './logo-graffiti.png'
+        : './logo.png'
 
   const handleLogout = async () => {
     setMenuOpen(false)

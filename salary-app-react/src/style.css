@@ -164,6 +164,76 @@
   background: linear-gradient(135deg, #ff1493, #ffd700, #00d4e8);
 }
 
+/* ===== Graffiti Theme ===== */
+[data-theme="graffiti"] {
+  --primary: #ff0080;
+  --primary-hover: #cc0066;
+  --primary-bg: #1a0010;
+  --primary-light: #120008;
+  --secondary: #aaff00;
+  --secondary-bg: #0e1a00;
+  --accent: #ffee00;
+  --accent-bg: #1a1700;
+  --danger: #ff3366;
+  --danger-hover: #cc0033;
+  --today-bg: #1a0010;
+  --today-border: #ff0080;
+  --today-label: #ff0080;
+  --today-glow: rgba(255,0,128,0.30);
+  --text: #f0f0f0;
+  --text-secondary: #aaff00;
+  --text-muted: #999999;
+  --border: rgba(255,0,128,0.50);
+  --bg: #0a0a0a;
+  --white: #141414;
+  --shadow-sm: 0 2px 8px rgba(255,0,128,0.30);
+  --shadow: 0 4px 24px rgba(255,0,128,0.40);
+  /* Backgrounds */
+  --body-bg: linear-gradient(135deg, #0a0a0a 0%, #120010 50%, #0a0a0a 100%);
+  --section-bg: #141414;
+  --card-bg: rgba(22,22,22,0.95);
+  --item-row-bg: rgba(26,0,16,0.85);
+  /* Gradients */
+  --header-gradient: linear-gradient(135deg, #0a0a0a 0%, #1a0010 50%, #0f1400 100%);
+  --menu-header-gradient: linear-gradient(135deg, #ff0080 0%, #aaff00 100%);
+  --gradient-primary: linear-gradient(135deg, #ff0080, #aaff00);
+  --selected-day-gradient: linear-gradient(135deg, #cc0066, #88cc00);
+  /* UI colors */
+  --nav-text: #f0f0f0;
+  --separator-color: rgba(255,0,128,0.35);
+  --saturday-color: #aaff00;
+  --drag-handle-color: #777777;
+  /* Danger/logout */
+  --danger-bg: #1a0008;
+  --danger-bg-hover: #240010;
+  --danger-border: rgba(255,51,102,0.5);
+  --danger-text: #ff3366;
+  /* Warning */
+  --warning-bg: #1a1400;
+  --warning-text: #ffee00;
+}
+
+[data-theme="graffiti"] .header {
+  border-bottom: 2px solid #ff0080;
+  box-shadow: 0 4px 20px rgba(255,0,128,0.40);
+}
+
+[data-theme="graffiti"] .section {
+  border-color: rgba(255,0,128,0.25);
+}
+
+[data-theme="graffiti"] .hamburger-overlay {
+  background: rgba(0,0,0,0.80);
+}
+
+[data-theme="graffiti"] .hamburger-btn span {
+  background: #ff0080;
+}
+
+[data-theme="graffiti"] .btn-checkin-today {
+  background: linear-gradient(135deg, #ff0080, #aaff00);
+}
+
 [data-theme="gothic"] .header {
   border-bottom: 1px solid rgba(192,57,43,0.4);
   box-shadow: 0 4px 20px rgba(0,0,0,0.6);
