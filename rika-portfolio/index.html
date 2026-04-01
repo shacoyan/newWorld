@@ -35,9 +35,7 @@
   <!-- ─── Hero ─── -->
   <section id="hero">
     <div class="hero-bg">
-      <div class="hero-bg-fallback"></div>
-      <!-- ★ hero画像が入ったら上の fallback を削除して↓を有効化 -->
-      <!-- <img src="images/hero.jpg" alt="Rica Makeup Artist"> -->
+      <img src="images/hero_main.jpg" alt="Rica Makeup Artist">
     </div>
     <div class="hero-overlay"></div>
     <div class="hero-accent"></div>
@@ -77,8 +75,7 @@
   <section id="about">
     <div class="about-inner">
       <div class="about-img-wrap fade-up">
-        <div class="about-img-placeholder">Profile Photo</div>
-        <!-- <img src="images/profile.jpg" alt="Rica"> -->
+        <img src="images/profile_rica.jpg" alt="Rica" loading="lazy">
       </div>
       <div class="about-text fade-up">
         <div class="section-header">
@@ -140,59 +137,54 @@
 
     <div class="gallery-grid">
       <!--
-        ★ 画像差し替えテンプレート:
-        <div class="gallery-item" data-category="bridal" data-label="Bridal — ウェディング">
-          <img src="images/gallery/bridal_01.jpg" alt="Bridal Makeup" loading="lazy">
-          <div class="gallery-item-overlay">
-            <span class="gallery-item-label">Bridal</span>
-          </div>
-        </div>
-        カテゴリ: bridal / studio / fashion / party / natural
+        ★ 実際の画像に差し替えるときのテンプレート:
+        src の picsum URL をローカルパスに変更するだけでOK
+        例: src="images/gallery/bridal_01.jpg"
       -->
 
       <!-- Bridal -->
       <div class="gallery-item" data-category="bridal" data-label="Bridal — ウェディング">
-        <div class="gallery-placeholder" data-text="Bridal 01"></div>
+        <img src="images/gallery/bridal_01.jpg" alt="Bridal Makeup 01" loading="lazy">
         <div class="gallery-item-overlay"><span class="gallery-item-label">Bridal</span></div>
       </div>
-      <div class="gallery-item" data-category="bridal" data-label="Bridal — ウェディング">
-        <div class="gallery-placeholder" data-text="Bridal 02"></div>
+      <div class="gallery-item" data-category="bridal" data-label="Bridal — 振袖・後撮り">
+        <img src="images/gallery/bridal_02.jpg" alt="Bridal Makeup 02" loading="lazy">
         <div class="gallery-item-overlay"><span class="gallery-item-label">Bridal</span></div>
       </div>
       <!-- Studio -->
-      <div class="gallery-item" data-category="studio" data-label="Studio — 撮影">
-        <div class="gallery-placeholder" data-text="Studio 01"></div>
+      <div class="gallery-item" data-category="studio" data-label="Studio — スタジオ撮影">
+        <img src="images/gallery/studio_01.jpg" alt="Studio Makeup 01" loading="lazy">
         <div class="gallery-item-overlay"><span class="gallery-item-label">Studio</span></div>
       </div>
-      <div class="gallery-item" data-category="studio" data-label="Studio — 撮影">
-        <div class="gallery-placeholder" data-text="Studio 02"></div>
+      <div class="gallery-item" data-category="studio" data-label="Studio — ポートレート">
+        <img src="images/gallery/studio_02.jpg" alt="Studio Makeup 02" loading="lazy">
         <div class="gallery-item-overlay"><span class="gallery-item-label">Studio</span></div>
       </div>
       <!-- Fashion -->
-      <div class="gallery-item" data-category="fashion" data-label="Fashion — ファッション">
-        <div class="gallery-placeholder" data-text="Fashion 01"></div>
+      <div class="gallery-item" data-category="fashion" data-label="Fashion — ファッション撮影">
+        <img src="images/gallery/fashion_01.jpg" alt="Fashion Makeup 01" loading="lazy">
         <div class="gallery-item-overlay"><span class="gallery-item-label">Fashion</span></div>
       </div>
-      <div class="gallery-item" data-category="fashion" data-label="Fashion — ファッション">
-        <div class="gallery-placeholder" data-text="Fashion 02"></div>
+      <div class="gallery-item" data-category="fashion" data-label="Fashion — アウトドア">
+        <img src="images/gallery/fashion_02.jpg" alt="Fashion Makeup 02" loading="lazy">
         <div class="gallery-item-overlay"><span class="gallery-item-label">Fashion</span></div>
       </div>
       <!-- Party -->
-      <div class="gallery-item" data-category="party" data-label="Party — パーティー">
-        <div class="gallery-placeholder" data-text="Party 01"></div>
+      <div class="gallery-item" data-category="party" data-label="Party — アートメイク">
+        <img src="images/gallery/party_01.jpg" alt="Party Makeup 01" loading="lazy">
         <div class="gallery-item-overlay"><span class="gallery-item-label">Party</span></div>
       </div>
-      <div class="gallery-item" data-category="party" data-label="Party — パーティー">
-        <div class="gallery-placeholder" data-text="Party 02"></div>
+      <div class="gallery-item" data-category="party" data-label="Party — イベント">
+        <img src="images/gallery/party_02.jpg" alt="Party Makeup 02" loading="lazy">
         <div class="gallery-item-overlay"><span class="gallery-item-label">Party</span></div>
       </div>
       <!-- Natural -->
       <div class="gallery-item" data-category="natural" data-label="Natural — ナチュラル">
-        <div class="gallery-placeholder" data-text="Natural 01"></div>
+        <img src="images/gallery/natural_01.jpg" alt="Natural Makeup 01" loading="lazy">
         <div class="gallery-item-overlay"><span class="gallery-item-label">Natural</span></div>
       </div>
-      <div class="gallery-item" data-category="natural" data-label="Natural — ナチュラル">
-        <div class="gallery-placeholder" data-text="Natural 02"></div>
+      <div class="gallery-item" data-category="natural" data-label="Natural — アウトドア">
+        <img src="images/gallery/natural_02.jpg" alt="Natural Makeup 02" loading="lazy">
         <div class="gallery-item-overlay"><span class="gallery-item-label">Natural</span></div>
       </div>
     </div>
