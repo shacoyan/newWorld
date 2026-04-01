@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useAppData } from '../hooks/useAppData'
-import { getTodayKey, formatDateLabel, formatMoney, calcMonthlyTotal, calcPeriodRange, calcDailyWage, calcHours, escapeHtml } from '../lib/calc'
+import Header from '../components/Header'
+import { getTodayKey, formatDateLabel, formatMoney, calcMonthlyTotal, calcPeriodRange, calcDailyWage, calcHours } from '../lib/calc'
 
 export default function Dashboard() {
   const user = useAuth();
@@ -16,7 +17,6 @@ export default function Dashboard() {
 
   if (!data) return null;
 
-  const displayName = user?.displayName || user?.email || '';
   const monthly = calcMonthlyTotal(year, month, data);
   const total = monthly.total || 0;
   const wageTotal = monthly.wageTotal || 0;
@@ -31,8 +31,8 @@ export default function Dashboard() {
   let totalWorkMinutes = 0;
   const itemCounts = {};
 
-  const start = new Date(range.startDate + 'T00:00:00');
-  const end = new Date(range.endDate + 'T00:00:00');
+  const start = new Date(range.startDate);
+  const end = new Date(range.endDate);
 
   for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
     const y = d.getFullYear();
@@ -43,11 +43,11 @@ export default function Dashboard() {
     const rec = data.records ? data.records[key] : null;
     if (rec) {
       const dw = calcDailyWage(rec, data.settings);
-      if (dw > 0) {
+      if (dw.total > 0) {
         workDays++;
-        workTotal += dw;
-        if (dw > bestDayAmount) {
-          bestDayAmount = dw;
+        workTotal += dw.total;
+        if (dw.total > bestDayAmount) {
+          bestDayAmount = dw.total;
           bestDayKey = key;
         }
       }
@@ -56,15 +56,15 @@ export default function Dashboard() {
         totalWorkMinutes += calcHours(rec.startTime, rec.endTime) * 60;
       }
 
-      if (rec.items) {
-        for (const item of rec.items) {
-          const name = item.name || '';
-          if (!itemCounts[name]) {
-            itemCounts[name] = { count: 0, back: 0 };
+      if (rec.items && data.settings && data.settings.items) {
+        data.settings.items.forEach(item => {
+          const count = rec.items[item.id] || 0;
+          if (count > 0) {
+            if (!itemCounts[item.name]) itemCounts[item.name] = { count: 0, back: 0 };
+            itemCounts[item.name].count += count;
+            itemCounts[item.name].back += (item.back || 0) * count;
           }
-          itemCounts[name].count += (item.count || 0);
-          itemCounts[name].back += (item.back || 0) * (item.count || 0);
-        }
+        });
       }
     }
   }
@@ -96,20 +96,13 @@ export default function Dashboard() {
     }
   };
 
+  const fmtDate = (d) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
   return (
     <div>
-      <header>
-        <Link to="/" className="header-logo-link">
-          <img src="./logo.png" alt="こんまに" className="header-logo" />
-        </Link>
-        <h1 className="header-title">統計</h1>
-        <div className="user-chip-small">
-          <span className="user-initial">{displayName.charAt(0) || '?'}</span>
-          <span>{displayName}</span>
-        </div>
-      </header>
+      <Header type="sub" title="統計" onBack={() => navigate('/')} />
 
-      <main>
+      <main style={{ paddingTop: '56px' }}>
         <div className="dash-month-nav">
           <button className="month-nav-btn" onClick={prevMonth}>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -118,7 +111,7 @@ export default function Dashboard() {
           </button>
           <div className="dash-month-info">
             <div id="dash-month-label">{year}年{month}月</div>
-            <div id="period-label">{range.startDate} 〜 {range.endDate}</div>
+            <div id="period-label">{fmtDate(range.startDate)} 〜 {fmtDate(range.endDate)}</div>
           </div>
           <button className="month-nav-btn" onClick={nextMonth}>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -178,7 +171,7 @@ export default function Dashboard() {
             {Object.entries(itemCounts).sort((a, b) => b[1].back - a[1].back).map(([name, val]) => (
               <div className="item-row" key={name}>
                 <div className="item-info">
-                  <span className="item-name">{escapeHtml(name)}</span>
+                  <span className="item-name">{name}</span>
                   <span className="item-count">{val.count}回</span>
                   <span className="item-back">{formatMoney(val.back)}</span>
                 </div>
