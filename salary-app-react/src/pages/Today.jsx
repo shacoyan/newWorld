@@ -28,7 +28,7 @@ export default function Today() {
   const defaultStartTime = settings.defaultStartTime || ''
   const defaultEndTime = settings.defaultEndTime || ''
   const defaultHourlyRate = settings.defaultHourlyRate || 0
-  const salaryType = settings.salaryType || 'monthly'
+  const salaryType = settings.salaryType || 'hourly'
   const timeStep = settings.timeStep || 15
   const stepSeconds = timeStep === 1 ? 60 : 900
   const weekStartDay = settings.weekStartDay ?? 0
@@ -39,6 +39,9 @@ export default function Today() {
   const handleTimeChange = (field, value) => {
     const newData = ensureRecord(data, selectedDate)
     newData.records[selectedDate][field] = value
+    if (selectedJobId) {
+      newData.records[selectedDate].jobId = selectedJobId
+    }
     persistData(newData)
   }
 

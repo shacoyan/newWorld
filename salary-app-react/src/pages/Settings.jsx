@@ -146,7 +146,8 @@ export default function Settings() {
       hourlyRate: 0,
       defaultStartTime: '',
       defaultEndTime: '',
-      color: '#FF6B9D'
+      color: '#FF6B9D',
+      nightShiftEnabled: false
     };
     updateSettings(prev => ({
       ...prev,
