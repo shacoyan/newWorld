@@ -253,6 +253,15 @@ export default function Settings() {
               onBlur={() => persistData(data)}
             />
           </div>
+          <div className="form-group" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <label style={{ marginBottom: 0 }}>深夜割増（22:00〜5:00 × 1.25倍）</label>
+            <input
+              type="checkbox"
+              checked={s.nightShiftEnabled ?? false}
+              onChange={(e) => updateSettings({ nightShiftEnabled: e.target.checked })}
+              style={{ width: '18px', height: '18px', accentColor: 'var(--primary)', flexShrink: 0 }}
+            />
+          </div>
         </section>
 
         <section className="section">
@@ -333,6 +342,15 @@ export default function Settings() {
                     onChange={(e) => handleJobChange(job.id, 'color', e.target.value)}
                     onBlur={() => persistData(data)}
                     style={{ width: '40px', height: '36px', padding: '2px', cursor: 'pointer' }}
+                  />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
+                  <label style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: 0 }}>深夜割増（22:00〜5:00 × 1.25倍）</label>
+                  <input
+                    type="checkbox"
+                    checked={job.nightShiftEnabled ?? false}
+                    onChange={(e) => handleJobChange(job.id, 'nightShiftEnabled', e.target.checked)}
+                    style={{ width: '18px', height: '18px', accentColor: 'var(--primary)', flexShrink: 0 }}
                   />
                 </div>
               </div>

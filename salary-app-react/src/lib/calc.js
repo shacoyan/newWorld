@@ -25,7 +25,8 @@ export function getDefaultSettings() {
       { id: 'default-orishan', name: 'オリシャン', back: 0, category: 'champagne' }
     ],
     jobs: [],
-    monthlyGoal: 0
+    monthlyGoal: 0,
+    nightShiftEnabled: false
   };
 }
 
@@ -75,19 +76,44 @@ export function calcHours(startTime, endTime) {
   return Math.max(0, diff / 60);
 }
 
+export function calcNightShiftHours(startTime, endTime) {
+  if (!startTime || !endTime) return 0;
+  const [sh, sm] = startTime.split(':').map(Number);
+  const [eh, em] = endTime.split(':').map(Number);
+  let startMins = sh * 60 + sm;
+  let endMins = eh * 60 + em;
+  if (endMins <= startMins) endMins += 24 * 60;
+
+  // 深夜帯1: 22:00〜24:00 = 1320〜1440分
+  const seg1Start = 22 * 60;
+  const seg1End = 24 * 60;
+  const ov1 = Math.max(0, Math.min(endMins, seg1End) - Math.max(startMins, seg1Start));
+
+  // 深夜帯2: 24:00〜翌5:00 = 1440〜1740分
+  const seg2Start = 24 * 60;
+  const seg2End = (24 + 5) * 60;
+  const ov2 = Math.max(0, Math.min(endMins, seg2End) - Math.max(startMins, seg2Start));
+
+  return (ov1 + ov2) / 60;
+}
+
 export function calcDailyWage(record, settings) {
   const hours = calcHours(record.startTime, record.endTime);
   let wage = 0;
   
   if (settings.salaryType === 'hourly') {
-    let hourlyRate;
     const job = record.jobId && (settings.jobs || []).find(j => j.id === record.jobId);
-    if (job) {
-      hourlyRate = job.hourlyRate;
+    const hourlyRate = job ? job.hourlyRate : (record.hourlyRate || settings.defaultHourlyRate || 0);
+    const nightEnabled = job
+      ? (job.nightShiftEnabled ?? false)
+      : (settings.nightShiftEnabled ?? false);
+    if (nightEnabled) {
+      const nightHours = calcNightShiftHours(record.startTime, record.endTime);
+      const regularHours = hours - nightHours;
+      wage = Math.round(regularHours * hourlyRate + nightHours * hourlyRate * 1.25);
     } else {
-      hourlyRate = record.hourlyRate || settings.defaultHourlyRate || 0;
+      wage = Math.round(hours * hourlyRate);
     }
-    wage = Math.round(hours * hourlyRate);
   } else {
     const daysInMonth = getDaysInMonth(new Date().getFullYear(), new Date().getMonth() + 1);
     wage = Math.round((settings.baseSalary || 0) / daysInMonth);
