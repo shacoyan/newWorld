@@ -130,7 +130,7 @@ export default function Settings() {
       <Header />
       <main style={{ paddingTop: '56px' }}>
         <div style={{ textAlign: 'center', padding: '8px 0 4px' }}>
-          <h2 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text)' }}>設定</h2>
+          <h1 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text)' }}>設定</h1>
         </div>
         <section className="section">
           <h2 className="section-title">給与タイプ</h2>

@@ -100,14 +100,14 @@ export default function Today() {
       <Header type="main" />
       <main style={{ paddingTop: '56px' }}>
         <div className="date-display-section">
-          <h2>{formatDateFull(selectedDate)}{selectedDate === todayKey && ' (今日)'}</h2>
+          <h1>{formatDateFull(selectedDate)}{selectedDate === todayKey && ' (今日)'}</h1>
         </div>
 
         <div className="section calendar-section">
           <div className="calendar-nav">
-            <button onClick={goToPrevMonth}>&lt;</button>
+            <button onClick={goToPrevMonth} aria-label="前の月">&lt;</button>
             <span>{calYear}年{calMonth}月</span>
-            <button onClick={goToNextMonth}>&gt;</button>
+            <button onClick={goToNextMonth} aria-label="次の月">&gt;</button>
           </div>
           <div className="calendar-weekdays">
             {[...WEEKDAYS.slice(weekStartDay), ...WEEKDAYS.slice(0, weekStartDay)].map((wd, i) => {

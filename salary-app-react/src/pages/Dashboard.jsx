@@ -102,10 +102,10 @@ export default function Dashboard() {
 
       <main style={{ paddingTop: '56px' }}>
         <div style={{ textAlign: 'center', padding: '8px 0 4px' }}>
-          <h2 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text)' }}>統計</h2>
+          <h1 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text)' }}>統計</h1>
         </div>
         <div className="dash-month-nav">
-          <button className="month-nav-btn" onClick={prevMonth}>
+          <button className="month-nav-btn" onClick={prevMonth} aria-label="前の月">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path d="M13 4L7 10L13 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -114,7 +114,7 @@ export default function Dashboard() {
             <div id="dash-month-label">{year}年{month}月</div>
             <div id="period-label">{fmtDate(range.startDate)} 〜 {fmtDate(range.endDate)}</div>
           </div>
-          <button className="month-nav-btn" onClick={nextMonth}>
+          <button className="month-nav-btn" onClick={nextMonth} aria-label="次の月">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path d="M7 4L13 10L7 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>

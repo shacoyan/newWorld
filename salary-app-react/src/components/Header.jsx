@@ -26,6 +26,7 @@ export default function Header() {
         className={`hamburger-btn${menuOpen ? ' is-open' : ''}`}
         onClick={() => setMenuOpen(prev => !prev)}
         aria-expanded={menuOpen}
+        aria-label={menuOpen ? 'メニューを閉じる' : 'メニューを開く'}
       >
         <span></span>
         <span></span>
