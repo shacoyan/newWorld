@@ -25,10 +25,13 @@ export default function ItemRows({ items, record, onCountChange }) {
       {castItems.map(item => makeRow(item))}
       {champItems.length > 0 && (
         <>
-          <button className="btn-champagne-toggle" onClick={() => setChampOpen(prev => !prev)}>
-            シャンパン {champOpen ? '▼' : '▶'}
+          <button
+            className={`btn-champagne-toggle${champOpen ? ' is-open' : ''}`}
+            onClick={() => setChampOpen(prev => !prev)}
+          >
+            シャンパン <span className="champ-arrow">▶</span>
           </button>
-          <div className="champagne-items-wrap" style={{ display: champOpen ? 'block' : 'none' }}>
+          <div className={`champagne-items-wrap${champOpen ? ' is-open' : ''}`}>
             {champItems.map(item => makeRow(item))}
           </div>
         </>

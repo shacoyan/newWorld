@@ -963,6 +963,27 @@ input[type="time"] { width: 120px; }
   margin-top: 8px;
 }
 
+.btn-champagne-toggle .champ-arrow {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+.btn-champagne-toggle.is-open .champ-arrow {
+  transform: rotate(90deg);
+}
+
+.champagne-items-wrap {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.25s ease;
+}
+
+.champagne-items-wrap.is-open {
+  max-height: 600px;
+  opacity: 1;
+}
+
 .item-category-label {
   font-size: 11px;
   font-weight: 700;
