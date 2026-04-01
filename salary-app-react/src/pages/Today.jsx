@@ -152,23 +152,21 @@ export default function Today() {
         </div>
 
         <div className="section summary-section">
-          <h3>{selectedDate === todayKey ? '本日の合計' : 'この日の合計'}</h3>
-          <div className="summary-row">
-            <span>時給分</span>
-            <span>{formatMoney(daily.wage)}</span>
-          </div>
-          <div className="summary-row">
-            <span>バック</span>
-            <span>{formatMoney(daily.back)}</span>
-          </div>
-          <div className="summary-row">
-            <span>合計</span>
-            <span>{formatMoney(daily.total)}</span>
+          <p className="summary-label">{selectedDate === todayKey ? '本日の合計' : 'この日の合計'}</p>
+          <div className="summary-total">{formatMoney(daily.total)}</div>
+          <div className="summary-breakdown">
+            <div className="summary-card">
+              <span className="summary-card-label">時給分</span>
+              <span className="summary-card-value">{formatMoney(daily.wage)}</span>
+            </div>
+            <div className="summary-card">
+              <span className="summary-card-label">バック</span>
+              <span className="summary-card-value">{formatMoney(daily.back)}</span>
+            </div>
           </div>
           {daily.hours > 0 && (
-            <div className="summary-row">
-              <span>平均時給</span>
-              <span>{formatMoney(daily.avgHourlyRate)}/h</span>
+            <div className="summary-sub">
+              平均時給 {formatMoney(daily.avgHourlyRate)}/h · {daily.hours.toFixed(1)}h稼働
             </div>
           )}
         </div>
