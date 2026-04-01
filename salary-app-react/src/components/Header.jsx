@@ -32,7 +32,11 @@ export default function Header() {
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
     return () => observer.disconnect()
   }, [])
-  const logoSrc = logoTheme === 'gothic' ? './logo-gothic.png' : './logo.png'
+  const logoSrc = logoTheme === 'gothic'
+    ? './logo-gothic.png'
+    : logoTheme === 'magical'
+      ? './logo-magical.png'
+      : './logo.png'
 
   const handleLogout = async () => {
     setMenuOpen(false)

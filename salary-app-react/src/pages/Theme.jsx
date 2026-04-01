@@ -22,6 +22,15 @@ const THEMES = [
     bg: 'linear-gradient(135deg, #0d0d0d 0%, #120808 50%, #0d0a05 100%)',
     textColor: '#f5f0eb',
   },
+  {
+    id: 'magical',
+    name: 'マジカル',
+    desc: '魔法少女カラーのレインボーポップデザイン',
+    logo: './logo-magical.png',
+    colors: ['#ff4da6', '#b088f5', '#00d4e8', '#ffd700'],
+    bg: 'linear-gradient(135deg, #fff0f7 0%, #f5f0ff 40%, #e0faff 70%, #fffde7 100%)',
+    textColor: '#4a0072',
+  },
 ]
 
 export default function Theme() {
@@ -70,7 +79,7 @@ export default function Theme() {
   const currentTheme = s.theme || 'default'
 
   const handleSelect = (themeId) => {
-    const newSettings = { ...s, theme: themeId, usePremiumLogo: themeId === 'gothic' }
+    const newSettings = { ...s, theme: themeId, usePremiumLogo: themeId !== 'default' }
     persistData({ ...data, settings: newSettings })
     if (themeId === 'default') {
       document.documentElement.removeAttribute('data-theme')
