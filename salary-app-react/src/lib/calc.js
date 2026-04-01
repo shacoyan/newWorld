@@ -69,7 +69,7 @@ export function calcHours(startTime, endTime) {
   return Math.max(0, diff / 60);
 }
 
-export function calcDailyWage(settings, record) {
+export function calcDailyWage(record, settings) {
   const hours = calcHours(record.startTime, record.endTime);
   let wage = 0;
   
@@ -109,7 +109,7 @@ export function calcMonthlyTotal(settings, records) {
   
   for (const key in records) {
     const record = records[key];
-    const { wage, back, hours } = calcDailyWage(settings, record);
+    const { wage, back, hours } = calcDailyWage(record, settings);
     totalWage += wage;
     totalBack += back;
     totalHours += hours;
@@ -118,12 +118,17 @@ export function calcMonthlyTotal(settings, records) {
   return { totalWage, totalBack, totalHours, totalAll: totalWage + totalBack };
 }
 
-export function ensureRecord(record) {
-  return {
-    startTime: '',
-    endTime: '',
-    items: {},
-    memo: '',
-    ...record
-  };
+export function ensureRecord(data, dateKey) {
+  const records = { ...data.records };
+  if (!records[dateKey]) {
+    records[dateKey] = {
+      startTime: '',
+      endTime: '',
+      hourlyRate: (data.settings && data.settings.defaultHourlyRate) || 0,
+      items: {}
+    };
+  } else {
+    records[dateKey] = { ...records[dateKey], items: records[dateKey].items || {} };
+  }
+  return { ...data, records };
 }
