@@ -42,7 +42,7 @@ export default function Report() {
     a.href = url
     a.download = `konmani-${year}-${String(month).padStart(2, '0')}.csv`
     a.click()
-    URL.revokeObjectURL(url)
+    setTimeout(() => URL.revokeObjectURL(url), 1000)
   }
 
   return (

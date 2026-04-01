@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useAppData } from '../hooks/useAppData'
-import { getTodayKey, formatDateFull, formatMoney, ensureRecord, calcDailyWage, getDaysInMonth, WEEKDAYS } from '../lib/calc'
+import { getTodayKey, formatDateFull, ensureRecord, calcDailyWage, getDaysInMonth, WEEKDAYS } from '../lib/calc'
 import Header from '../components/Header'
 import JobSelector from '../components/JobSelector'
 import ItemRows from '../components/ItemRows'
@@ -114,7 +114,7 @@ export default function Today() {
 
   return (
     <>
-      <Header type="main" />
+      <Header />
       <main style={{ paddingTop: '56px' }}>
         <div className="date-display-section">
           <h1>{formatDateFull(selectedDate)}{selectedDate === todayKey && ' (今日)'}</h1>
