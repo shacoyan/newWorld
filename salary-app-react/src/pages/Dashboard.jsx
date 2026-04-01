@@ -76,6 +76,41 @@ export default function Dashboard() {
   const backPercent = total > 0 ? (backTotal / total) * 100 : 0;
   const wagePercent = total > 0 ? (wageTotal / total) * 100 : 100;
 
+  const goal = data.settings?.monthlyGoal || 0;
+  const progressPercent = goal > 0 ? Math.min((total / goal) * 100, 100) : 0;
+  const isGoalAchieved = goal > 0 && total >= goal;
+
+  const isPremium = data.settings?.isPremium ?? false;
+  const jobs = data.settings?.jobs || [];
+
+  const jobMap = {};
+  jobs.forEach(j => { jobMap[j.id] = j; });
+
+  const jobStats = {};
+  const daysInMonth = new Date(year, month, 0).getDate();
+  for (let d = 1; d <= daysInMonth; d++) {
+    const mStr = String(month).padStart(2, '0');
+    const dStr = String(d).padStart(2, '0');
+    const key = `${year}-${mStr}-${dStr}`;
+    const rec = data.records ? data.records[key] : null;
+    if (rec) {
+      const dw = calcDailyWage(rec, data.settings);
+      if (dw.total > 0) {
+        const jid = rec.jobId || null;
+        if (!jobStats[jid]) jobStats[jid] = { days: 0, income: 0 };
+        jobStats[jid].days++;
+        jobStats[jid].income += dw.total;
+      }
+    }
+  }
+
+  const jobBreakdown = Object.entries(jobStats).map(([jid, stats]) => {
+    const job = jid ? (jobMap[jid] || { id: jid, name: 'その他', color: '#999' }) : { id: 'other', name: 'その他', color: '#999' };
+    return { job, days: stats.days, income: stats.income };
+  }).sort((a, b) => b.income - a.income);
+
+  const maxJobIncome = Math.max(...jobBreakdown.map(j => j.income), 1);
+
   const prevMonth = () => {
     if (month === 1) {
       setMonth(12);
@@ -142,6 +177,23 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {goal > 0 && (
+          <div className="section goal-progress-section">
+            <div className="goal-label-row">
+              <span>目標 {formatMoney(goal)}</span>
+              <span className={isGoalAchieved ? 'goal-achieved-badge' : ''}>
+                {isGoalAchieved ? '目標達成！' : `達成 ${formatMoney(total)}（${progressPercent.toFixed(0)}%）`}
+              </span>
+            </div>
+            <div className="goal-progress-bar-wrap">
+              <div
+                className={`goal-progress-bar${isGoalAchieved ? ' achieved' : ''}`}
+                style={{ width: progressPercent + '%' }}
+              />
+            </div>
+          </div>
+        )}
+
         <div className="section">
           <h2 className="section-title">稼働情報</h2>
           <div className="total-line">
@@ -181,6 +233,26 @@ export default function Dashboard() {
           ))}
           {Object.keys(itemCounts).length === 0 && <div className="dash-empty">データなし</div>}
         </div>
+
+        {isPremium && jobs.length > 0 && (
+          <div className="section">
+            <h2 className="section-title">仕事別収入</h2>
+            {jobBreakdown.map(({ job, days, income }) => (
+              <div className="dash-item-row" key={job.id}>
+                <div className="dash-item-header">
+                  <span className="dash-item-name" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: job.color, display: 'inline-block' }} />
+                    {job.name}
+                  </span>
+                  <span className="dash-item-stats">{days}日 · {formatMoney(income)}</span>
+                </div>
+                <div className="dash-bar-bg">
+                  <div className="dash-bar-fill" style={{ width: (income / maxJobIncome * 100) + '%', background: job.color }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="section">
           <h2 className="section-title">内訳比率</h2>

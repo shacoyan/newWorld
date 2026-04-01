@@ -23,7 +23,9 @@ export function getDefaultSettings() {
       { id: 'default-shot',  name: 'ショット',  back: 0, category: 'cast' },
       { id: 'default-cheki', name: 'チェキ',    back: 0, category: 'cast' },
       { id: 'default-orishan', name: 'オリシャン', back: 0, category: 'champagne' }
-    ]
+    ],
+    jobs: [],
+    monthlyGoal: 0
   };
 }
 
@@ -78,7 +80,14 @@ export function calcDailyWage(record, settings) {
   let wage = 0;
   
   if (settings.salaryType === 'hourly') {
-    wage = Math.round(hours * (record.hourlyRate || settings.defaultHourlyRate || 0));
+    let hourlyRate;
+    const job = record.jobId && (settings.jobs || []).find(j => j.id === record.jobId);
+    if (job) {
+      hourlyRate = job.hourlyRate;
+    } else {
+      hourlyRate = record.hourlyRate || settings.defaultHourlyRate || 0;
+    }
+    wage = Math.round(hours * hourlyRate);
   } else {
     const daysInMonth = getDaysInMonth(new Date().getFullYear(), new Date().getMonth() + 1);
     wage = Math.round((settings.baseSalary || 0) / daysInMonth);
@@ -143,6 +152,7 @@ export function ensureRecord(data, dateKey) {
       startTime: '',
       endTime: '',
       hourlyRate: (data.settings && data.settings.defaultHourlyRate) || 0,
+      jobId: null,
       items: {}
     };
   } else {
@@ -152,4 +162,53 @@ export function ensureRecord(data, dateKey) {
     };
   }
   return { ...data, records };
+}
+
+export function buildMonthlyReport(year, month, data) {
+  const startDay = (data.settings && data.settings.payPeriodStart) || 1;
+  const range = calcPeriodRange(year, month, startDay);
+  let workDays = 0;
+  let totalHours = 0;
+  let totalWage = 0;
+  let totalBack = 0;
+  let totalIncome = 0;
+  const rows = [];
+  const d = new Date(range.startDate);
+  while (d <= range.endDate) {
+    const dateKey = d.getFullYear() + '-' +
+      String(d.getMonth() + 1).padStart(2, '0') + '-' +
+      String(d.getDate()).padStart(2, '0');
+    const rec = data.records && data.records[dateKey];
+    if (rec && rec.startTime) {
+      const r = calcDailyWage(rec, data.settings);
+      workDays += 1;
+      totalHours += r.hours;
+      totalWage += r.wage;
+      totalBack += r.back;
+      totalIncome += r.total;
+      rows.push({
+        dateKey,
+        label: formatDateLabel(dateKey),
+        startTime: rec.startTime,
+        endTime: rec.endTime,
+        hours: r.hours,
+        wage: r.wage,
+        back: r.back,
+        total: r.total
+      });
+    }
+    d.setDate(d.getDate() + 1);
+  }
+  const avgHourlyRate = totalHours > 0 ? Math.round(totalIncome / totalHours) : 0;
+  return {
+    summary: {
+      workDays,
+      totalHours,
+      totalWage,
+      totalBack,
+      totalIncome,
+      avgHourlyRate
+    },
+    rows
+  };
 }

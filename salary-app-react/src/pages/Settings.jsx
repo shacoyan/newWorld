@@ -139,6 +139,37 @@ export default function Settings() {
     }));
   };
 
+  const handleAddJob = () => {
+    const newJob = {
+      id: generateId(),
+      name: '',
+      hourlyRate: 0,
+      defaultStartTime: '',
+      defaultEndTime: '',
+      color: '#FF6B9D'
+    };
+    updateSettings(prev => ({
+      ...prev,
+      jobs: [...(prev.jobs || []), newJob]
+    }));
+  };
+
+  const handleDeleteJob = (id) => {
+    updateSettings(prev => ({
+      ...prev,
+      jobs: (prev.jobs || []).filter(j => j.id !== id)
+    }));
+  };
+
+  const handleJobChange = (id, field, value) => {
+    updateSettings(prev => ({
+      ...prev,
+      jobs: (prev.jobs || []).map(j =>
+        j.id === id ? { ...j, [field]: field === 'hourlyRate' ? Number(value) : value } : j
+      )
+    }));
+  };
+
   const handleLogout = () => {
     signOut(auth).then(() => navigate('/lp'));
   };
@@ -240,6 +271,77 @@ export default function Settings() {
         </section>
 
         <section className="section">
+          <h2 className="section-title">月収目標</h2>
+          <div className="form-group">
+            <label>目標月収</label>
+            <input
+              type="number"
+              value={s.monthlyGoal || ''}
+              placeholder="0（未設定）"
+              onChange={(e) => updateSettings({ monthlyGoal: Number(e.target.value) })}
+              onBlur={() => persistData(data)}
+            />
+          </div>
+        </section>
+
+        {s.isPremium === true && (
+          <section className="section">
+            <h2 className="section-title">仕事先管理</h2>
+            {(s.jobs || []).map(job => (
+              <div key={job.id} style={{ marginBottom: '16px', padding: '12px', border: '1px solid var(--border)', borderRadius: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <div style={{ width: '16px', height: '16px', borderRadius: '50%', backgroundColor: job.color, flexShrink: 0 }} />
+                  <strong>{job.name || '（名称未設定）'}</strong>
+                  <span style={{ marginLeft: 'auto', fontSize: '13px', color: 'var(--text-secondary)' }}>¥{job.hourlyRate}/h</span>
+                  <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{job.defaultStartTime}〜{job.defaultEndTime}</span>
+                  <button className="btn-delete" onClick={() => handleDeleteJob(job.id)}>削除</button>
+                </div>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  <input
+                    type="text"
+                    placeholder="仕事先名"
+                    value={job.name}
+                    onChange={(e) => handleJobChange(job.id, 'name', e.target.value)}
+                    onBlur={() => persistData(data)}
+                    style={{ flex: '1 1 120px' }}
+                  />
+                  <input
+                    type="number"
+                    placeholder="時給"
+                    value={job.hourlyRate || ''}
+                    onChange={(e) => handleJobChange(job.id, 'hourlyRate', e.target.value)}
+                    onBlur={() => persistData(data)}
+                    style={{ flex: '1 1 80px' }}
+                  />
+                  <input
+                    type="time"
+                    value={job.defaultStartTime || ''}
+                    onChange={(e) => handleJobChange(job.id, 'defaultStartTime', e.target.value)}
+                    onBlur={() => persistData(data)}
+                    style={{ flex: '1 1 100px' }}
+                  />
+                  <input
+                    type="time"
+                    value={job.defaultEndTime || ''}
+                    onChange={(e) => handleJobChange(job.id, 'defaultEndTime', e.target.value)}
+                    onBlur={() => persistData(data)}
+                    style={{ flex: '1 1 100px' }}
+                  />
+                  <input
+                    type="color"
+                    value={job.color || '#FF6B9D'}
+                    onChange={(e) => handleJobChange(job.id, 'color', e.target.value)}
+                    onBlur={() => persistData(data)}
+                    style={{ width: '40px', height: '36px', padding: '2px', cursor: 'pointer' }}
+                  />
+                </div>
+              </div>
+            ))}
+            <button className="add-item-btn" onClick={handleAddJob}>+ 仕事を追加</button>
+          </section>
+        )}
+
+        <section className="section">
           <h2 id="week-start-title" className="section-title">週の始まり</h2>
           <div className="radio-group" role="radiogroup" aria-labelledby="week-start-title" style={{ display:'flex', gap:'16px', marginTop:'12px', padding:'4px 0' }}>
             <label style={{ display:'flex', alignItems:'center', gap:'8px', fontSize:'14px', fontWeight:600, color:'var(--text)', cursor:'pointer' }}>
@@ -302,7 +404,7 @@ export default function Settings() {
         </section>
 
         <section className="section">
-          <h2 className="section-title">プレミアム</h2>
+          <h2 className="section-title">��レミアム</h2>
           {s.isPremium ? (
             <div>
               <div className="premium-badge">

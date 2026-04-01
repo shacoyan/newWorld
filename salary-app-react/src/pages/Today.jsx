@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { useAppData } from '../hooks/useAppData'
 import { getTodayKey, formatDateFull, formatMoney, ensureRecord, calcDailyWage, getDaysInMonth, WEEKDAYS } from '../lib/calc'
 import Header from '../components/Header'
+import JobSelector from '../components/JobSelector'
 import ItemRows from '../components/ItemRows'
 import AnimatedMoney from '../components/AnimatedMoney'
 
@@ -16,10 +17,13 @@ export default function Today() {
   const [selectedDate, setSelectedDate] = useState(todayKey)
   const [calYear, setCalYear] = useState(() => parseInt(selectedDate.split('-')[0]))
   const [calMonth, setCalMonth] = useState(() => parseInt(selectedDate.split('-')[1]))
+  const [selectedJobId, setSelectedJobId] = useState(null)
 
   if (!data) return null
 
   const settings = data.settings || {}
+  const jobs = settings.jobs || []
+  const isPremium = settings.isPremium || false
   const defaultStartTime = settings.defaultStartTime || ''
   const defaultEndTime = settings.defaultEndTime || ''
   const defaultHourlyRate = settings.defaultHourlyRate || 0
@@ -43,11 +47,25 @@ export default function Today() {
     persistData(newData)
   }
 
+  const handleJobSelect = (jobId) => {
+    setSelectedJobId(jobId)
+    const selectedJob = jobs.find(j => j.id === jobId)
+    if (selectedJob) {
+      if (selectedJob.defaultStartTime) {
+        handleTimeChange('startTime', selectedJob.defaultStartTime)
+      }
+      if (selectedJob.defaultEndTime) {
+        handleTimeChange('endTime', selectedJob.defaultEndTime)
+      }
+    }
+  }
+
   const handleCheckin = () => {
     if (!defaultStartTime || !defaultEndTime) return
     const newData = ensureRecord(data, selectedDate)
     newData.records[selectedDate].startTime = defaultStartTime
     newData.records[selectedDate].endTime = defaultEndTime
+    newData.records[selectedDate].jobId = selectedJobId
     persistData(newData)
   }
 
@@ -179,6 +197,9 @@ export default function Today() {
         </div>
 
         <div className="section work-section">
+          {isPremium && jobs.length > 0 && (
+            <JobSelector jobs={jobs} selectedJobId={selectedJobId} onChange={handleJobSelect} />
+          )}
           {!defaultStartTime && (
             <div style={{ padding: '10px 14px', background: 'var(--warning-bg)', borderRadius: '10px', fontSize: '13px', color: 'var(--warning-text)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               ⚠ デフォルト出勤時刻が未設定です
