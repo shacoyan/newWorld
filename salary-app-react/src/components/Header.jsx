@@ -22,27 +22,29 @@ export default function Header() {
       <header className="header">
         <div style={{ width: 44 }}></div>
         <Link to="/" className="header-logo"><img src="./logo.png" alt="こんまに" className="header-logo-img" /></Link>
-        <button className="hamburger-btn" onClick={() => setMenuOpen(prev => !prev)}>
-          ☰
-        </button>
-      </header>
+        <button
+        className={`hamburger-btn${menuOpen ? ' is-open' : ''}`}
+        onClick={() => setMenuOpen(prev => !prev)}
+        aria-expanded={menuOpen}
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </header>
 
-      {menuOpen && (
-        <>
-          <div className="hamburger-overlay" onClick={closeMenu}></div>
-          <div className="hamburger-menu">
-            {user && (
-              <div className="menu-user">
-                {user.displayName || user.email}
-              </div>
-            )}
-            <button onClick={() => { navigate('/'); closeMenu(); }}>ホーム</button>
-            <button onClick={() => { navigate('/dashboard'); closeMenu(); }}>統計</button>
-            <button onClick={() => { navigate('/settings'); closeMenu(); }}>設定</button>
-            <button className="btn-logout" onClick={handleLogout}>ログアウト</button>
-          </div>
-        </>
+    <div className={`hamburger-overlay${menuOpen ? ' is-open' : ''}`} onClick={closeMenu}></div>
+    <div className={`hamburger-menu${menuOpen ? ' is-open' : ''}`}>
+      {user && (
+        <div className="menu-user">
+          {user.displayName || user.email}
+        </div>
       )}
-    </>
+      <button onClick={() => { navigate('/'); closeMenu(); }}>ホーム</button>
+      <button onClick={() => { navigate('/dashboard'); closeMenu(); }}>統計</button>
+      <button onClick={() => { navigate('/settings'); closeMenu(); }}>設定</button>
+      <button className="btn-logout" onClick={handleLogout}>ログアウト</button>
+    </div>
+  </>
   )
 }
