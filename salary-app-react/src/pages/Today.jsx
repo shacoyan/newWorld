@@ -180,7 +180,7 @@ export default function Today() {
 
         <div className="section work-section">
           {!defaultStartTime && (
-            <div style={{ padding: '10px 14px', background: '#fff3cd', borderRadius: '10px', fontSize: '13px', color: '#856404', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ padding: '10px 14px', background: 'var(--warning-bg)', borderRadius: '10px', fontSize: '13px', color: 'var(--warning-text)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               ⚠ デフォルト出勤時刻が未設定です
               <button onClick={() => navigate('/settings')} style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 600, cursor: 'pointer', fontSize: '13px' }}>設定する →</button>
             </div>
