@@ -33,7 +33,7 @@ export default function Header({ type, title, onBack }) {
     <>
       <header className="header">
         <div style={{ width: 32 }}></div>
-        <Link to="/" className="header-logo">こんまに</Link>
+        <Link to="/" className="header-logo"><img src="./logo.png" alt="こんまに" className="header-logo-img" /></Link>
         <button className="hamburger-btn" onClick={() => setMenuOpen(prev => !prev)}>
           ☰
         </button>
