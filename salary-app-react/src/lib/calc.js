@@ -17,6 +17,7 @@ export function getDefaultSettings() {
     weekStartDay: 0,
     isPremium: false,
     usePremiumLogo: false,
+    theme: 'default',
     items: [
       { id: 'default-drink', name: 'ドリンク', back: 0, category: 'cast' },
       { id: 'default-shot',  name: 'ショット',  back: 0, category: 'cast' },

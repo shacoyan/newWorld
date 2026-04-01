@@ -26,6 +26,88 @@
   --radius-xs: 10px;
 }
 
+/* ===== Gothic Theme ===== */
+[data-theme="gothic"] {
+  --primary: #c0392b;
+  --primary-hover: #922b21;
+  --primary-bg: #2d0a0a;
+  --primary-light: #1a0505;
+  --secondary: #b7791f;
+  --secondary-bg: #1c1200;
+  --accent: #d4a017;
+  --accent-bg: #1c1200;
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+  --today-bg: #2d0a0a;
+  --today-border: #c0392b;
+  --today-label: #ef4444;
+  --today-glow: rgba(192,57,43,0.25);
+  --text: #f5f0eb;
+  --text-secondary: #d4a017;
+  --text-muted: #8a7060;
+  --border: rgba(192,57,43,0.35);
+  --bg: #0d0d0d;
+  --white: #1a1a1a;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.5);
+  --shadow: 0 4px 24px rgba(0,0,0,0.6);
+}
+
+[data-theme="gothic"] body {
+  background: linear-gradient(135deg, #0d0d0d 0%, #120808 50%, #0d0a05 100%);
+}
+
+[data-theme="gothic"] .header {
+  background: linear-gradient(135deg, #1a0505 0%, #2d0a0a 50%, #1c1200 100%);
+  border-bottom: 1px solid rgba(192,57,43,0.4);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+}
+
+[data-theme="gothic"] .section {
+  background: #1a1a1a;
+  border-color: rgba(192,57,43,0.25);
+}
+
+[data-theme="gothic"] .hamburger-menu {
+  background: #111;
+  border-right: 1px solid rgba(192,57,43,0.3);
+}
+
+[data-theme="gothic"] .menu-header {
+  background: linear-gradient(135deg, #1a0505, #2d0a0a);
+}
+
+[data-theme="gothic"] .hamburger-overlay {
+  background: rgba(0,0,0,0.7);
+}
+
+[data-theme="gothic"] .hamburger-btn span {
+  background: #f5f0eb;
+}
+
+[data-theme="gothic"] input[type="text"],
+[data-theme="gothic"] input[type="number"],
+[data-theme="gothic"] input[type="time"] {
+  background: #111;
+  border-color: rgba(192,57,43,0.4);
+  color: #f5f0eb;
+}
+
+[data-theme="gothic"] .calendar-day {
+  background: #1a1a1a;
+  border-color: rgba(192,57,43,0.15);
+}
+
+[data-theme="gothic"] .calendar-day.has-record {
+  background: #2d0a0a;
+  border-color: rgba(192,57,43,0.5);
+}
+
+[data-theme="gothic"] .calendar-day.today {
+  background: #2d0a0a;
+  border-color: #c0392b;
+  box-shadow: 0 0 12px rgba(192,57,43,0.35);
+}
+
 *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
 body {
