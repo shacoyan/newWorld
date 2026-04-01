@@ -32,10 +32,10 @@
   --primary-hover: #922b21;
   --primary-bg: #2d0a0a;
   --primary-light: #1a0505;
-  --secondary: #b7791f;
-  --secondary-bg: #1c1200;
-  --accent: #d4a017;
-  --accent-bg: #1c1200;
+  --secondary: #991b1b;
+  --secondary-bg: #200808;
+  --accent: #dc143c;
+  --accent-bg: #200808;
   --danger: #ef4444;
   --danger-hover: #dc2626;
   --today-bg: #2d0a0a;
@@ -44,31 +44,31 @@
   --today-glow: rgba(192,57,43,0.25);
   --text: #f5f0eb;
   --text-secondary: #d4a017;
-  --text-muted: #8a7060;
+  --text-muted: #9e7070;
   --border: rgba(192,57,43,0.35);
   --bg: #0d0d0d;
-  --white: #1a1a1a;
+  --white: #1c0a0a;
   --shadow-sm: 0 2px 8px rgba(0,0,0,0.5);
   --shadow: 0 4px 24px rgba(0,0,0,0.6);
 }
 
 [data-theme="gothic"] body {
-  background: linear-gradient(135deg, #0d0d0d 0%, #120808 50%, #0d0a05 100%);
+  background: linear-gradient(135deg, #0d0d0d 0%, #120808 50%, #0d0505 100%);
 }
 
 [data-theme="gothic"] .header {
-  background: linear-gradient(135deg, #1a0505 0%, #2d0a0a 50%, #1c1200 100%);
+  background: linear-gradient(135deg, #1a0505 0%, #2d0a0a 50%, #1a0505 100%);
   border-bottom: 1px solid rgba(192,57,43,0.4);
   box-shadow: 0 4px 20px rgba(0,0,0,0.6);
 }
 
 [data-theme="gothic"] .section {
-  background: #1a1a1a;
+  background: #1c0a0a;
   border-color: rgba(192,57,43,0.25);
 }
 
 [data-theme="gothic"] .hamburger-menu {
-  background: #111;
+  background: #0e0505;
   border-right: 1px solid rgba(192,57,43,0.3);
 }
 
@@ -87,13 +87,13 @@
 [data-theme="gothic"] input[type="text"],
 [data-theme="gothic"] input[type="number"],
 [data-theme="gothic"] input[type="time"] {
-  background: #111;
+  background: #0e0505;
   border-color: rgba(192,57,43,0.4);
   color: #f5f0eb;
 }
 
 [data-theme="gothic"] .calendar-day {
-  background: #1a1a1a;
+  background: #1c0a0a;
   border-color: rgba(192,57,43,0.15);
 }
 
@@ -1410,8 +1410,9 @@ main { padding-top: 72px; }
   padding: 20px 16px 8px;
 }
 
+.date-display-section h1,
 .date-display-section h2 {
-  font-size: 17px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--text);
 }
