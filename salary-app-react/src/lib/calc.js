@@ -75,7 +75,7 @@ export function calcDailyWage(record, settings) {
   let wage = 0;
   
   if (settings.salaryType === 'hourly') {
-    wage = Math.round(hours * (settings.defaultHourlyRate || 0));
+    wage = Math.round(hours * (record.hourlyRate || settings.defaultHourlyRate || 0));
   } else {
     const daysInMonth = getDaysInMonth(new Date().getFullYear(), new Date().getMonth() + 1);
     wage = Math.round((settings.baseSalary || 0) / daysInMonth);
