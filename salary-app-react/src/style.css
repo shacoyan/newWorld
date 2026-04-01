@@ -502,8 +502,8 @@ input[type="time"] { width: 120px; }
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255,255,255,0.7);
-  border: 1.5px solid rgba(236,131,192,0.3);
+  background: var(--card-bg);
+  border: 1.5px solid var(--border);
   font-size: 20px;
   color: var(--text);
   cursor: pointer;
@@ -535,8 +535,12 @@ input[type="time"] { width: 120px; }
   text-transform: uppercase;
 }
 
-.calendar-weekdays span.sunday { color: #f43f5e; }
+.calendar-weekdays span.sunday { color: var(--danger); }
 .calendar-weekdays span.saturday { color: var(--saturday-color); }
+
+.calendar-section {
+  overflow: hidden;
+}
 
 .calendar-grid {
   display: grid;
@@ -626,7 +630,7 @@ input[type="time"] { width: 120px; }
   font-weight: 800;
 }
 
-.day-cell.sunday .cell-date  { color: #f43f5e; }
+.day-cell.sunday .cell-date  { color: var(--danger); }
 .day-cell.saturday .cell-date { color: var(--saturday-color); }
 
 /* ===== Settings Page ===== */
@@ -725,7 +729,7 @@ input[type="time"] { width: 120px; }
 /* ===== Responsive ===== */
 @media (max-width: 400px) {
   main { padding: 10px; gap: 10px; }
-  .section { padding: 14px; }
+  .section { padding: 10px; }
   .day-cell { min-height: 50px; }
   .day-cell .cell-date { font-size: 12px; }
   .day-cell .cell-total { font-size: 9px; }
@@ -733,6 +737,13 @@ input[type="time"] { width: 120px; }
   .daily-hourly-rate { width: 85px; }
   .item-dec, .item-inc { width: 28px; height: 28px; font-size: 16px; }
   #total-salary { font-size: 18px; }
+}
+
+@media (max-width: 390px) {
+  .calendar-grid { gap: 2px; }
+  .day-cell { min-height: 46px; }
+  .day-cell .cell-date { font-size: 11px; }
+  .day-cell .cell-total { font-size: 8px; }
 }
 
 @media (max-width: 360px) {
@@ -1303,8 +1314,8 @@ input[type="time"] { width: 120px; }
   bottom: 0;
   width: 260px;
   z-index: 201;
-  background: white;
-  box-shadow: -4px 0 24px rgba(232, 121, 160, 0.15);
+  background: var(--white);
+  box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
   transform: translateX(100%);

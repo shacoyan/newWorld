@@ -8,6 +8,19 @@ import Settings from './pages/Settings'
 import Dashboard from './pages/Dashboard'
 import Theme from './pages/Theme'
 
+// テーマをReactレンダリング前に同期設定（ロゴ初期表示バグ対策）
+;(function initThemeEarly() {
+  try {
+    const raw = localStorage.getItem('salary-app-v3')
+    if (raw) {
+      const theme = JSON.parse(raw)?.settings?.theme
+      if (theme && theme !== 'default') {
+        document.documentElement.setAttribute('data-theme', theme)
+      }
+    }
+  } catch (e) {}
+})()
+
 function AuthGuard({ children }) {
   const user = useAuth()
   if (user === undefined) return null
