@@ -85,9 +85,11 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  transition: color 0.15s ease;
 }
 
 .btn-back:hover { color: #ffffff; }
+.btn-back:active { transform: scale(0.9); }
 
 #goto-settings,
 #goto-dashboard,
@@ -388,6 +390,7 @@ input[type="time"] { width: 120px; }
   border-color: var(--primary);
   color: var(--primary);
 }
+.calendar-nav button:active { transform: scale(0.9); }
 
 .calendar-nav button:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
 
@@ -553,6 +556,7 @@ input[type="time"] { width: 120px; }
 }
 
 .btn-delete:hover { background: var(--danger); color: #fff; }
+.btn-delete:active { transform: scale(0.93); }
 .btn-delete:focus-visible { outline: 3px solid var(--danger); outline-offset: 2px; }
 
 .add-item-btn {
@@ -574,6 +578,7 @@ input[type="time"] { width: 120px; }
   border-color: var(--primary);
   background: var(--primary-bg);
 }
+.add-item-btn:active { transform: scale(0.97); }
 
 .add-item-btn:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
 
@@ -911,6 +916,7 @@ input[type="time"] { width: 120px; }
   transition: all 0.15s;
 }
 .month-nav-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+.month-nav-btn:active { transform: scale(0.93); }
 .dash-month-info { text-align: center; }
 
 /* ===== 設定ページ ログアウト ===== */
@@ -928,6 +934,7 @@ input[type="time"] { width: 120px; }
   transition: all 0.15s;
 }
 .btn-logout-section:hover { background: #fee2e2; }
+.btn-logout-section:active { transform: scale(0.97); }
 
 .btn-checkin-today {
   width: 100%;
@@ -1011,7 +1018,10 @@ input[type="time"] { width: 120px; }
   display: flex;
   align-items: center;
   text-decoration: none;
+  transition: opacity 0.15s ease;
 }
+.header-logo:hover { opacity: 0.8; }
+.header-logo:active { opacity: 0.6; }
 
 .header-logo-img {
   height: 52px;
@@ -1125,11 +1135,13 @@ input[type="time"] { width: 120px; }
   font-size: 16px;
   cursor: pointer;
   border-radius: 8px;
+  transition: background 0.15s ease, transform 0.1s ease;
 }
 
 .hamburger-menu button:hover {
   background: #f9f0f5;
 }
+.hamburger-menu button:active { transform: scale(0.97); }
 
 .hamburger-menu .btn-logout {
   color: #e11d48;
@@ -1376,4 +1388,5 @@ main { padding-top: 72px; }
   font-family: inherit;
 }
 .btn-move:hover { background: var(--primary-bg); border-color: var(--primary); }
+.btn-move:active { transform: scale(0.9); }
 .btn-move:disabled { opacity: 0.3; cursor: default; }
