@@ -1,13 +1,4 @@
 const JobSelector = ({ jobs, selectedJobId, onChange }) => {
-  const defaultOption = {
-    id: null,
-    name: '未指定（デフォルト）',
-    hourlyRate: null,
-    color: '#757575'
-  };
-
-  const allJobs = [defaultOption, ...jobs];
-
   const containerStyle = {
     display: 'flex',
     flexDirection: 'column',
@@ -20,9 +11,9 @@ const JobSelector = ({ jobs, selectedJobId, onChange }) => {
 
   return (
     <div style={containerStyle}>
-      {allJobs.map((job) => (
+      {jobs.map((job) => (
         <div
-          key={job.id ?? 'default'}
+          key={job.id}
           className={`job-selector-card${selectedJobId === job.id ? ' is-selected' : ''}`}
           onClick={() => handleClick(job.id)}
         >
