@@ -115,7 +115,7 @@ export default function Today() {
               return <span key={i} className={cls}>{wd}</span>
             })}
           </div>
-          <div className="calendar-grid">
+          <div className="calendar-grid" key={`${calYear}-${calMonth}`}>
             {calendarCells.map((day, idx) => {
               if (day === null) {
                 return <div key={`empty-${idx}`} className="day-cell empty"></div>
