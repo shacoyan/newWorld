@@ -154,7 +154,9 @@ export default function Today() {
 
         <div className="section summary-section">
           <p className="summary-label">{selectedDate === todayKey ? '本日の合計' : 'この日の合計'}</p>
-          <AnimatedMoney amount={daily.total} className="summary-total" />
+          <div className="summary-total">
+            <AnimatedMoney amount={daily.total} />
+          </div>
           <div className="summary-breakdown">
             <div className="summary-card">
               <span className="summary-card-label">時給分</span>
