@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { formatMoney } from '../lib/calc';
+import AnimatedMoney from './AnimatedMoney';
 
 export default function ItemRows({ items, record, onCountChange }) {
   const castItems = items.filter(i => i.category !== 'champagne');
@@ -11,7 +12,10 @@ export default function ItemRows({ items, record, onCountChange }) {
     const backAmount = (item.back || 0) * count;
     return (
       <div className="item-count-row" key={item.id}>
-        <span className="item-back-label">{backAmount > 0 ? formatMoney(backAmount) : '-'}</span>
+        {backAmount > 0
+          ? <AnimatedMoney amount={backAmount} className="item-back-label" />
+          : <span className="item-back-label">-</span>
+        }
         <span className="item-name">{item.name}</span>
         <button className="item-dec" onClick={() => onCountChange(item.id, count - 1)}>-</button>
         <span className="item-count-val">{count}</span>

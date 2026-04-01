@@ -145,7 +145,7 @@ export default function Today() {
                   onClick={() => handleDateClick(dateKey)}
                 >
                   <span className="cell-date">{day}</span>
-                  {record && cellTotal > 0 && <span className="cell-total">{formatMoney(cellTotal)}</span>}
+                  {record && cellTotal > 0 && <AnimatedMoney amount={cellTotal} className="cell-total" />}
                 </div>
               )
             })}
@@ -167,7 +167,7 @@ export default function Today() {
           </div>
           {daily.hours > 0 && (
             <div className="summary-sub">
-              平均時給 {formatMoney(daily.avgHourlyRate)}/h · {daily.hours.toFixed(1)}h稼働
+              平均時給 <AnimatedMoney amount={daily.avgHourlyRate} />/h · {daily.hours.toFixed(1)}h稼働
             </div>
           )}
         </div>
