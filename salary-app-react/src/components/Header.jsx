@@ -11,9 +11,20 @@ export default function Header() {
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
   const isPremium = data?.settings?.isPremium ?? false
-  const [logoTheme, setLogoTheme] = useState(
-    () => document.documentElement.getAttribute('data-theme') || 'default'
-  )
+  const [logoTheme, setLogoTheme] = useState(() => {
+    // まず data-theme 属性を確認（initThemeEarly で設定済みの場合）
+    const attrTheme = document.documentElement.getAttribute('data-theme')
+    if (attrTheme) return attrTheme
+    // fallback: localStorage から直接読む
+    try {
+      const raw = localStorage.getItem('salary-app-v3')
+      if (raw) {
+        const theme = JSON.parse(raw)?.settings?.theme
+        if (theme && theme !== 'default') return theme
+      }
+    } catch (e) {}
+    return 'default'
+  })
   useEffect(() => {
     const observer = new MutationObserver(() => {
       setLogoTheme(document.documentElement.getAttribute('data-theme') || 'default')

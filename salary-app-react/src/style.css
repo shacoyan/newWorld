@@ -267,6 +267,7 @@ main {
   border-radius: var(--radius);
   padding: 20px;
   box-shadow: var(--shadow);
+  overflow: hidden;
 }
 
 .section-title {
@@ -576,6 +577,7 @@ input[type="time"] { width: 120px; }
   transition: all 0.2s;
   gap: 3px;
   min-height: 58px;
+  overflow: hidden;
 }
 
 .day-cell:hover {
@@ -607,6 +609,8 @@ input[type="time"] { width: 120px; }
   line-height: 1.2;
   text-align: center;
   word-break: break-all;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 
@@ -740,6 +744,7 @@ input[type="time"] { width: 120px; }
 }
 
 @media (max-width: 390px) {
+  .section { padding: 8px; }
   .calendar-grid { gap: 2px; }
   .day-cell { min-height: 46px; }
   .day-cell .cell-date { font-size: 11px; }
@@ -1553,8 +1558,8 @@ main { padding-top: 72px; }
 }
 .dash-sub-card {
   flex: 1;
-  background: rgba(255,255,255,0.7);
-  border: 1.5px solid rgba(236,131,192,0.2);
+  background: var(--card-bg);
+  border: 1.5px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 10px 10px;
   text-align: center;
