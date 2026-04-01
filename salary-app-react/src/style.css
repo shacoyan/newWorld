@@ -353,13 +353,13 @@ input[type="time"] { width: 120px; }
 
 .calendar-nav button:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
 
-#calendar-weekdays {
+.calendar-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   margin-bottom: 4px;
 }
 
-#calendar-weekdays span {
+.calendar-weekdays span {
   text-align: center;
   font-size: 11px;
   font-weight: 600;
@@ -368,10 +368,10 @@ input[type="time"] { width: 120px; }
   text-transform: uppercase;
 }
 
-#calendar-weekdays span:first-child { color: #f43f5e; }
-#calendar-weekdays span:last-child  { color: #818cf8; }
+.calendar-weekdays span:first-child { color: #f43f5e; }
+.calendar-weekdays span:last-child  { color: #818cf8; }
 
-#calendar-grid {
+.calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 3px;
@@ -422,6 +422,16 @@ input[type="time"] { width: 120px; }
   line-height: 1.2;
   text-align: center;
   word-break: break-all;
+}
+
+
+.day-cell.selected {
+  background: linear-gradient(135deg, #f9a8d4, #c4b5fd);
+  border-radius: 10px;
+}
+.day-cell.selected .cell-date {
+  color: white;
+  font-weight: 800;
 }
 
 .day-cell.today {
@@ -1020,3 +1030,5 @@ input[type="time"] { width: 120px; }
 .hamburger-menu .btn-logout {
   color: #e11d48;
 }
+
+main { padding-top: 56px; }

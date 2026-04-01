@@ -114,7 +114,7 @@ export default function Today() {
           <div className="calendar-grid">
             {calendarCells.map((day, idx) => {
               if (day === null) {
-                return <div key={`empty-${idx}`} className="calendar-cell empty"></div>
+                return <div key={`empty-${idx}`} className="day-cell empty"></div>
               }
               const dateKey = `${calYear}-${String(calMonth).padStart(2,'0')}-${String(day).padStart(2,'0')}`
               const dayOfWeek = new Date(calYear, calMonth - 1, day).getDay()
@@ -127,7 +127,7 @@ export default function Today() {
                 cellTotal = dw.total
               }
 
-              let cls = 'calendar-cell'
+              let cls = 'day-cell'
               if (dayOfWeek === 0) cls += ' sunday'
               if (dayOfWeek === 6) cls += ' saturday'
               if (isToday) cls += ' today'
@@ -139,7 +139,7 @@ export default function Today() {
                   className={cls}
                   onClick={() => handleDateClick(dateKey)}
                 >
-                  <span className="cell-day">{day}</span>
+                  <span className="cell-date">{day}</span>
                   {record && cellTotal > 0 && <span className="cell-total">{formatMoney(cellTotal)}</span>}
                 </div>
               )
