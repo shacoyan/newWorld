@@ -5,6 +5,7 @@ import { auth } from '../lib/firebase'
 import { useAuth } from '../contexts/AuthContext'
 import { useAppData } from '../hooks/useAppData'
 import { generateId } from '../lib/calc'
+import Header from '../components/Header'
 
 export default function Settings() {
   const user = useAuth();
@@ -61,17 +62,9 @@ export default function Settings() {
 
   return (
     <div>
-      <header>
-        <Link to="/" className="btn-back">← 戻る</Link>
-        <h1 className="header-title">設定</h1>
-        <div className="user-chip-small">
-          <span className="user-initial">{displayName.charAt(0) || '?'}</span>
-          <span>{displayName}</span>
-        </div>
-      </header>
-
+      <Header type="sub" title="設定" onBack={() => navigate('/')} />
       <main>
-        <section>
+        <section className="section">
           <h2 className="section-title">給与タイプ</h2>
           <div className="radio-group">
             <label>
@@ -101,8 +94,8 @@ export default function Settings() {
               <label>デフォルト時給</label>
               <input
                 type="number"
-                value={s.defaultHourlyWage || ''}
-                onChange={(e) => updateSettings({ defaultHourlyWage: Number(e.target.value) })}
+                value={s.defaultHourlyRate || ''}
+                onChange={(e) => updateSettings({ defaultHourlyRate: Number(e.target.value) })}
                 onBlur={() => persistData(data)}
               />
             </div>
@@ -113,22 +106,22 @@ export default function Settings() {
               <label>固定給</label>
               <input
                 type="number"
-                value={s.fixedSalary || ''}
-                onChange={(e) => updateSettings({ fixedSalary: Number(e.target.value) })}
+                value={s.baseSalary || ''}
+                onChange={(e) => updateSettings({ baseSalary: Number(e.target.value) })}
                 onBlur={() => persistData(data)}
               />
             </div>
           )}
         </section>
 
-        <section>
+        <section className="section">
           <h2 className="section-title">出勤設定</h2>
           <div className="form-group">
             <label>デフォルト出勤時刻</label>
             <input
               type="time"
-              value={s.defaultClockIn || ''}
-              onChange={(e) => updateSettings({ defaultClockIn: e.target.value })}
+              value={s.defaultStartTime || ''}
+              onChange={(e) => updateSettings({ defaultStartTime: e.target.value })}
               onBlur={() => persistData(data)}
             />
           </div>
@@ -136,8 +129,8 @@ export default function Settings() {
             <label>デフォルト退勤時刻</label>
             <input
               type="time"
-              value={s.defaultClockOut || ''}
-              onChange={(e) => updateSettings({ defaultClockOut: e.target.value })}
+              value={s.defaultEndTime || ''}
+              onChange={(e) => updateSettings({ defaultEndTime: e.target.value })}
               onBlur={() => persistData(data)}
             />
           </div>
@@ -147,20 +140,20 @@ export default function Settings() {
               <label>
                 <input
                   type="radio"
-                  name="timeUnit"
+                  name="timeStep"
                   value="1"
-                  checked={(s.timeUnit || 1) === 1}
-                  onChange={() => updateSettings({ timeUnit: 1 })}
+                  checked={(s.timeStep || 1) === 1}
+                  onChange={() => updateSettings({ timeStep: 1 })}
                 />
                 1分
               </label>
               <label>
                 <input
                   type="radio"
-                  name="timeUnit"
+                  name="timeStep"
                   value="15"
-                  checked={s.timeUnit === 15}
-                  onChange={() => updateSettings({ timeUnit: 15 })}
+                  checked={s.timeStep === 15}
+                  onChange={() => updateSettings({ timeStep: 15 })}
                 />
                 15分
               </label>
@@ -168,7 +161,7 @@ export default function Settings() {
           </div>
         </section>
 
-        <section>
+        <section className="section">
           <h2 className="section-title">締め期間設定</h2>
           <div className="form-group">
             <label>開始日</label>
@@ -176,14 +169,14 @@ export default function Settings() {
               type="number"
               min="1"
               max="28"
-              value={s.cutoffStartDay || ''}
-              onChange={(e) => updateSettings({ cutoffStartDay: Number(e.target.value) })}
+              value={s.payPeriodStart || ''}
+              onChange={(e) => updateSettings({ payPeriodStart: Number(e.target.value) })}
               onBlur={() => persistData(data)}
             />
           </div>
         </section>
 
-        <section>
+        <section className="section">
           <h2 className="section-title">品目一覧</h2>
 
           <div className="item-category-label">キャストメニュー</div>
@@ -231,7 +224,7 @@ export default function Settings() {
           <button id="add-item-champagne" className="add-item-btn" onClick={() => handleAddItem('champagne')}>+ シャンパンを追加</button>
         </section>
 
-        <section>
+        <section className="section">
           <button className="btn-logout-section" onClick={handleLogout}>ログアウト</button>
         </section>
       </main>
