@@ -24,6 +24,7 @@ export default function Today() {
   const settings = data.settings || {}
   const jobs = settings.jobs || []
   const isPremium = settings.isPremium || false
+  const hasJobs = isPremium && jobs.length > 0
   const defaultStartTime = settings.defaultStartTime || ''
   const defaultEndTime = settings.defaultEndTime || ''
   const defaultHourlyRate = settings.defaultHourlyRate || 0
@@ -106,12 +107,8 @@ export default function Today() {
   const rawFirstDay = new Date(calYear, calMonth - 1, 1).getDay()
   const firstDayOffset = (rawFirstDay - weekStartDay + 7) % 7
   const calendarCells = []
-  for (let i = 0; i < firstDayOffset; i++) {
-    calendarCells.push(null)
-  }
-  for (let d = 1; d <= daysInMonth; d++) {
-    calendarCells.push(d)
-  }
+  for (let i = 0; i < firstDayOffset; i++) { calendarCells.push(null) }
+  for (let d = 1; d <= daysInMonth; d++) { calendarCells.push(d) }
 
   return (
     <>
@@ -136,32 +133,21 @@ export default function Today() {
           </div>
           <div className="calendar-grid" key={`${calYear}-${calMonth}`}>
             {calendarCells.map((day, idx) => {
-              if (day === null) {
-                return <div key={`empty-${idx}`} className="day-cell empty"></div>
-              }
+              if (day === null) return <div key={`empty-${idx}`} className="day-cell empty"></div>
               const dateKey = `${calYear}-${String(calMonth).padStart(2,'0')}-${String(day).padStart(2,'0')}`
               const dayOfWeek = new Date(calYear, calMonth - 1, day).getDay()
               const isSelected = dateKey === selectedDate
               const isToday = dateKey === todayKey
               const record = data.records[dateKey]
               let cellTotal = 0
-              if (record) {
-                const dw = calcDailyWage(data.records[dateKey], settings)
-                cellTotal = dw.total
-              }
-
+              if (record) { const dw = calcDailyWage(data.records[dateKey], settings); cellTotal = dw.total }
               let cls = 'day-cell'
               if (dayOfWeek === 0) cls += ' sunday'
               if (dayOfWeek === 6) cls += ' saturday'
               if (isToday) cls += ' today'
               if (isSelected) cls += ' selected'
-
               return (
-                <div
-                  key={dateKey}
-                  className={cls}
-                  onClick={() => handleDateClick(dateKey)}
-                >
+                <div key={dateKey} className={cls} onClick={() => handleDateClick(dateKey)}>
                   <span className="cell-date">{day}</span>
                   {record && cellTotal > 0 && <AnimatedMoney amount={cellTotal} className="cell-total" />}
                 </div>
@@ -172,9 +158,7 @@ export default function Today() {
 
         <div className="section summary-section">
           <p className="summary-label">{selectedDate === todayKey ? '本日の合計' : 'この日の合計'}</p>
-          <div className="summary-total">
-            <AnimatedMoney amount={daily.total} />
-          </div>
+          <div className="summary-total"><AnimatedMoney amount={daily.total} /></div>
           <div className="summary-breakdown">
             <div className="summary-card">
               <span className="summary-card-label">時給分</span>
@@ -200,41 +184,27 @@ export default function Today() {
           {isPremium && jobs.length > 0 && (
             <JobSelector jobs={jobs} selectedJobId={selectedJobId} onChange={handleJobSelect} />
           )}
-          {!defaultStartTime && (
+          {!hasJobs && !defaultStartTime && (
             <div style={{ padding: '10px 14px', background: 'var(--warning-bg)', borderRadius: '10px', fontSize: '13px', color: 'var(--warning-text)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               ⚠ デフォルト出勤時刻が未設定です
               <button onClick={() => navigate('/settings')} style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 600, cursor: 'pointer', fontSize: '13px' }}>設定する →</button>
             </div>
           )}
-          <button className="btn-checkin-today" onClick={handleCheckin}>デフォルト出勤を登録</button>
+          {!hasJobs && <button className="btn-checkin-today" onClick={handleCheckin}>デフォルト出勤を登録</button>}
           <div className="time-input-group">
             <label>
               出勤
-              <input
-                type="time"
-                value={selectedRec.startTime}
-                step={stepSeconds}
-                onChange={(e) => handleTimeChange('startTime', e.target.value)}
-              />
+              <input type="time" value={selectedRec.startTime} step={stepSeconds} onChange={(e) => handleTimeChange('startTime', e.target.value)} />
             </label>
             <label>
               退勤
-              <input
-                type="time"
-                value={selectedRec.endTime}
-                step={stepSeconds}
-                onChange={(e) => handleTimeChange('endTime', e.target.value)}
-              />
+              <input type="time" value={selectedRec.endTime} step={stepSeconds} onChange={(e) => handleTimeChange('endTime', e.target.value)} />
             </label>
           </div>
-          {salaryType === 'hourly' && (
+          {!hasJobs && salaryType === 'hourly' && (
             <label>
               時給
-              <input
-                type="number"
-                value={selectedRec.hourlyRate || ''}
-                onChange={(e) => handleRateChange(e.target.value)}
-              />
+              <input type="number" value={selectedRec.hourlyRate || ''} onChange={(e) => handleRateChange(e.target.value)} />
             </label>
           )}
         </div>

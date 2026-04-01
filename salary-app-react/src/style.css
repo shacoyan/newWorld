@@ -1812,3 +1812,32 @@ main { padding-top: 72px; }
 .goal-progress-bar.achieved { background: var(--accent); }
 .goal-label-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
 .goal-achieved-badge { font-size: 11px; font-weight: 700; color: var(--accent); }
+
+/* ===== JobSelector (Feature A / テーマ対応) ===== */
+.job-selector-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--radius-xs);
+  border: 2px solid var(--border);
+  background: var(--card-bg);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 8px;
+}
+.job-selector-card:last-child { margin-bottom: 0; }
+.job-selector-card:hover { background: var(--item-row-bg); border-color: var(--primary); }
+.job-selector-card.is-selected {
+  border: 2px solid var(--primary);
+  background: var(--primary-bg);
+  box-shadow: 0 2px 8px var(--today-glow);
+}
+.job-selector-name { font-size: 15px; font-weight: 600; color: var(--text); }
+.job-selector-rate { font-size: 14px; color: var(--text-muted); }
+.job-selector-badge { font-size: 12px; font-weight: 700; color: var(--primary); margin-left: 8px; }
+
+/* ===== 月/年タブ (統計ページ) ===== */
+.tab-btn { padding: 6px 20px; border-radius: var(--radius-xs); border: 1.5px solid var(--border); background: var(--card-bg); color: var(--text-muted); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.tab-btn-active { border-color: var(--primary); background: var(--primary-bg); color: var(--primary); }
