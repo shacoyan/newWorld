@@ -11,6 +11,7 @@ export default function Header() {
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
   const usePremiumLogo = data?.settings?.usePremiumLogo ?? false
+  const isPremium = data?.settings?.isPremium ?? false
   const logoSrc = usePremiumLogo ? './logo-gothic.png' : './logo.png'
 
   const handleLogout = async () => {
@@ -69,7 +70,7 @@ export default function Header() {
             </span>
           <span className="menu-nav-label">統計</span>
         </button>
-        <button className="menu-nav-item" onClick={() => { navigate('/theme'); closeMenu(); }}>
+        <button className="menu-nav-item" onClick={() => { navigate(isPremium ? '/theme' : '/settings'); closeMenu(); }}>
           <span className="menu-nav-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10"/>
@@ -78,7 +79,10 @@ export default function Header() {
               <path d="M12 2c2.76 4.44 2.76 15.56 0 20"/>
             </svg>
           </span>
-          <span className="menu-nav-label">着せ替え</span>
+          <span className="menu-nav-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            着せ替え
+            {!isPremium && <span className="premium-nav-badge">PREMIUM</span>}
+          </span>
         </button>
         <button className="menu-nav-item" onClick={() => { navigate('/settings'); closeMenu(); }}>
           <span className="menu-nav-icon">
