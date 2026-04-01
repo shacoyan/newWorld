@@ -1,13 +1,17 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { useAppData } from '../hooks/useAppData'
 import { signOut } from 'firebase/auth'
 import { auth } from '../lib/firebase'
 
 export default function Header() {
   const user = useAuth()
+  const { data } = useAppData(user)
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
+  const usePremiumLogo = data?.settings?.usePremiumLogo ?? false
+  const logoSrc = usePremiumLogo ? './logo-gothic.png' : './logo.png'
 
   const handleLogout = async () => {
     setMenuOpen(false)
@@ -21,7 +25,7 @@ export default function Header() {
     <>
       <header className="header">
         <div style={{ width: 44 }}></div>
-        <Link to="/" className="header-logo"><img src="./logo.png" alt="こんまに" className="header-logo-img" /></Link>
+        <Link to="/" className="header-logo"><img src={logoSrc} alt="こんまに" className="header-logo-img" /></Link>
         <button
         className={`hamburger-btn${menuOpen ? ' is-open' : ''}`}
         onClick={() => setMenuOpen(prev => !prev)}

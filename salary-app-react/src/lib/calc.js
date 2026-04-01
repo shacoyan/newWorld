@@ -15,6 +15,8 @@ export function getDefaultSettings() {
     timeStep: 1,
     payPeriodStart: 1,
     weekStartDay: 0,
+    isPremium: false,
+    usePremiumLogo: false,
     items: [
       { id: 'default-drink', name: 'ドリンク', back: 0, category: 'cast' },
       { id: 'default-shot',  name: 'ショット',  back: 0, category: 'cast' },

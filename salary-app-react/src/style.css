@@ -948,6 +948,47 @@ input[type="time"] { width: 120px; }
 .btn-logout-section:hover { background: #fee2e2; }
 .btn-logout-section:active { transform: scale(0.97); }
 
+/* Premium */
+.premium-badge {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+.premium-msg {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--primary);
+  font-weight: 600;
+}
+.btn-primary-sm {
+  padding: 8px 16px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+.btn-primary-sm:hover { opacity: 0.85; }
+.btn-primary-sm:active { transform: scale(0.96); }
+.btn-text-danger {
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
 .btn-checkin-today {
   width: 100%;
   padding: 12px;

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { signOut } from 'firebase/auth'
 import { auth } from '../lib/firebase'
@@ -59,6 +59,8 @@ export default function Settings() {
   const user = useAuth();
   const { data, persistData } = useAppData(user);
   const navigate = useNavigate();
+  const [premiumInput, setPremiumInput] = useState('');
+  const [premiumMsg, setPremiumMsg] = useState('');
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -74,6 +76,23 @@ export default function Settings() {
 
   const castItems = s.items.filter(i => i.category !== 'champagne');
   const champItems = s.items.filter(i => i.category === 'champagne');
+
+  const PREMIUM_CODE = 'KONMANI2026';
+
+  const handlePremiumCode = () => {
+    if (premiumInput === PREMIUM_CODE) {
+      updateSettings({ isPremium: true });
+      setPremiumMsg('プレミアムモードが有効になりました');
+    } else {
+      setPremiumMsg('コードが正しくありません');
+    }
+    setPremiumInput('');
+  };
+
+  const handleDeactivatePremium = () => {
+    updateSettings({ isPremium: false, usePremiumLogo: false });
+    setPremiumMsg('');
+  };
 
   const updateSettings = (updater) => {
     const newSettings = typeof updater === 'function' ? updater(data.settings) : { ...data.settings, ...updater };
@@ -279,6 +298,64 @@ export default function Settings() {
             </SortableContext>
             <button id="add-item-champagne" className="add-item-btn" onClick={() => handleAddItem('champagne')}>+ シャンパンを追加</button>
           </DndContext>
+        </section>
+
+        <section className="section">
+          <h2 className="section-title">プレミアム</h2>
+          {s.isPremium ? (
+            <div>
+              <div className="premium-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}>
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+                プレミアム有効
+              </div>
+              <div className="form-group" style={{ marginTop: '16px' }}>
+                <label>ロゴデザイン</label>
+                <div className="radio-group" style={{ marginTop: '8px' }}>
+                  <label>
+                    <input
+                      type="radio"
+                      name="logoType"
+                      value="default"
+                      checked={!s.usePremiumLogo}
+                      onChange={() => updateSettings({ usePremiumLogo: false })}
+                    />
+                    デフォルト
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="logoType"
+                      value="gothic"
+                      checked={!!s.usePremiumLogo}
+                      onChange={() => updateSettings({ usePremiumLogo: true })}
+                    />
+                    ゴシック
+                  </label>
+                </div>
+              </div>
+              <button className="btn-text-danger" onClick={handleDeactivatePremium} style={{ marginTop: '12px' }}>プレミアムを解除</button>
+            </div>
+          ) : (
+            <div>
+              <div className="form-group">
+                <label>プレミアムコード</label>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <input
+                    type="text"
+                    placeholder="コードを入力"
+                    value={premiumInput}
+                    onChange={(e) => setPremiumInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handlePremiumCode()}
+                    style={{ flex: 1 }}
+                  />
+                  <button className="btn-primary-sm" onClick={handlePremiumCode}>適用</button>
+                </div>
+                {premiumMsg && <div className="premium-msg">{premiumMsg}</div>}
+              </div>
+            </div>
+          )}
         </section>
 
         <section className="section">
