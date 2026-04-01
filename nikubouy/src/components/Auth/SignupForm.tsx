@@ -30,17 +30,11 @@ export default function SignupForm() {
     setIsLoading(true);
 
     try {
-      const { error: signUpError } = await signUp(email, password);
-      if (signUpError) {
-        setError(signUpError.message || '登録に失敗しました');
-      } else {
-        setSuccess(true);
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 2000);
-      }
-    } catch {
-      setError('予期せぬエラーが発生しました');
+      await signUp(email, password);
+      setSuccess(true);
+      setTimeout(() => navigate('/dashboard'), 2000);
+    } catch (e: any) {
+      setError(e.message || '登録に失敗しました');
     } finally {
       setIsLoading(false);
     }

@@ -4,9 +4,9 @@ import PrivateRoute from './components/Layout/PrivateRoute';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
-import DashboardPage from './pages/DashboardPage';
+import { DashboardPage } from './pages/DashboardPage';
 import NewRecordPage from './pages/NewRecordPage';
-import RecordDetailPage from './pages/RecordDetailPage';
+import { RecordDetailPage } from './pages/RecordDetailPage';
 
 export default function App() {
   return (

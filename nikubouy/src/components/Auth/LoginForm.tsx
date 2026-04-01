@@ -16,14 +16,10 @@ export default function LoginForm() {
     setIsLoading(true);
 
     try {
-      const { error: signInError } = await signIn(email, password);
-      if (signInError) {
-        setError(signInError.message || 'ログインに失敗しました');
-      } else {
-        navigate('/dashboard');
-      }
-    } catch {
-      setError('予期せぬエラーが発生しました');
+      await signIn(email, password);
+      navigate('/dashboard');
+    } catch (e: any) {
+      setError(e.message || 'ログインに失敗しました');
     } finally {
       setIsLoading(false);
     }

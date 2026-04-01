@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import RecordForm from "../components/Record/RecordForm";
+import { RecordForm } from "../components/Record/RecordForm";
 
 export default function NewRecordPage() {
   const navigate = useNavigate();
