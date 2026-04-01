@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #1A1A1A;
+  color: #F5E6C8;
+  font-family: 'Noto Serif JP', serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+}
+
+@layer utilities {
+  .bg-ie-black {
+    background-color: #1A1A1A;
+  }
+  .bg-ie-dark {
+    background-color: #2A2A2A;
+  }
+  .text-ie-cream {
+    color: #F5E6C8;
+  }
+  .bg-ie-cream {
+    background-color: #F5E6C8;
+  }
+  .border-ie-red {
+    border-color: #C41E3A;
+  }
+  .bg-ie-red {
+    background-color: #C41E3A;
+  }
+  .text-ie-red {
+    color: #C41E3A;
+  }
+  .border-ie-gold {
+    border-color: #D4A853;
+  }
+  .text-ie-gold {
+    color: #D4A853;
+  }
+  .bg-ie-gold {
+    background-color: #D4A853;
+  }
+}
