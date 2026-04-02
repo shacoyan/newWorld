@@ -427,7 +427,7 @@ export default function Settings() {
         </section>
 
         <section className="section">
-          <h2 className="section-title">��レミアム</h2>
+          <h2 className="section-title">プレミアム</h2>
           {s.isPremium ? (
             <div>
               <div className="premium-badge">
