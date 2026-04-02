@@ -636,6 +636,19 @@ input[type="time"] { width: 120px; }
   line-height: 1;
 }
 
+.day-cell .cell-job-name {
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  padding: 1px 4px;
+  border-radius: 4px;
+  line-height: 1.3;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
 .day-cell .cell-total {
   font-size: 10px;
   font-weight: 700;

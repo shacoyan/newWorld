@@ -226,7 +226,7 @@ export default function Dashboard() {
             </div>
 
             <div className="section">
-              <h2 className="section-title">品目別バック</h2>
+              <h2 className="section-title">バック</h2>
               {Object.entries(itemCounts).sort((a, b) => b[1].back - a[1].back).map(([name, val]) => (
                 <div className="dash-item-row" key={name}>
                   <div className="dash-item-header">
@@ -243,7 +243,7 @@ export default function Dashboard() {
 
             {isPremium && jobs.length > 0 && (
               <div className="section">
-                <h2 className="section-title">仕事別収入</h2>
+                <h2 className="section-title">店舗別収入</h2>
                 {jobBreakdown.map(({ job, days, income }) => (
                   <div className="dash-item-row" key={job.id}>
                     <div className="dash-item-header">
