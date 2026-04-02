@@ -15,11 +15,12 @@ export default function Today() {
 
   const todayKey = getTodayKey()
   const [selectedDate, setSelectedDate] = useState(todayKey)
-  const [calYear, setCalYear] = useState(() => parseInt(selectedDate.split('-')[0]))
-  const [calMonth, setCalMonth] = useState(() => parseInt(selectedDate.split('-')[1]))
-  const [selectedJobId, setSelectedJobId] = useState(null)
+  const [calYear, setCalYear] = useState(() => parseInt(todayKey.split('-')[0]))
+  const [calMonth, setCalMonth] = useState(() => parseInt(todayKey.split('-')[1]))
 
   if (!data) return null
+
+  const selectedJobId = data.records[selectedDate]?.jobId ?? null
 
   const settings = data.settings || {}
   const jobs = settings.jobs || []
@@ -39,9 +40,6 @@ export default function Today() {
   const handleTimeChange = (field, value) => {
     const newData = ensureRecord(data, selectedDate)
     newData.records[selectedDate][field] = value
-    if (selectedJobId) {
-      newData.records[selectedDate].jobId = selectedJobId
-    }
     persistData(newData)
   }
 
@@ -53,7 +51,6 @@ export default function Today() {
 
   const handleJobSelect = (jobId) => {
     if (selectedJobId === jobId) {
-      setSelectedJobId(null)
       const newData = ensureRecord(data, selectedDate)
       delete newData.records[selectedDate].jobId
       persistData(newData)
@@ -74,7 +71,6 @@ export default function Today() {
     const newData = ensureRecord(data, selectedDate)
     newData.records[selectedDate].startTime = defaultStartTime
     newData.records[selectedDate].endTime = defaultEndTime
-    newData.records[selectedDate].jobId = selectedJobId
     persistData(newData)
   }
 
@@ -109,8 +105,6 @@ export default function Today() {
     const [y, m] = dateKey.split('-').map(Number)
     setCalYear(y)
     setCalMonth(m)
-    const rec = data.records[dateKey]
-    setSelectedJobId(rec?.jobId || null)
   }
 
   const [selYear, selMonth, selDay] = selectedDate.split('-').map(Number)
