@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useAppData } from '../hooks/useAppData'
-import { getTodayKey, formatDateFull, ensureRecord, calcDailyWage, getDaysInMonth, WEEKDAYS } from '../lib/calc'
+import { getTodayKey, ensureRecord, calcDailyWage, getDaysInMonth, WEEKDAYS } from '../lib/calc'
 import Header from '../components/Header'
 import JobSelector from '../components/JobSelector'
 import ItemRows from '../components/ItemRows'
@@ -56,8 +56,10 @@ export default function Today() {
     const selectedJob = jobs.find(j => j.id === jobId)
     const newData = ensureRecord(data, selectedDate)
     newData.records[selectedDate].jobId = jobId
-    if (selectedJob?.defaultStartTime) newData.records[selectedDate].startTime = selectedJob.defaultStartTime
-    if (selectedJob?.defaultEndTime) newData.records[selectedDate].endTime = selectedJob.defaultEndTime
+    const fillStart = selectedJob?.defaultStartTime || defaultStartTime
+    const fillEnd = selectedJob?.defaultEndTime || defaultEndTime
+    if (fillStart) newData.records[selectedDate].startTime = fillStart
+    if (fillEnd) newData.records[selectedDate].endTime = fillEnd
     persistData(newData)
   }
 
@@ -105,6 +107,9 @@ export default function Today() {
     setSelectedJobId(rec?.jobId || null)
   }
 
+  const [selYear, selMonth, selDay] = selectedDate.split('-').map(Number)
+  const selWeekday = WEEKDAYS[new Date(selYear, selMonth - 1, selDay).getDay()]
+
   const daysInMonth = getDaysInMonth(calYear, calMonth)
   const rawFirstDay = new Date(calYear, calMonth - 1, 1).getDay()
   const firstDayOffset = (rawFirstDay - weekStartDay + 7) % 7
@@ -117,7 +122,14 @@ export default function Today() {
       <Header />
       <main style={{ paddingTop: '56px' }}>
         <div className="date-display-section">
-          <h1>{formatDateFull(selectedDate)}{selectedDate === todayKey && ' (今日)'}</h1>
+          <div className="date-display-inner">
+            <div className="date-display-main">
+              <span className="date-year">{selYear}年</span>
+              <span className="date-md">{selMonth}月{selDay}日</span>
+              <span className="date-wd">({selWeekday})</span>
+            </div>
+            {selectedDate === todayKey && <span className="date-today-badge">今日</span>}
+          </div>
         </div>
 
         <div className="section calendar-section">

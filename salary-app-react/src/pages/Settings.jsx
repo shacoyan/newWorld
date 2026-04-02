@@ -323,20 +323,24 @@ export default function Settings() {
                     onBlur={() => persistData(data)}
                     style={{ flex: '1 1 80px' }}
                   />
-                  <input
-                    type="time"
-                    value={job.defaultStartTime || ''}
-                    onChange={(e) => handleJobChange(job.id, 'defaultStartTime', e.target.value)}
-                    onBlur={() => persistData(data)}
-                    style={{ flex: '1 1 100px' }}
-                  />
-                  <input
-                    type="time"
-                    value={job.defaultEndTime || ''}
-                    onChange={(e) => handleJobChange(job.id, 'defaultEndTime', e.target.value)}
-                    onBlur={() => persistData(data)}
-                    style={{ flex: '1 1 100px' }}
-                  />
+                  <label style={{ display: 'flex', flexDirection: 'column', gap: '2px', flex: '1 1 100px', fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>
+                    出勤デフォルト
+                    <input
+                      type="time"
+                      value={job.defaultStartTime || ''}
+                      onChange={(e) => handleJobChange(job.id, 'defaultStartTime', e.target.value)}
+                      onBlur={() => persistData(data)}
+                    />
+                  </label>
+                  <label style={{ display: 'flex', flexDirection: 'column', gap: '2px', flex: '1 1 100px', fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>
+                    退勤デフォルト
+                    <input
+                      type="time"
+                      value={job.defaultEndTime || ''}
+                      onChange={(e) => handleJobChange(job.id, 'defaultEndTime', e.target.value)}
+                      onBlur={() => persistData(data)}
+                    />
+                  </label>
                   <input
                     type="color"
                     value={job.color || '#FF6B9D'}

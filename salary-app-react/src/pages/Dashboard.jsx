@@ -93,7 +93,10 @@ export default function Dashboard() {
     }
   }
   const jobBreakdown = Object.entries(jobStats).map(([jid, stats]) => {
-    const job = jid ? (jobMap[jid] || { id: jid, name: 'その他', color: '#999' }) : { id: 'other', name: 'その他', color: '#999' };
+    const isNullJob = jid === 'null' || !jid;
+    const job = isNullJob
+      ? { id: 'other', name: 'その他', color: '#999' }
+      : (jobMap[jid] || { id: jid, name: '削除済み店舗', color: '#999' });
     return { job, days: stats.days, income: stats.income };
   }).sort((a, b) => b.income - a.income);
   const maxJobIncome = Math.max(...jobBreakdown.map(j => j.income), 1);

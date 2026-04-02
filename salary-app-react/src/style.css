@@ -1487,14 +1487,47 @@ main { padding-top: 72px; }
 /* ===== 選択日付 ===== */
 .date-display-section {
   text-align: center;
-  padding: 20px 16px 8px;
+  padding: 16px 16px 8px;
 }
-
-.date-display-section h1,
-.date-display-section h2 {
-  font-size: 20px;
-  font-weight: 700;
+.date-display-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.date-display-main {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.date-year {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.date-md {
+  font-size: 26px;
+  font-weight: 800;
   color: var(--text);
+  letter-spacing: -0.5px;
+}
+.date-wd {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.date-today-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 12px;
+  background: var(--gradient-primary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 9999px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px var(--today-glow);
 }
 
 /* ===== 合計セクション（リデザイン） ===== */
