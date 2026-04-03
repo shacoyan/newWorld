@@ -1,24 +1,14 @@
 const JobSelector = ({ jobs, selectedJobId, onChange, recordedJobIds = [] }) => {
-  const containerStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-  };
-
-  const handleClick = (jobId) => {
-    onChange(jobId);
-  };
-
   return (
-    <div style={containerStyle}>
+    <div className="job-selector-container">
       {jobs.map((job) => (
         <div
           key={job.id}
           className={`job-selector-card${selectedJobId === job.id ? ' is-selected' : ''}${recordedJobIds.includes(job.id) ? ' is-recorded' : ''}`}
-          onClick={() => handleClick(job.id)}
+          onClick={() => onChange(job.id)}
         >
-          <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: job.color, flexShrink: 0 }} />
-          <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div className="job-selector-dot" style={{ backgroundColor: job.color }} />
+          <div className="job-selector-inner">
             <span className="job-selector-name">
               {job.name}
               {selectedJobId === job.id && <span className="job-selector-badge">編集中</span>}
@@ -37,3 +27,4 @@ const JobSelector = ({ jobs, selectedJobId, onChange, recordedJobIds = [] }) => 
 };
 
 export default JobSelector;
+

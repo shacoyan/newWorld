@@ -1,3 +1,17 @@
+function parseDateKey(key) {
+  const [y, m, d] = key.split('-').map(Number);
+  return { year: y, month: m, day: d, date: new Date(y, m - 1, d) };
+}
+
+function parseTimePair(startTime, endTime) {
+  const [sh, sm] = startTime.split(':').map(Number);
+  const [eh, em] = endTime.split(':').map(Number);
+  let startMins = sh * 60 + sm;
+  let endMins = eh * 60 + em;
+  if (endMins <= startMins) endMins += 24 * 60;
+  return { startMins, endMins };
+}
+
 export const STORAGE_KEY = 'salary-app-v3';
 export const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
 
@@ -41,16 +55,14 @@ export function getDaysInMonth(year, month) {
 
 export function formatDateLabel(key) {
   if (!key) return '';
-  const [y, m, d] = key.split('-').map(Number);
-  const date = new Date(y, m - 1, d);
-  return `${m}/${d}(${WEEKDAYS[date.getDay()]})`;
+  const { month: m, day: d, date } = parseDateKey(key);
+  return m + '/' + d + '(' + WEEKDAYS[date.getDay()] + ')';
 }
 
 export function formatDateFull(key) {
   if (!key) return '';
-  const [y, m, d] = key.split('-').map(Number);
-  const date = new Date(y, m - 1, d);
-  return `${y}年${m}月${d}日(${WEEKDAYS[date.getDay()]})`;
+  const { year: y, month: m, day: d, date } = parseDateKey(key);
+  return y + '年' + m + '月' + d + '日(' + WEEKDAYS[date.getDay()] + ')';
 }
 
 export function formatMoney(amount) {
@@ -63,41 +75,21 @@ export function escapeHtml(str) {
 
 export function calcHours(startTime, endTime) {
   if (!startTime || !endTime) return 0;
-  const [sh, sm] = startTime.split(':').map(Number);
-  const [eh, em] = endTime.split(':').map(Number);
-  let startMins = sh * 60 + sm;
-  let endMins = eh * 60 + em;
-  
-  if (endMins <= startMins) {
-    endMins += 24 * 60;
-  }
-  
-  const diff = endMins - startMins;
-  return Math.max(0, diff / 60);
+  const { startMins, endMins } = parseTimePair(startTime, endTime);
+  return Math.max(0, (endMins - startMins) / 60);
 }
 
 export function calcNightShiftHours(startTime, endTime) {
   if (!startTime || !endTime) return 0;
-  const [sh, sm] = startTime.split(':').map(Number);
-  const [eh, em] = endTime.split(':').map(Number);
-  let startMins = sh * 60 + sm;
-  let endMins = eh * 60 + em;
-  if (endMins <= startMins) endMins += 24 * 60;
-
-  // 深夜帯1: 22:00〜24:00 = 1320〜1440分
-  const seg1Start = 22 * 60;
-  const seg1End = 24 * 60;
+  const { startMins, endMins } = parseTimePair(startTime, endTime);
+  const seg1Start = 22 * 60, seg1End = 24 * 60;
+  const seg2Start = 24 * 60, seg2End = 29 * 60;
   const ov1 = Math.max(0, Math.min(endMins, seg1End) - Math.max(startMins, seg1Start));
-
-  // 深夜帯2: 24:00〜翌5:00 = 1440〜1740分
-  const seg2Start = 24 * 60;
-  const seg2End = (24 + 5) * 60;
   const ov2 = Math.max(0, Math.min(endMins, seg2End) - Math.max(startMins, seg2Start));
-
   return (ov1 + ov2) / 60;
 }
 
-export function calcDailyWage(record, settings) {
+export function calcDailyWage(record, settings, dateKey) {
   let wage = 0;
   let totalHours = 0;
   
@@ -136,7 +128,14 @@ export function calcDailyWage(record, settings) {
       }
     }
   } else {
-    const daysInMonth = getDaysInMonth(new Date().getFullYear(), new Date().getMonth() + 1);
+    let dYear, dMonth;
+    if (dateKey) {
+      [dYear, dMonth] = dateKey.split('-').map(Number);
+    } else {
+      dYear = new Date().getFullYear();
+      dMonth = new Date().getMonth() + 1;
+    }
+    const daysInMonth = getDaysInMonth(dYear, dMonth);
     wage = Math.round((settings.baseSalary || 0) / daysInMonth);
   }
   
@@ -169,22 +168,27 @@ export function calcPeriodRange(year, month, startDay) {
   };
 }
 
-export function calcMonthlyTotal(year, month, data) {
-  const startDay = (data.settings && data.settings.payPeriodStart) || 1;
+function getPeriodDateKeys(year, month, startDay) {
   const range = calcPeriodRange(year, month, startDay);
-  let wageTotal = 0, backTotal = 0;
+  const keys = [];
   const d = new Date(range.startDate);
   while (d <= range.endDate) {
-    const key = d.getFullYear() + '-' +
-      String(d.getMonth() + 1).padStart(2, '0') + '-' +
-      String(d.getDate()).padStart(2, '0');
+    keys.push(d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'));
+    d.setDate(d.getDate() + 1);
+  }
+  return keys;
+}
+
+export function calcMonthlyTotal(year, month, data) {
+  const startDay = (data.settings && data.settings.payPeriodStart) || 1;
+  let wageTotal = 0, backTotal = 0;
+  for (const key of getPeriodDateKeys(year, month, startDay)) {
     const rec = data.records && data.records[key];
     if (rec) {
-      const r = calcDailyWage(rec, data.settings);
+      const r = calcDailyWage(rec, data.settings, key);
       wageTotal += r.wage;
       backTotal += r.back;
     }
-    d.setDate(d.getDate() + 1);
   }
   if (data.settings && data.settings.salaryType === 'fixed') {
     return { total: Number(data.settings.baseSalary) + backTotal, wageTotal: Number(data.settings.baseSalary), backTotal };
@@ -215,38 +219,41 @@ export function ensureRecord(data, dateKey) {
 
 export function buildMonthlyReport(year, month, data) {
   const startDay = (data.settings && data.settings.payPeriodStart) || 1;
-  const range = calcPeriodRange(year, month, startDay);
   let workDays = 0;
   let totalHours = 0;
   let totalWage = 0;
   let totalBack = 0;
   let totalIncome = 0;
   const rows = [];
-  const d = new Date(range.startDate);
-  while (d <= range.endDate) {
-    const dateKey = d.getFullYear() + '-' +
-      String(d.getMonth() + 1).padStart(2, '0') + '-' +
-      String(d.getDate()).padStart(2, '0');
+  for (const dateKey of getPeriodDateKeys(year, month, startDay)) {
     const rec = data.records && data.records[dateKey];
     if (rec && (rec.startTime || (rec.jobs && Object.keys(rec.jobs).length > 0))) {
-      const r = calcDailyWage(rec, data.settings);
+      const r = calcDailyWage(rec, data.settings, dateKey);
       workDays += 1;
       totalHours += r.hours;
       totalWage += r.wage;
       totalBack += r.back;
       totalIncome += r.total;
+      let displayStartTime = rec.startTime || '';
+      let displayEndTime = rec.endTime || '';
+      if (rec.jobs && Object.keys(rec.jobs).length > 0) {
+        const jobTimes = Object.values(rec.jobs).filter(j => j.startTime && j.endTime);
+        if (jobTimes.length > 0) {
+          displayStartTime = jobTimes.map(j => j.startTime).join(', ');
+          displayEndTime = jobTimes.map(j => j.endTime).join(', ');
+        }
+      }
       rows.push({
         dateKey,
         label: formatDateLabel(dateKey),
-        startTime: rec.startTime,
-        endTime: rec.endTime,
+        startTime: displayStartTime,
+        endTime: displayEndTime,
         hours: r.hours,
         wage: r.wage,
         back: r.back,
         total: r.total
       });
     }
-    d.setDate(d.getDate() + 1);
   }
   const avgHourlyRate = totalHours > 0 ? Math.round(totalIncome / totalHours) : 0;
   return {

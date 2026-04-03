@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, createContext, useContext } from 'react'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { getDefaultSettings } from '../lib/calc'
@@ -64,11 +64,22 @@ export function useAppData(user) {
     return () => { cancelled = true }
   }, [user])
 
+  useEffect(() => {
+    if (!user || !data) return;
+    const timer = setTimeout(() => {
+      saveFirestore(user.uid, data);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [data, user]);
+
   function persistData(newData) {
     setData(newData)
     saveLocal(newData)
-    if (user) saveFirestore(user.uid, newData)
   }
 
   return { data, persistData }
 }
+
+export const AppDataContext = createContext(null)
+export function useAppDataContext() { return useContext(AppDataContext) }
+

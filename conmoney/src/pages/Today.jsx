@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useAppData } from '../hooks/useAppData'
-import { getTodayKey, ensureRecord, calcDailyWage, getDaysInMonth, WEEKDAYS } from '../lib/calc'
+import { useCalendarState } from '../hooks/useCalendarState'
+import { useDailyRecord } from '../hooks/useDailyRecord'
+import { calcDailyWage, WEEKDAYS } from '../lib/calc'
 import Header from '../components/Header'
 import JobSelector from '../components/JobSelector'
 import ItemRows from '../components/ItemRows'
@@ -13,25 +15,24 @@ export default function Today() {
   const { data, persistData } = useAppData(user)
   const navigate = useNavigate()
 
-  const todayKey = getTodayKey()
-  const [selectedDate, setSelectedDate] = useState(todayKey)
-  const [selectedJobId, setSelectedJobId] = useState(null)
-  const [calYear, setCalYear] = useState(() => parseInt(todayKey.split('-')[0]))
-  const [calMonth, setCalMonth] = useState(() => parseInt(todayKey.split('-')[1]))
-
-  if (!data) return null
-
-  const settings = data.settings || {}
+  const settings = data?.settings || {}
   const jobs = settings.jobs || []
   const isPremium = settings.isPremium || false
   const hasJobs = isPremium && jobs.length > 0
   const defaultStartTime = settings.defaultStartTime || ''
-  const defaultEndTime = settings.defaultEndTime || ''
   const defaultHourlyRate = settings.defaultHourlyRate || 0
   const salaryType = settings.salaryType || 'hourly'
   const timeStep = settings.timeStep || 15
   const stepSeconds = timeStep === 1 ? 60 : 900
   const weekStartDay = settings.weekStartDay ?? 0
+
+  const [selectedJobId, setSelectedJobId] = useState(null)
+
+  const { todayKey, selectedDate, calYear, calMonth, calendarCells, goToPrevMonth, goToNextMonth, handleDateClick: calHandleDateClick } = useCalendarState(weekStartDay)
+
+  const { handleTimeChange, handleRateChange, handleCheckin, handleJobReset, handleAllReset, handleItemCount } = useDailyRecord(data, persistData, selectedDate, selectedJobId, settings)
+
+  if (!data) return null
 
   const selectedRec = data.records[selectedDate] || { startTime: '', endTime: '', hourlyRate: defaultHourlyRate, items: {} }
   const selectedJobRec = selectedJobId
@@ -41,107 +42,16 @@ export default function Today() {
   const recordedJobIds = Object.keys(data.records[selectedDate]?.jobs || {})
     .filter(jid => data.records[selectedDate]?.jobs?.[jid]?.startTime)
 
-  const daily = calcDailyWage(selectedRec, settings)
-
-  const handleTimeChange = (field, value) => {
-    const newData = ensureRecord(data, selectedDate)
-    if (selectedJobId) {
-      if (!newData.records[selectedDate].jobs) newData.records[selectedDate].jobs = {}
-      newData.records[selectedDate].jobs[selectedJobId] = {
-        ...(newData.records[selectedDate].jobs[selectedJobId] || {}),
-        [field]: value
-      }
-    } else {
-      newData.records[selectedDate][field] = value
-    }
-    persistData(newData)
-  }
-
-  const handleRateChange = (value) => {
-    const newData = ensureRecord(data, selectedDate)
-    newData.records[selectedDate].hourlyRate = parseFloat(value) || 0
-    persistData(newData)
-  }
+  const daily = calcDailyWage(selectedRec, settings, selectedDate)
 
   const handleJobSelect = (jobId) => {
     setSelectedJobId(prev => prev === jobId ? null : jobId)
   }
 
-  const handleCheckin = () => {
-    const job = jobs.find(j => j.id === selectedJobId)
-    const fillStart = job?.defaultStartTime || defaultStartTime
-    const fillEnd = job?.defaultEndTime || defaultEndTime
-    if (!fillStart || !fillEnd) return
-    const newData = ensureRecord(data, selectedDate)
-    if (selectedJobId) {
-      if (!newData.records[selectedDate].jobs) newData.records[selectedDate].jobs = {}
-      newData.records[selectedDate].jobs[selectedJobId] = { startTime: fillStart, endTime: fillEnd }
-    } else {
-      newData.records[selectedDate].startTime = fillStart
-      newData.records[selectedDate].endTime = fillEnd
-    }
-    persistData(newData)
-  }
-
-  const handleJobReset = () => {
-    if (!selectedJobId) return
-    const newData = ensureRecord(data, selectedDate)
-    if (newData.records[selectedDate].jobs) {
-      delete newData.records[selectedDate].jobs[selectedJobId]
-    }
-    persistData(newData)
-  }
-
-  const handleAllReset = () => {
-    const newData = { ...data, records: { ...data.records } }
-    delete newData.records[selectedDate]
-    setSelectedJobId(null)
-    persistData(newData)
-  }
-
-  const handleItemCount = (itemId, newCount) => {
-    const newData = ensureRecord(data, selectedDate)
-    if (newCount <= 0) {
-      delete newData.records[selectedDate].items[itemId]
-    } else {
-      newData.records[selectedDate].items[itemId] = newCount
-    }
-    persistData(newData)
-  }
-
-  const goToPrevMonth = () => {
-    let m = calMonth - 1
-    let y = calYear
-    if (m < 1) { m = 12; y-- }
-    setCalMonth(m)
-    setCalYear(y)
-  }
-
-  const goToNextMonth = () => {
-    let m = calMonth + 1
-    let y = calYear
-    if (m > 12) { m = 1; y++ }
-    setCalMonth(m)
-    setCalYear(y)
-  }
-
-  const handleDateClick = (dateKey) => {
-    setSelectedDate(dateKey)
-    setSelectedJobId(null)
-    const [y, m] = dateKey.split('-').map(Number)
-    setCalYear(y)
-    setCalMonth(m)
-  }
+  const handleDateClickWrapper = (dateKey) => calHandleDateClick(dateKey, () => setSelectedJobId(null))
 
   const [selYear, selMonth, selDay] = selectedDate.split('-').map(Number)
   const selWeekday = WEEKDAYS[new Date(selYear, selMonth - 1, selDay).getDay()]
-
-  const daysInMonth = getDaysInMonth(calYear, calMonth)
-  const rawFirstDay = new Date(calYear, calMonth - 1, 1).getDay()
-  const firstDayOffset = (rawFirstDay - weekStartDay + 7) % 7
-  const calendarCells = []
-  for (let i = 0; i < firstDayOffset; i++) { calendarCells.push(null) }
-  for (let d = 1; d <= daysInMonth; d++) { calendarCells.push(d) }
 
   return (
     <>
@@ -200,7 +110,7 @@ export default function Today() {
               const isToday = dateKey === todayKey
               const record = data.records[dateKey]
               let cellTotal = 0
-              if (record) { const dw = calcDailyWage(data.records[dateKey], settings); cellTotal = dw.total }
+              if (record) { const dw = calcDailyWage(data.records[dateKey], settings, dateKey); cellTotal = dw.total }
               const cellJobs = record?.jobs
                 ? Object.keys(record.jobs).filter(jid => record.jobs[jid]?.startTime).map(jid => jobs.find(j => j.id === jid)).filter(Boolean)
                 : (record?.jobId ? [jobs.find(j => j.id === record.jobId)].filter(Boolean) : [])
@@ -210,7 +120,7 @@ export default function Today() {
               if (isToday) cls += ' today'
               if (isSelected) cls += ' selected'
               return (
-                <div key={dateKey} className={cls} onClick={() => handleDateClick(dateKey)}>
+                <div key={dateKey} className={cls} onClick={() => handleDateClickWrapper(dateKey)}>
                   <span className="cell-date">{day}</span>
                   {cellJobs.map(j => <span key={j.id} className="cell-job-name" style={{ backgroundColor: j.color }}>{j.name}</span>)}
                   {record && cellTotal > 0 && <AnimatedMoney amount={cellTotal} className="cell-total" />}
@@ -255,7 +165,7 @@ export default function Today() {
             </label>
           )}
           {(recordedJobIds.length > 0 || selectedRec.startTime) && (
-            <button className="btn-day-reset" onClick={handleAllReset}>この日の記録をすべて消す</button>
+            <button className="btn-day-reset" onClick={() => handleAllReset(() => setSelectedJobId(null))}>この日の記録をすべて消す</button>
           )}
         </div>
 
