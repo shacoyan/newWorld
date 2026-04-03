@@ -158,6 +158,26 @@ export default function Today() {
           </div>
         </div>
 
+        <div className="section summary-section">
+          <p className="summary-label">{selectedDate === todayKey ? '本日の合計' : 'この日の合計'}</p>
+          <div className="summary-total"><AnimatedMoney amount={daily.total} /></div>
+          <div className="summary-breakdown">
+            <div className="summary-card">
+              <span className="summary-card-label">時給分</span>
+              <AnimatedMoney amount={daily.wage} className="summary-card-value" />
+            </div>
+            <div className="summary-card">
+              <span className="summary-card-label">バック</span>
+              <AnimatedMoney amount={daily.back} className="summary-card-value" />
+            </div>
+          </div>
+          {daily.hours > 0 && (
+            <div className="summary-sub">
+              平均時給 <AnimatedMoney amount={daily.avgHourlyRate} />/h · {daily.hours.toFixed(1)}h稼働
+            </div>
+          )}
+        </div>
+
         <div className="section calendar-section">
           <div className="calendar-nav">
             <button onClick={goToPrevMonth} aria-label="前の月">&lt;</button>
@@ -198,30 +218,6 @@ export default function Today() {
           </div>
         </div>
 
-        <div className="section summary-section">
-          <p className="summary-label">{selectedDate === todayKey ? '本日の合計' : 'この日の合計'}</p>
-          <div className="summary-total"><AnimatedMoney amount={daily.total} /></div>
-          <div className="summary-breakdown">
-            <div className="summary-card">
-              <span className="summary-card-label">時給分</span>
-              <AnimatedMoney amount={daily.wage} className="summary-card-value" />
-            </div>
-            <div className="summary-card">
-              <span className="summary-card-label">バック</span>
-              <AnimatedMoney amount={daily.back} className="summary-card-value" />
-            </div>
-          </div>
-          {daily.hours > 0 && (
-            <div className="summary-sub">
-              平均時給 <AnimatedMoney amount={daily.avgHourlyRate} />/h · {daily.hours.toFixed(1)}h稼働
-            </div>
-          )}
-        </div>
-
-        <div className="section items-section">
-          <ItemRows items={data.settings.items} record={selectedRec} onCountChange={handleItemCount} />
-        </div>
-
         <div className="section work-section">
           {isPremium && jobs.length > 0 && (
             <JobSelector jobs={jobs} selectedJobId={selectedJobId} onChange={handleJobSelect} recordedJobIds={recordedJobIds} />
@@ -259,6 +255,10 @@ export default function Today() {
           {(recordedJobIds.length > 0 || selectedRec.startTime) && (
             <button className="btn-day-reset" onClick={handleAllReset}>この日の記録をすべて消す</button>
           )}
+        </div>
+
+        <div className="section items-section">
+          <ItemRows items={data.settings.items} record={selectedRec} onCountChange={handleItemCount} />
         </div>
       </main>
     </>
