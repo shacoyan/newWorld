@@ -27,21 +27,21 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: salary-app-react/package-lock.json
+          cache-dependency-path: conmoney/package-lock.json
 
       - name: Install dependencies
         run: npm ci
-        working-directory: salary-app-react
+        working-directory: conmoney
 
       - name: Build
         run: npm run build
-        working-directory: salary-app-react
+        working-directory: conmoney
 
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: salary-app-react/dist
+          path: conmoney/dist
 
       - uses: actions/deploy-pages@v4
         id: deployment
