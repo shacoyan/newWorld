@@ -1786,3 +1786,23 @@ main { padding-top: 72px; }
 /* ===== 月/年タブ (統計ページ) ===== */
 .tab-btn { padding: 6px 20px; border-radius: var(--radius-xs); border: 1.5px solid var(--border); background: var(--card-bg); color: var(--text-muted); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
 .tab-btn-active { border-color: var(--primary); background: var(--primary-bg); color: var(--primary); }
+/* ===== Goal Modal ===== */
+.goal-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; z-index: 1000; animation: fadeIn 0.2s ease; }
+.goal-modal { background: var(--card-bg); border-radius: var(--radius-md); padding: 32px 28px; max-width: 320px; width: 90%; position: relative; box-shadow: 0 8px 32px rgba(0,0,0,0.25); animation: slideUp 0.25s ease; text-align: center; }
+.goal-modal-close { position: absolute; top: 12px; right: 14px; background: none; border: none; font-size: 20px; color: var(--text-muted); cursor: pointer; line-height: 1; }
+.goal-modal-emoji { font-size: 48px; margin-bottom: 8px; }
+.goal-modal-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+.goal-modal-amount { font-size: 28px; font-weight: 800; color: var(--primary); margin-bottom: 16px; }
+.goal-modal-message { font-size: 15px; color: var(--text-muted); line-height: 1.6; }
+.goal-modal-bar-wrap { height: 10px; border-radius: 9999px; background: var(--border); overflow: hidden; margin: 12px 0; }
+.goal-modal-bar { height: 100%; background: var(--gradient-primary); border-radius: 9999px; transition: width 0.5s ease; }
+.goal-modal-remaining { font-size: 15px; color: var(--text); margin-bottom: 4px; }
+.goal-modal-sub { font-size: 13px; color: var(--text-muted); }
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+/* ===== JobSelector: 記録済みインジケーター ===== */
+.job-selector-card.is-recorded { border-color: var(--accent, #22c55e); }
+.job-selector-check { font-size: 13px; font-weight: 700; color: var(--accent, #22c55e); margin-left: 6px; }
+/* ===== リセットボタン ===== */
+.btn-job-reset { width: 100%; padding: 10px; border-radius: var(--radius-xs); border: 1.5px solid var(--danger, #ef4444); background: transparent; color: var(--danger, #ef4444); font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: background 0.15s; }
+.btn-job-reset:hover { background: rgba(239,68,68,0.08); }

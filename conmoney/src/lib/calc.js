@@ -1,3 +1,4 @@
+```javascript
 export const STORAGE_KEY = 'salary-app-v3';
 export const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
 
@@ -98,21 +99,42 @@ export function calcNightShiftHours(startTime, endTime) {
 }
 
 export function calcDailyWage(record, settings) {
-  const hours = calcHours(record.startTime, record.endTime);
   let wage = 0;
+  let totalHours = 0;
   
   if (settings.salaryType === 'hourly') {
-    const job = record.jobId && (settings.jobs || []).find(j => j.id === record.jobId);
-    const hourlyRate = job ? job.hourlyRate : (record.hourlyRate || settings.defaultHourlyRate || 0);
-    const nightEnabled = job
-      ? (job.nightShiftEnabled ?? false)
-      : (settings.nightShiftEnabled ?? false);
-    if (nightEnabled) {
-      const nightHours = calcNightShiftHours(record.startTime, record.endTime);
-      const regularHours = hours - nightHours;
-      wage = Math.round(regularHours * hourlyRate + nightHours * hourlyRate * 1.25);
+    if (record.jobs && Object.keys(record.jobs).length > 0) {
+      // 新フォーマット: 各jobIdをループして合計
+      for (const [jobId, jobRec] of Object.entries(record.jobs)) {
+        const job = settings.jobs.find(j => j.id === jobId);
+        if (job && jobRec.startTime && jobRec.endTime) {
+          const hours = calcHours(jobRec.startTime, jobRec.endTime);
+          totalHours += hours;
+          const rate = job.hourlyRate;
+          const nightEnabled = job.nightShiftEnabled ?? false;
+          if (nightEnabled) {
+            const nightHours = calcNightShiftHours(jobRec.startTime, jobRec.endTime);
+            wage += Math.round((hours - nightHours) * rate + nightHours * rate * 1.25);
+          } else {
+            wage += Math.round(hours * rate);
+          }
+        }
+      }
     } else {
-      wage = Math.round(hours * hourlyRate);
+      // 旧フォーマット: 既存ロジック
+      totalHours = calcHours(record.startTime, record.endTime);
+      const job = record.jobId && (settings.jobs || []).find(j => j.id === record.jobId);
+      const hourlyRate = job ? job.hourlyRate : (record.hourlyRate || settings.defaultHourlyRate || 0);
+      const nightEnabled = job
+        ? (job.nightShiftEnabled ?? false)
+        : (settings.nightShiftEnabled ?? false);
+      if (nightEnabled) {
+        const nightHours = calcNightShiftHours(record.startTime, record.endTime);
+        const regularHours = totalHours - nightHours;
+        wage = Math.round(regularHours * hourlyRate + nightHours * hourlyRate * 1.25);
+      } else {
+        wage = Math.round(totalHours * hourlyRate);
+      }
     }
   } else {
     const daysInMonth = getDaysInMonth(new Date().getFullYear(), new Date().getMonth() + 1);
@@ -130,9 +152,9 @@ export function calcDailyWage(record, settings) {
     }
   }
   
-  const avgHourlyRate = hours > 0 ? Math.round((wage + back) / hours) : 0;
+  const avgHourlyRate = totalHours > 0 ? Math.round((wage + back) / totalHours) : 0;
 
-  return { wage, back, total: wage + back, hours, avgHourlyRate };
+  return { wage, back, total: wage + back, hours: totalHours, avgHourlyRate };
 }
 
 export function calcPeriodRange(year, month, startDay) {
@@ -179,12 +201,14 @@ export function ensureRecord(data, dateKey) {
       endTime: '',
       hourlyRate: (data.settings && data.settings.defaultHourlyRate) || 0,
       jobId: null,
-      items: {}
+      items: {},
+      jobs: {}
     };
   } else {
     records[dateKey] = {
       ...records[dateKey],
-      items: { ...(records[dateKey].items || {}) }
+      items: { ...(records[dateKey].items || {}) },
+      jobs: { ...(records[dateKey].jobs || {}) }
     };
   }
   return { ...data, records };
@@ -205,7 +229,7 @@ export function buildMonthlyReport(year, month, data) {
       String(d.getMonth() + 1).padStart(2, '0') + '-' +
       String(d.getDate()).padStart(2, '0');
     const rec = data.records && data.records[dateKey];
-    if (rec && rec.startTime) {
+    if (rec && (rec.startTime || (rec.jobs && Object.keys(rec.jobs).length > 0))) {
       const r = calcDailyWage(rec, data.settings);
       workDays += 1;
       totalHours += r.hours;
@@ -238,3 +262,4 @@ export function buildMonthlyReport(year, month, data) {
     rows
   };
 }
+```

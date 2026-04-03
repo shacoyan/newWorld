@@ -15,12 +15,11 @@ export default function Today() {
 
   const todayKey = getTodayKey()
   const [selectedDate, setSelectedDate] = useState(todayKey)
+  const [selectedJobId, setSelectedJobId] = useState(null)
   const [calYear, setCalYear] = useState(() => parseInt(todayKey.split('-')[0]))
   const [calMonth, setCalMonth] = useState(() => parseInt(todayKey.split('-')[1]))
 
   if (!data) return null
-
-  const selectedJobId = data.records[selectedDate]?.jobId ?? null
 
   const settings = data.settings || {}
   const jobs = settings.jobs || []
@@ -35,11 +34,26 @@ export default function Today() {
   const weekStartDay = settings.weekStartDay ?? 0
 
   const selectedRec = data.records[selectedDate] || { startTime: '', endTime: '', hourlyRate: defaultHourlyRate, items: {} }
+  const selectedJobRec = selectedJobId
+    ? (data.records[selectedDate]?.jobs?.[selectedJobId] || { startTime: '', endTime: '' })
+    : null
+  const displayRec = selectedJobRec || selectedRec
+  const recordedJobIds = Object.keys(data.records[selectedDate]?.jobs || {})
+    .filter(jid => data.records[selectedDate]?.jobs?.[jid]?.startTime)
+
   const daily = calcDailyWage(selectedRec, settings)
 
   const handleTimeChange = (field, value) => {
     const newData = ensureRecord(data, selectedDate)
-    newData.records[selectedDate][field] = value
+    if (selectedJobId) {
+      if (!newData.records[selectedDate].jobs) newData.records[selectedDate].jobs = {}
+      newData.records[selectedDate].jobs[selectedJobId] = {
+        ...(newData.records[selectedDate].jobs[selectedJobId] || {}),
+        [field]: value
+      }
+    } else {
+      newData.records[selectedDate][field] = value
+    }
     persistData(newData)
   }
 
@@ -50,27 +64,31 @@ export default function Today() {
   }
 
   const handleJobSelect = (jobId) => {
-    if (selectedJobId === jobId) {
-      const newData = ensureRecord(data, selectedDate)
-      delete newData.records[selectedDate].jobId
-      persistData(newData)
-      return
-    }
-    const selectedJob = jobs.find(j => j.id === jobId)
-    const newData = ensureRecord(data, selectedDate)
-    newData.records[selectedDate].jobId = jobId
-    const fillStart = selectedJob?.defaultStartTime || defaultStartTime
-    const fillEnd = selectedJob?.defaultEndTime || defaultEndTime
-    if (fillStart) newData.records[selectedDate].startTime = fillStart
-    if (fillEnd) newData.records[selectedDate].endTime = fillEnd
-    persistData(newData)
+    setSelectedJobId(prev => prev === jobId ? null : jobId)
   }
 
   const handleCheckin = () => {
-    if (!defaultStartTime || !defaultEndTime) return
+    const job = jobs.find(j => j.id === selectedJobId)
+    const fillStart = job?.defaultStartTime || defaultStartTime
+    const fillEnd = job?.defaultEndTime || defaultEndTime
+    if (!fillStart || !fillEnd) return
     const newData = ensureRecord(data, selectedDate)
-    newData.records[selectedDate].startTime = defaultStartTime
-    newData.records[selectedDate].endTime = defaultEndTime
+    if (selectedJobId) {
+      if (!newData.records[selectedDate].jobs) newData.records[selectedDate].jobs = {}
+      newData.records[selectedDate].jobs[selectedJobId] = { startTime: fillStart, endTime: fillEnd }
+    } else {
+      newData.records[selectedDate].startTime = fillStart
+      newData.records[selectedDate].endTime = fillEnd
+    }
+    persistData(newData)
+  }
+
+  const handleJobReset = () => {
+    if (!selectedJobId) return
+    const newData = ensureRecord(data, selectedDate)
+    if (newData.records[selectedDate].jobs) {
+      delete newData.records[selectedDate].jobs[selectedJobId]
+    }
     persistData(newData)
   }
 
@@ -102,6 +120,7 @@ export default function Today() {
 
   const handleDateClick = (dateKey) => {
     setSelectedDate(dateKey)
+    setSelectedJobId(null)
     const [y, m] = dateKey.split('-').map(Number)
     setCalYear(y)
     setCalMonth(m)
@@ -198,7 +217,10 @@ export default function Today() {
 
         <div className="section work-section">
           {isPremium && jobs.length > 0 && (
-            <JobSelector jobs={jobs} selectedJobId={selectedJobId} onChange={handleJobSelect} />
+            <JobSelector jobs={jobs} selectedJobId={selectedJobId} onChange={handleJobSelect} recordedJobIds={recordedJobIds} />
+          )}
+          {selectedJobId && selectedJobRec?.startTime && (
+            <button className='btn-job-reset' onClick={handleJobReset}>この店舗の記録を消す</button>
           )}
           {!hasJobs && !defaultStartTime && (
             <div style={{ padding: '10px 14px', background: 'var(--warning-bg)', borderRadius: '10px', fontSize: '13px', color: 'var(--warning-text)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -206,15 +228,19 @@ export default function Today() {
               <button onClick={() => navigate('/settings')} style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 600, cursor: 'pointer', fontSize: '13px' }}>設定する →</button>
             </div>
           )}
-          {!hasJobs && <button className="btn-checkin-today" onClick={handleCheckin}>デフォルト出勤を登録</button>}
+          { (!hasJobs || selectedJobId) && (
+            <button className="btn-checkin-today" onClick={handleCheckin}>
+              {selectedJobId ? (jobs.find(j=>j.id===selectedJobId)?.name || '') + 'のデフォルト出勤を登録' : 'デフォルト出勤を登録'}
+            </button>
+          )}
           <div className="time-input-group">
             <label>
               出勤
-              <input type="time" value={selectedRec.startTime} step={stepSeconds} onChange={(e) => handleTimeChange('startTime', e.target.value)} />
+              <input type="time" value={displayRec.startTime} step={stepSeconds} onChange={(e) => handleTimeChange('startTime', e.target.value)} />
             </label>
             <label>
               退勤
-              <input type="time" value={selectedRec.endTime} step={stepSeconds} onChange={(e) => handleTimeChange('endTime', e.target.value)} />
+              <input type="time" value={displayRec.endTime} step={stepSeconds} onChange={(e) => handleTimeChange('endTime', e.target.value)} />
             </label>
           </div>
           {!hasJobs && salaryType === 'hourly' && (
