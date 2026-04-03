@@ -201,7 +201,9 @@ export default function Today() {
               const record = data.records[dateKey]
               let cellTotal = 0
               if (record) { const dw = calcDailyWage(data.records[dateKey], settings); cellTotal = dw.total }
-              const cellJob = record?.jobId ? jobs.find(j => j.id === record.jobId) : null
+              const cellJobs = record?.jobs
+                ? Object.keys(record.jobs).filter(jid => record.jobs[jid]?.startTime).map(jid => jobs.find(j => j.id === jid)).filter(Boolean)
+                : (record?.jobId ? [jobs.find(j => j.id === record.jobId)].filter(Boolean) : [])
               let cls = 'day-cell'
               if (dayOfWeek === 0) cls += ' sunday'
               if (dayOfWeek === 6) cls += ' saturday'
@@ -210,7 +212,7 @@ export default function Today() {
               return (
                 <div key={dateKey} className={cls} onClick={() => handleDateClick(dateKey)}>
                   <span className="cell-date">{day}</span>
-                  {cellJob && <span className="cell-job-name" style={{ backgroundColor: cellJob.color }}>{cellJob.name}</span>}
+                  {cellJobs.map(j => <span key={j.id} className="cell-job-name" style={{ backgroundColor: j.color }}>{j.name}</span>)}
                   {record && cellTotal > 0 && <AnimatedMoney amount={cellTotal} className="cell-total" />}
                 </div>
               )
