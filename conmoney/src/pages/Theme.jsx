@@ -64,7 +64,7 @@ export default function Theme() {
             </div>
             <h1 className="premium-wall-title">プレミアム限定機能</h1>
             <p className="premium-wall-desc">着せ替えはプレミアムモードでのみ利用できます</p>
-            <button className="btn-premium" onClick={() => navigate('/settings')}>
+            <button className="btn-premium" onClick={() => navigate('/premium')}>
               プレミアムを有効にする
             </button>
           </div>

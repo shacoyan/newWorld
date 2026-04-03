@@ -9,6 +9,7 @@ import Settings from './pages/Settings'
 import Dashboard from './pages/Dashboard'
 import Theme from './pages/Theme'
 import Report from './pages/Report'
+import PremiumPage from './pages/PremiumPage'
 
 // テーマをReactレンダリング前に同期設定（ロゴ初期表示バグ対策）
 ;(function initThemeEarly() {
@@ -48,7 +49,7 @@ function PremiumGuard({ children }) {
   const { data } = useAppDataContext()
   if (user === undefined || data === null) return null
   if (user === null) return <Navigate to="/lp" replace />
-  if (!data.settings?.isPremium) return <Navigate to="/settings" replace />
+  if (!data.settings?.isPremium) return <Navigate to="/premium" replace />
   return children
 }
 
@@ -127,6 +128,7 @@ export default function App() {
             <Route path="/settings" element={<AuthGuard><Settings /></AuthGuard>} />
             <Route path="/dashboard" element={<AuthGuard><Dashboard /></AuthGuard>} />
             <Route path="/theme" element={<AuthGuard><Theme /></AuthGuard>} />
+            <Route path="/premium" element={<AuthGuard><PremiumPage /></AuthGuard>} />
             <Route path="/report" element={<PremiumGuard><Report /></PremiumGuard>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
