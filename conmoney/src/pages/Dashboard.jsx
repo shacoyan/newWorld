@@ -137,12 +137,12 @@ export default function Dashboard() {
   return (
     <div>
       <Header />
-      <main style={{ paddingTop: '56px' }}>
-        <div style={{ textAlign: 'center', padding: '8px 0 4px' }}>
-          <h1 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text)' }}>統計</h1>
+      <main className="main-content">
+        <div className="page-header">
+          <h1 className="page-title">統計</h1>
         </div>
         {isPremium && (
-          <div style={{ display: 'flex', gap: '8px', padding: '0 16px 8px', justifyContent: 'center' }}>
+          <div className="tab-bar">
             <button className={viewMode === 'month' ? 'tab-btn tab-btn-active' : 'tab-btn'} onClick={() => setViewMode('month')}>月</button>
             <button className={viewMode === 'year' ? 'tab-btn tab-btn-active' : 'tab-btn'} onClick={() => setViewMode('year')}>年</button>
           </div>
@@ -248,7 +248,7 @@ export default function Dashboard() {
                   <div className="dash-item-row" key={job.id}>
                     <div className="dash-item-header">
                       <span className="dash-item-name" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: job.color, display: 'inline-block' }} />
+                        <span className="job-dot-sm" style={{ background: job.color }} />
                         {job.name}
                       </span>
                       <span className="dash-item-stats">{days}日 · {formatMoney(income)}</span>
@@ -334,3 +334,4 @@ export default function Dashboard() {
     </div>
   )
 }
+

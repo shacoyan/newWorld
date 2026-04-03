@@ -48,9 +48,9 @@ export default function Report() {
   return (
     <>
       <Header />
-      <main style={{ paddingTop: '56px' }}>
-        <div style={{ textAlign: 'center', padding: '8px 0 4px' }}>
-          <h1 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text)' }}>レポート</h1>
+      <main className="main-content">
+        <div className="page-header">
+          <h1 className="page-title">レポート</h1>
         </div>
 
         <div className="dash-month-nav">
@@ -71,7 +71,7 @@ export default function Report() {
 
         <div className="section">
           <h2 className="section-title">サマリー</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '8px' }}>
+          <div className="summary-grid">
             <div className="dash-sub-card">
               <div className="dash-sub-label">稼働日数</div>
               <div className="dash-sub-value">{summary.workDays}日</div>
@@ -132,3 +132,4 @@ export default function Report() {
     </>
   )
 }
+

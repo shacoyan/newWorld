@@ -56,7 +56,7 @@ export default function Today() {
   return (
     <>
       <Header />
-      <main style={{ paddingTop: '56px' }}>
+      <main className="main-content">
         <div className="date-display-section">
           <div className="date-display-inner">
             <div className="date-display-main">

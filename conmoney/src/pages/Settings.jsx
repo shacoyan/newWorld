@@ -180,9 +180,9 @@ export default function Settings() {
   return (
     <div>
       <Header />
-      <main style={{ paddingTop: '56px' }}>
-        <div style={{ textAlign: 'center', padding: '8px 0 4px' }}>
-          <h1 style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text)' }}>設定</h1>
+      <main className="main-content">
+        <div className="page-header">
+          <h1 className="page-title">設定</h1>
         </div>
         <section className="section">
           <h2 className="section-title">給与タイプ</h2>
@@ -254,13 +254,13 @@ export default function Settings() {
               onBlur={() => persistData(data)}
             />
           </div>
-          <div className="form-group" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div className="form-group checkbox-row">
             <label style={{ marginBottom: 0 }}>深夜割増（22:00〜5:00 × 1.25倍）</label>
             <input
               type="checkbox"
               checked={s.nightShiftEnabled ?? false}
               onChange={(e) => updateSettings({ nightShiftEnabled: e.target.checked })}
-              style={{ width: '18px', height: '18px', accentColor: 'var(--primary)', flexShrink: 0 }}
+              className="checkbox-lg"
             />
           </div>
         </section>
@@ -298,22 +298,22 @@ export default function Settings() {
           <section className="section">
             <h2 className="section-title">仕事先管理</h2>
             {(s.jobs || []).map(job => (
-              <div key={job.id} style={{ marginBottom: '16px', padding: '12px', border: '1px solid var(--border)', borderRadius: '8px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <div style={{ width: '16px', height: '16px', borderRadius: '50%', backgroundColor: job.color, flexShrink: 0 }} />
+              <div key={job.id} className="job-card">
+                <div className="job-card-header">
+                  <div className="job-card-dot" style={{ backgroundColor: job.color }} />
                   <strong>{job.name || '（名称未設定）'}</strong>
-                  <span style={{ marginLeft: 'auto', fontSize: '13px', color: 'var(--text-secondary)' }}>¥{job.hourlyRate}/h</span>
-                  <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{job.defaultStartTime}〜{job.defaultEndTime}</span>
+                  <span className="job-card-meta" style={{ marginLeft: 'auto' }}>¥{job.hourlyRate}/h</span>
+                  <span className="job-card-meta">{job.defaultStartTime}〜{job.defaultEndTime}</span>
                   <button className="btn-delete" onClick={() => handleDeleteJob(job.id)}>削除</button>
                 </div>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <div className="job-card-fields">
                   <input
                     type="text"
                     placeholder="仕事先名"
                     value={job.name}
                     onChange={(e) => handleJobChange(job.id, 'name', e.target.value)}
                     onBlur={() => persistData(data)}
-                    style={{ flex: '1 1 120px' }}
+                    className="job-card-field-name"
                   />
                   <input
                     type="number"
@@ -321,9 +321,9 @@ export default function Settings() {
                     value={job.hourlyRate || ''}
                     onChange={(e) => handleJobChange(job.id, 'hourlyRate', e.target.value)}
                     onBlur={() => persistData(data)}
-                    style={{ flex: '1 1 80px' }}
+                    className="job-card-field-rate"
                   />
-                  <label style={{ display: 'flex', flexDirection: 'column', gap: '2px', flex: '1 1 100px', fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>
+                  <label className="field-label">
                     出勤デフォルト
                     <input
                       type="time"
@@ -332,7 +332,7 @@ export default function Settings() {
                       onBlur={() => persistData(data)}
                     />
                   </label>
-                  <label style={{ display: 'flex', flexDirection: 'column', gap: '2px', flex: '1 1 100px', fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>
+                  <label className="field-label">
                     退勤デフォルト
                     <input
                       type="time"
@@ -346,16 +346,16 @@ export default function Settings() {
                     value={job.color || '#FF6B9D'}
                     onChange={(e) => handleJobChange(job.id, 'color', e.target.value)}
                     onBlur={() => persistData(data)}
-                    style={{ width: '40px', height: '36px', padding: '2px', cursor: 'pointer' }}
+                    className="input-color"
                   />
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
-                  <label style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: 0 }}>深夜割増（22:00〜5:00 × 1.25倍）</label>
+                <div className="job-card-footer">
+                  <label className="job-card-meta">深夜割増（22:00〜5:00 × 1.25倍）</label>
                   <input
                     type="checkbox"
                     checked={job.nightShiftEnabled ?? false}
                     onChange={(e) => handleJobChange(job.id, 'nightShiftEnabled', e.target.checked)}
-                    style={{ width: '18px', height: '18px', accentColor: 'var(--primary)', flexShrink: 0 }}
+                    className="checkbox-lg"
                   />
                 </div>
               </div>
@@ -366,26 +366,26 @@ export default function Settings() {
 
         <section className="section">
           <h2 id="week-start-title" className="section-title">週の始まり</h2>
-          <div className="radio-group" role="radiogroup" aria-labelledby="week-start-title" style={{ display:'flex', gap:'16px', marginTop:'12px', padding:'4px 0' }}>
-            <label style={{ display:'flex', alignItems:'center', gap:'8px', fontSize:'14px', fontWeight:600, color:'var(--text)', cursor:'pointer' }}>
+          <div className="radio-group radio-row" role="radiogroup" aria-labelledby="week-start-title">
+            <label className="radio-label">
               <input
                 type="radio"
                 name="weekStartDay"
                 value="0"
                 checked={(s.weekStartDay ?? 0) === 0}
                 onChange={() => updateSettings({ weekStartDay: 0 })}
-                style={{ accentColor:'var(--primary)', width:'16px', height:'16px' }}
+                className="radio-input"
               />
               日曜始まり
             </label>
-            <label style={{ display:'flex', alignItems:'center', gap:'8px', fontSize:'14px', fontWeight:600, color:'var(--text)', cursor:'pointer' }}>
+            <label className="radio-label">
               <input
                 type="radio"
                 name="weekStartDay"
                 value="1"
                 checked={(s.weekStartDay ?? 0) === 1}
                 onChange={() => updateSettings({ weekStartDay: 1 })}
-                style={{ accentColor:'var(--primary)', width:'16px', height:'16px' }}
+                className="radio-input"
               />
               月曜始まり
             </label>
@@ -436,20 +436,20 @@ export default function Settings() {
                 </svg>
                 プレミアム有効
               </div>
-              <button className="btn-text-danger" onClick={handleDeactivatePremium} style={{ marginTop: '28px', display: 'block' }}>プレミアムを解除</button>
+              <button className="btn-text-danger" onClick={handleDeactivatePremium}>プレミアムを解除</button>
             </div>
           ) : (
             <div>
               <div className="form-group">
                 <label>プレミアムコード</label>
-                <div style={{ display: 'flex', gap: '8px' }}>
+                <div className="d-flex-gap8">
                   <input
                     type="text"
                     placeholder="コードを入力"
                     value={premiumInput}
                     onChange={(e) => setPremiumInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handlePremiumCode()}
-                    style={{ flex: 1 }}
+                    className="input-flex"
                   />
                   <button className="btn-primary-sm" onClick={handlePremiumCode}>適用</button>
                 </div>
@@ -466,3 +466,4 @@ export default function Settings() {
     </div>
   );
 }
+

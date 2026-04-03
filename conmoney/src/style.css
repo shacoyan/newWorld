@@ -445,8 +445,8 @@ input[type="time"] { width: 120px; }
 }
 
 .item-dec, .item-inc {
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1728,8 +1728,8 @@ main { padding-top: 72px; }
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  min-width: 44px;
+  min-height: 44px;
   cursor: grab;
   color: var(--drag-handle-color);
   flex-shrink: 0;
@@ -1813,3 +1813,53 @@ main { padding-top: 72px; }
 .job-selector-container { display: flex; flex-direction: column; gap: 8px; }
 .job-selector-dot { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; }
 .job-selector-inner { flex: 1; display: flex; justify-content: space-between; align-items: center; }
+
+/* === UI/UX 統一改善 === */
+/* ─── ページ共通 ─── */
+.main-content { padding-top: 56px; }
+.page-header { text-align: center; padding: 8px 0 4px; }
+.page-title { font-size: 18px; font-weight: 700; color: var(--text); margin: 0; }
+
+/* ─── Dashboard ─── */
+.tab-bar { display: flex; gap: 8px; padding: 0 16px 8px; justify-content: center; }
+.job-dot-sm { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+
+/* ─── Report ─── */
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+
+/* ─── Settings ─── */
+.checkbox-row { display: flex; justify-content: space-between; align-items: center; }
+.checkbox-lg { width: 18px; height: 18px; accent-color: var(--primary); flex-shrink: 0; }
+.radio-row { display: flex; gap: 16px; margin-top: 12px; padding: 4px 0; }
+.radio-label { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: var(--text); cursor: pointer; }
+.radio-input { accent-color: var(--primary); width: 16px; height: 16px; }
+.input-flex { flex: 1; }
+.job-card { margin-bottom: 16px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; }
+.job-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.job-card-dot { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; }
+.job-card-meta { font-size: 13px; color: var(--text-secondary); }
+.job-card-fields { display: flex; gap: 8px; flex-wrap: wrap; }
+.job-card-field-name { flex: 1 1 120px; }
+.job-card-field-rate { flex: 1 1 80px; }
+.field-label { display: flex; flex-direction: column; gap: 2px; flex: 1 1 100px; font-size: 11px; color: var(--text-muted); font-weight: 600; }
+.job-card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+.input-color { width: 40px; height: 36px; padding: 2px; cursor: pointer; }
+.d-flex-gap8 { display: flex; gap: 8px; }
+
+/* ─── Theme ─── */
+.premium-wall { text-align: center; padding: 40px 24px; }
+.premium-wall-icon { margin-bottom: 16px; }
+.premium-wall-title { font-size: 18px; font-weight: 700; color: var(--text); margin: 0 0 8px; }
+.premium-wall-desc { font-size: 14px; color: var(--text-muted); margin: 0 0 24px; }
+.btn-premium { padding: 12px 24px; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #fff; border: none; border-radius: var(--radius); font-weight: 700; font-size: 14px; cursor: pointer; }
+.theme-grid { padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.theme-card { border-radius: 20px; padding: 16px; transition: all 0.3s ease; position: relative; overflow: hidden; }
+.theme-card-badge { position: absolute; top: 8px; right: 8px; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; color: #fff; }
+.theme-card-logo { text-align: center; margin-bottom: 10px; }
+.theme-card-logo img { width: 100%; height: auto; object-fit: contain; }
+.theme-card-info { text-align: center; margin-bottom: 10px; }
+.theme-card-name { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+.theme-card-desc { font-size: 10px; opacity: 0.7; line-height: 1.4; }
+.theme-card-colors { display: flex; gap: 6px; margin-bottom: 12px; justify-content: center; }
+.theme-color-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+.theme-card-btn { width: 100%; padding: 10px; border-radius: 14px; font-weight: 700; font-size: 13px; transition: all 0.2s; }
