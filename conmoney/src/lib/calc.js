@@ -1,4 +1,3 @@
-```javascript
 export const STORAGE_KEY = 'salary-app-v3';
 export const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
 
@@ -262,4 +261,3 @@ export function buildMonthlyReport(year, month, data) {
     rows
   };
 }
-```
