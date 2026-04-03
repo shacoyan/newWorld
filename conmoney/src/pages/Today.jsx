@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { useAppData } from '../hooks/useAppData'
 import { useCalendarState } from '../hooks/useCalendarState'
 import { useDailyRecord } from '../hooks/useDailyRecord'
-import { calcDailyWage, WEEKDAYS } from '../lib/calc'
+import { calcDailyWage, calcPaydayInfo, WEEKDAYS } from '../lib/calc'
 import Header from '../components/Header'
 import JobSelector from '../components/JobSelector'
 import ItemRows from '../components/ItemRows'
@@ -34,6 +34,8 @@ export default function Today() {
   const { handleTimeChange, handleRateChange, handleCheckin, handleJobReset, handleAllReset, handleItemCount } = useDailyRecord(data, persistData, selectedDate, selectedJobId, settings)
 
   if (!data) return null
+
+  const paydayInfo = calcPaydayInfo(data)
 
   const selectedRec = data.records[selectedDate] || { startTime: '', endTime: '', hourlyRate: defaultHourlyRate, items: {} }
   const selectedJobRec = selectedJobId
@@ -87,6 +89,30 @@ export default function Today() {
               平均時給 <AnimatedMoney amount={daily.avgHourlyRate} />/h · {daily.hours.toFixed(1)}h稼働
             </div>
           )}
+        </div>
+
+        <div className="section">
+          <div className="payday-card">
+            {paydayInfo.paymentType === 'daily' ? (
+              <div className="payday-card-row">
+                <span className="payday-card-label">本日受取額</span>
+                <AnimatedMoney amount={paydayInfo.todayTotal} className="payday-card-amount" />
+              </div>
+            ) : (
+              <>
+                <div className="payday-card-row">
+                  <span className="payday-card-label">今期の見込み給与</span>
+                  <AnimatedMoney amount={paydayInfo.periodTotal} className="payday-card-amount" />
+                </div>
+                <div className="payday-card-row">
+                  <span className="payday-card-label">給料日</span>
+                  <span className={paydayInfo.isPayday ? 'payday-card-date payday-istoday' : 'payday-card-date'}>
+                    {paydayInfo.isPayday ? '今日が給料日！' : `毎月${paydayInfo.payday}日（あと${paydayInfo.daysUntilPayday}日）`}
+                  </span>
+                </div>
+              </>
+            )}
+          </div>
         </div>
 
         <div className="section calendar-section">
@@ -177,3 +203,4 @@ export default function Today() {
     </>
   )
 }
+

@@ -40,7 +40,9 @@ export function getDefaultSettings() {
     ],
     jobs: [],
     monthlyGoal: 0,
-    nightShiftEnabled: false
+    nightShiftEnabled: false,
+    paymentType: 'monthly',
+    payday: 25
   };
 }
 
@@ -95,7 +97,6 @@ export function calcDailyWage(record, settings, dateKey) {
   
   if (settings.salaryType === 'hourly') {
     if (record.jobs && Object.keys(record.jobs).length > 0) {
-      // 新フォーマット: 各jobIdをループして合計
       for (const [jobId, jobRec] of Object.entries(record.jobs)) {
         const job = settings.jobs.find(j => j.id === jobId);
         if (job && jobRec.startTime && jobRec.endTime) {
@@ -112,7 +113,6 @@ export function calcDailyWage(record, settings, dateKey) {
         }
       }
     } else {
-      // 旧フォーマット: 既存ロジック
       totalHours = calcHours(record.startTime, record.endTime);
       const job = record.jobId && (settings.jobs || []).find(j => j.id === record.jobId);
       const hourlyRate = job ? job.hourlyRate : (record.hourlyRate || settings.defaultHourlyRate || 0);
@@ -268,3 +268,39 @@ export function buildMonthlyReport(year, month, data) {
     rows
   };
 }
+
+export function calcPaydayInfo(data) {
+  const settings = data.settings || {}
+  const paymentType = settings.paymentType || 'monthly'
+  const todayKey = getTodayKey()
+  const [year, month, day] = todayKey.split('-').map(Number)
+
+  if (paymentType === 'daily') {
+    const rec = data.records?.[todayKey]
+    const todayTotal = rec ? calcDailyWage(rec, settings, todayKey).total : 0
+    return { paymentType: 'daily', todayTotal }
+  }
+
+  const payday = settings.payday || 25
+  const monthly = calcMonthlyTotal(year, month, data)
+  const periodTotal = monthly.total
+
+  const today = new Date(year, month - 1, day)
+  let paydayDate
+  if (day <= payday) {
+    const lastDay = getDaysInMonth(year, month)
+    paydayDate = new Date(year, month - 1, Math.min(payday, lastDay))
+  } else {
+    const nextMonth = month === 12 ? 1 : month + 1
+    const nextYear = month === 12 ? year + 1 : year
+    const lastDay = getDaysInMonth(nextYear, nextMonth)
+    paydayDate = new Date(nextYear, nextMonth - 1, Math.min(payday, lastDay))
+  }
+
+  const diffMs = paydayDate.getTime() - today.getTime()
+  const daysUntilPayday = Math.round(diffMs / (1000 * 60 * 60 * 24))
+  const isPayday = daysUntilPayday === 0
+
+  return { paymentType: 'monthly', periodTotal, payday, daysUntilPayday, isPayday }
+}
+

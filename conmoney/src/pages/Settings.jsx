@@ -45,7 +45,7 @@ function SortableItem({ item, onItemChange, onDeleteItem, onBlurSave }) {
       />
       <input
         type="number"
-        placeholder="バック"
+        placeholder="金額（-で経費）"
         value={item.back || ''}
         onChange={(e) => onItemChange(item.id, 'back', e.target.value)}
         onBlur={onBlurSave}
@@ -278,6 +278,49 @@ export default function Settings() {
               onBlur={() => persistData(data)}
             />
           </div>
+        </section>
+
+        <section className="section">
+          <h2 className="section-title">給与受取設定</h2>
+          <div className="radio-group">
+            <label>
+              <input
+                type="radio"
+                name="paymentType"
+                value="monthly"
+                checked={(s.paymentType ?? 'monthly') === 'monthly'}
+                onChange={() => updateSettings({ paymentType: 'monthly' })}
+              />
+              月払い
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="paymentType"
+                value="daily"
+                checked={(s.paymentType ?? 'monthly') === 'daily'}
+                onChange={() => updateSettings({ paymentType: 'daily' })}
+              />
+              日払い
+            </label>
+          </div>
+          {(s.paymentType ?? 'monthly') === 'monthly' && (
+            <div className="form-group">
+              <label>給料日</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <input
+                  type="number"
+                  min="1"
+                  max="31"
+                  value={s.payday || 25}
+                  onChange={(e) => updateSettings({ payday: Number(e.target.value) })}
+                  onBlur={() => persistData(data)}
+                  style={{ width: '72px' }}
+                />
+                <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>日</span>
+              </div>
+            </div>
+          )}
         </section>
 
         <section className="section">
