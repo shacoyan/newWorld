@@ -165,7 +165,7 @@ export default function Today() {
               <input type="number" value={selectedRec.hourlyRate || ''} onChange={(e) => handleRateChange(e.target.value)} />
             </label>
           )}
-          {(recordedJobIds.length > 0 || selectedRec.startTime) && (
+          {(recordedJobIds.length > 0 || !!data.records[selectedDate]) && (
             <button className="btn-day-reset" onClick={() => handleAllReset(() => setSelectedJobId(null))}>この日の記録をすべて消す</button>
           )}
         </div>
