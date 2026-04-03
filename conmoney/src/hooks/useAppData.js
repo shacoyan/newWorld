@@ -40,7 +40,7 @@ async function loadFirestore(uid) {
 
 async function saveFirestore(uid, data) {
   try {
-    await setDoc(doc(db, 'users', uid, 'data', 'salary-app-v3'), data, { merge: true })
+    await setDoc(doc(db, 'users', uid, 'data', 'salary-app-v3'), data)
   } catch (e) { console.warn('Firestore save failed:', e) }
 }
 
