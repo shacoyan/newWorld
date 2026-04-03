@@ -92,6 +92,13 @@ export default function Today() {
     persistData(newData)
   }
 
+  const handleAllReset = () => {
+    const newData = { ...data, records: { ...data.records } }
+    delete newData.records[selectedDate]
+    setSelectedJobId(null)
+    persistData(newData)
+  }
+
   const handleItemCount = (itemId, newCount) => {
     const newData = ensureRecord(data, selectedDate)
     if (newCount <= 0) {
@@ -248,6 +255,9 @@ export default function Today() {
               時給
               <input type="number" value={selectedRec.hourlyRate || ''} onChange={(e) => handleRateChange(e.target.value)} />
             </label>
+          )}
+          {(recordedJobIds.length > 0 || selectedRec.startTime) && (
+            <button className="btn-day-reset" onClick={handleAllReset}>この日の記録をすべて消す</button>
           )}
         </div>
       </main>
