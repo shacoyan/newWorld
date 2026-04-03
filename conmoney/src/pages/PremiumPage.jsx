@@ -1,6 +1,5 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Navigate } from 'react-router-dom'
 import { useAppDataContext } from '../hooks/useAppData'
-import { Navigate } from 'react-router-dom'
 import Header from '../components/Header'
 
 const FREE_FEATURES = [

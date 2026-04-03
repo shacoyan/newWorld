@@ -7,7 +7,6 @@ export function useCalendarState(weekStartDay = 0, calendarView = 'month') {
   const [calYear, setCalYear] = useState(() => parseInt(todayKey.split('-')[0]))
   const [calMonth, setCalMonth] = useState(() => parseInt(todayKey.split('-')[1]))
 
-  // 2. weekStart stateを追加
   const getWeekStartDate = (dateKey) => {
     const date = new Date(dateKey + 'T00:00:00')
     const day = date.getDay()
@@ -19,7 +18,6 @@ export function useCalendarState(weekStartDay = 0, calendarView = 'month') {
 
   const [weekStart, setWeekStart] = useState(() => getWeekStartDate(todayKey))
 
-  // 3. goToPrevWeek / goToNextWeek を追加
   const goToPrevWeek = () => {
     setWeekStart(prev => {
       const prevDate = new Date(prev)
@@ -35,7 +33,6 @@ export function useCalendarState(weekStartDay = 0, calendarView = 'month') {
     })
   }
 
-  // 既存機能の維持
   const goToPrevMonth = () => {
     let m = calMonth - 1
     let y = calYear
@@ -51,7 +48,6 @@ export function useCalendarState(weekStartDay = 0, calendarView = 'month') {
     setCalYear(y)
   }
 
-  // 6. handleDateClick に weekStart 更新を追加
   const handleDateClick = (dateKey, onJobReset) => {
     setSelectedDate(dateKey)
     if (onJobReset) onJobReset()
@@ -61,7 +57,6 @@ export function useCalendarState(weekStartDay = 0, calendarView = 'month') {
     setWeekStart(getWeekStartDate(dateKey))
   }
 
-  // 4. calendarCells を (string | null)[] に変更
   const calendarCells = []
   if (calendarView === 'month') {
     const daysInMonth = getDaysInMonth(calYear, calMonth)
@@ -85,7 +80,6 @@ export function useCalendarState(weekStartDay = 0, calendarView = 'month') {
     }
   }
 
-  // 5. calLabel を返す
   let calLabel = ''
   if (calendarView === 'month') {
     calLabel = `${calYear}年${calMonth}月`
@@ -98,7 +92,6 @@ export function useCalendarState(weekStartDay = 0, calendarView = 'month') {
     calLabel = `${startLabel} 〜 ${endLabel}`
   }
 
-  // 7. 戻り値に calLabel, goToPrevWeek, goToNextWeek を追加
   return { 
     todayKey, 
     selectedDate, 

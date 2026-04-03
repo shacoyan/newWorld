@@ -165,9 +165,9 @@ export default function Today() {
             <button className='btn-job-reset' onClick={handleJobReset}>この店舗の記録を消す</button>
           )}
           {!hasJobs && !defaultStartTime && (
-            <div style={{ padding: '10px 14px', background: 'var(--warning-bg)', borderRadius: '10px', fontSize: '13px', color: 'var(--warning-text)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="warning-banner">
               ⚠ デフォルト出勤時刻が未設定です
-              <button onClick={() => navigate('/settings')} style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 600, cursor: 'pointer', fontSize: '13px' }}>設定する →</button>
+              <button className="warning-banner-link" onClick={() => navigate('/settings')}>設定する →</button>
             </div>
           )}
           { (!hasJobs || selectedJobId) && (

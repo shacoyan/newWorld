@@ -33,8 +33,9 @@ export default function Report() {
 
   const handleCsvDownload = () => {
     const header = '日付,出勤,退勤,稼働時間,給与,バック,合計\n'
+    const csvEscape = (v) => `"${String(v).replace(/"/g, '""')}"`
     const body = rows.map(r =>
-      `${r.dateKey},${r.startTime},${r.endTime},${r.hours.toFixed(1)},${r.wage},${r.back},${r.total}`
+      [r.dateKey, r.startTime, r.endTime, r.hours.toFixed(1), r.wage, r.back, r.total].map(csvEscape).join(',')
     ).join('\n')
     const blob = new Blob(['\uFEFF' + header + body], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob)

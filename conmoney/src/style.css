@@ -351,6 +351,49 @@ main {
   color: var(--text);
 }
 
+/* ===== Warning Banner ===== */
+.warning-banner {
+  padding: 10px 14px;
+  background: var(--warning-bg);
+  border-radius: 10px;
+  font-size: 13px;
+  color: var(--warning-text);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.warning-banner-link {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+/* ===== Payday Input ===== */
+.payday-input-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.input-payday {
+  width: 72px;
+}
+
+.payday-suffix {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ===== Header Spacer ===== */
+.header-spacer {
+  width: 44px;
+}
+
 .form-group input {
   padding: 10px 14px;
   border: 1.5px solid var(--border);
@@ -472,6 +515,11 @@ input[type="time"] { width: 120px; }
 }
 
 .item-dec:active, .item-inc:active { transform: scale(0.88); }
+.item-dec:disabled {
+  opacity: 0.3;
+  cursor: default;
+  pointer-events: none;
+}
 .item-dec:focus-visible, .item-inc:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
 
 .item-count-val {

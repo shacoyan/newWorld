@@ -255,7 +255,7 @@ export default function Settings() {
             />
           </div>
           <div className="form-group checkbox-row">
-            <label style={{ marginBottom: 0 }}>深夜割増（22:00〜5:00 × 1.25倍）</label>
+            <label>深夜割増（22:00〜5:00 × 1.25倍）</label>
             <input
               type="checkbox"
               checked={s.nightShiftEnabled ?? false}
@@ -307,7 +307,7 @@ export default function Settings() {
           {(s.paymentType ?? 'monthly') === 'monthly' && (
             <div className="form-group">
               <label>給料日</label>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div className="payday-input-row">
                 <input
                   type="number"
                   min="1"
@@ -315,9 +315,9 @@ export default function Settings() {
                   value={s.payday || 25}
                   onChange={(e) => updateSettings({ payday: Number(e.target.value) })}
                   onBlur={() => persistData(data)}
-                  style={{ width: '72px' }}
+                  className="input-payday"
                 />
-                <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>日</span>
+                <span className="payday-suffix">日</span>
               </div>
             </div>
           )}
@@ -537,3 +537,4 @@ export default function Settings() {
     </div>
   );
 }
+

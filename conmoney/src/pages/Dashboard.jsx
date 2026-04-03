@@ -33,6 +33,12 @@ export default function Dashboard() {
   const start = new Date(range.startDate);
   const end = new Date(range.endDate);
 
+  const isPremium = data.settings?.isPremium ?? false;
+  const jobs = data.settings?.jobs || [];
+  const jobMap = {};
+  jobs.forEach(j => { jobMap[j.id] = j; });
+  const jobStats = {};
+
   for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, '0');
@@ -40,11 +46,15 @@ export default function Dashboard() {
     const key = `${y}-${m}-${day}`;
     const rec = data.records ? data.records[key] : null;
     if (rec) {
-      const dw = calcDailyWage(rec, data.settings);
+      const dw = calcDailyWage(rec, data.settings, key);
       if (dw.total > 0) {
         workDays++;
         workTotal += dw.total;
         if (dw.total > bestDayAmount) { bestDayAmount = dw.total; bestDayKey = key; }
+        const jid = rec.jobId || null;
+        if (!jobStats[jid]) jobStats[jid] = { days: 0, income: 0 };
+        jobStats[jid].days++;
+        jobStats[jid].income += dw.total;
       }
       if (rec.startTime && rec.endTime) {
         totalWorkMinutes += calcHours(rec.startTime, rec.endTime) * 60;
@@ -71,27 +81,7 @@ export default function Dashboard() {
   const goal = data.settings?.monthlyGoal || 0;
   const progressPercent = goal > 0 ? Math.min((total / goal) * 100, 100) : 0;
   const isGoalAchieved = goal > 0 && total >= goal;
-  const isPremium = data.settings?.isPremium ?? false;
-  const jobs = data.settings?.jobs || [];
-  const jobMap = {};
-  jobs.forEach(j => { jobMap[j.id] = j; });
-  const jobStats = {};
-  for (let d = new Date(range.startDate); d <= range.endDate; d.setDate(d.getDate() + 1)) {
-    const y2 = d.getFullYear();
-    const m2 = String(d.getMonth() + 1).padStart(2, '0');
-    const d2 = String(d.getDate()).padStart(2, '0');
-    const key = `${y2}-${m2}-${d2}`;
-    const rec = data.records ? data.records[key] : null;
-    if (rec) {
-      const dw = calcDailyWage(rec, data.settings);
-      if (dw.total > 0) {
-        const jid = rec.jobId || null;
-        if (!jobStats[jid]) jobStats[jid] = { days: 0, income: 0 };
-        jobStats[jid].days++;
-        jobStats[jid].income += dw.total;
-      }
-    }
-  }
+
   const jobBreakdown = Object.entries(jobStats).map(([jid, stats]) => {
     const isNullJob = jid === 'null' || !jid;
     const job = isNullJob
@@ -334,4 +324,5 @@ export default function Dashboard() {
     </div>
   )
 }
+
 
