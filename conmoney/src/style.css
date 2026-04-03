@@ -595,6 +595,8 @@ input[type="time"] { width: 120px; }
     transform: translateY(0);
   }
 }
+/* 週表示: 7列固定・縦長セル */
+.calendar-grid-week .day-cell { aspect-ratio: 1 / 1.6; }
 
 .day-cell {
   aspect-ratio: 1 / 1.15;

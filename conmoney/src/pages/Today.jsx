@@ -25,10 +25,11 @@ export default function Today() {
   const timeStep = settings.timeStep || 15
   const stepSeconds = timeStep === 1 ? 60 : 900
   const weekStartDay = settings.weekStartDay ?? 0
+  const calendarView = settings.calendarView || 'month'
 
   const [selectedJobId, setSelectedJobId] = useState(null)
 
-  const { todayKey, selectedDate, calYear, calMonth, calendarCells, goToPrevMonth, goToNextMonth, handleDateClick: calHandleDateClick } = useCalendarState(weekStartDay)
+  const { todayKey, selectedDate, calYear, calMonth, calendarCells, calLabel, goToPrevMonth, goToNextMonth, goToPrevWeek, goToNextWeek, handleDateClick: calHandleDateClick } = useCalendarState(weekStartDay, calendarView)
 
   const { handleTimeChange, handleRateChange, handleCheckin, handleJobReset, handleAllReset, handleItemCount } = useDailyRecord(data, persistData, selectedDate, selectedJobId, settings)
 
@@ -90,9 +91,9 @@ export default function Today() {
 
         <div className="section calendar-section">
           <div className="calendar-nav">
-            <button onClick={goToPrevMonth} aria-label="前の月">&lt;</button>
-            <span>{calYear}年{calMonth}月</span>
-            <button onClick={goToNextMonth} aria-label="次の月">&gt;</button>
+            <button onClick={calendarView === 'week' ? goToPrevWeek : goToPrevMonth} aria-label={calendarView === 'week' ? '前の週' : '前の月'}>&lt;</button>
+            <span>{calLabel}</span>
+            <button onClick={calendarView === 'week' ? goToNextWeek : goToNextMonth} aria-label={calendarView === 'week' ? '次の週' : '次の月'}>&gt;</button>
           </div>
           <div className="calendar-weekdays">
             {[...WEEKDAYS.slice(weekStartDay), ...WEEKDAYS.slice(0, weekStartDay)].map((wd, i) => {
@@ -101,11 +102,11 @@ export default function Today() {
               return <span key={i} className={cls}>{wd}</span>
             })}
           </div>
-          <div className="calendar-grid" key={`${calYear}-${calMonth}`}>
-            {calendarCells.map((day, idx) => {
-              if (day === null) return <div key={`empty-${idx}`} className="day-cell empty"></div>
-              const dateKey = `${calYear}-${String(calMonth).padStart(2,'0')}-${String(day).padStart(2,'0')}`
-              const dayOfWeek = new Date(calYear, calMonth - 1, day).getDay()
+          <div className={`calendar-grid${calendarView === 'week' ? ' calendar-grid-week' : ''}`} key={calLabel}>
+            {calendarCells.map((dateKey, idx) => {
+              if (dateKey === null) return <div key={`empty-${idx}`} className="day-cell empty"></div>
+              const [dkYear, dkMonth, dkDay] = dateKey.split('-').map(Number)
+              const dayOfWeek = new Date(dkYear, dkMonth - 1, dkDay).getDay()
               const isSelected = dateKey === selectedDate
               const isToday = dateKey === todayKey
               const record = data.records[dateKey]
@@ -121,7 +122,7 @@ export default function Today() {
               if (isSelected) cls += ' selected'
               return (
                 <div key={dateKey} className={cls} onClick={() => handleDateClickWrapper(dateKey)}>
-                  <span className="cell-date">{day}</span>
+                  <span className="cell-date">{dkDay}</span>
                   {cellJobs.map(j => <span key={j.id} className="cell-job-name" style={{ backgroundColor: j.color }}>{j.name}</span>)}
                   {record && cellTotal > 0 && <AnimatedMoney amount={cellTotal} className="cell-total" />}
                 </div>

@@ -393,6 +393,34 @@ export default function Settings() {
         </section>
 
         <section className="section">
+          <h2 id="calendar-view-title" className="section-title">カレンダー表示</h2>
+          <div className="radio-group radio-row" role="radiogroup" aria-labelledby="calendar-view-title">
+            <label className="radio-label">
+              <input
+                type="radio"
+                name="calendarView"
+                value="month"
+                checked={(s.calendarView ?? 'month') === 'month'}
+                onChange={() => updateSettings({ calendarView: 'month' })}
+                className="radio-input"
+              />
+              月表示
+            </label>
+            <label className="radio-label">
+              <input
+                type="radio"
+                name="calendarView"
+                value="week"
+                checked={(s.calendarView ?? 'month') === 'week'}
+                onChange={() => updateSettings({ calendarView: 'week' })}
+                className="radio-input"
+              />
+              週表示
+            </label>
+          </div>
+        </section>
+
+        <section className="section">
           <h2 className="section-title">品目一覧</h2>
 
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -466,4 +494,3 @@ export default function Settings() {
     </div>
   );
 }
-
