@@ -45,13 +45,13 @@ button {
    :root Variables
    ======================================== */
 :root {
-  --rainbow-1: #FF6B9D;
-  --rainbow-2: #FF9A56;
-  --rainbow-3: #FFD93D;
-  --rainbow-4: #6BCB77;
-  --rainbow-5: #4D96FF;
-  --rainbow-6: #9B59B6;
-  --rainbow-grad: linear-gradient(90deg, #FF6B9D, #FF9A56, #FFD93D, #6BCB77, #4D96FF, #9B59B6);
+  --rainbow-1: #FF2D7B;
+  --rainbow-2: #FF6B00;
+  --rainbow-3: #FFD000;
+  --rainbow-4: #00CC44;
+  --rainbow-5: #0088FF;
+  --rainbow-6: #8B00FF;
+  --rainbow-grad: linear-gradient(90deg, #FF2D7B, #FF6B00, #FFD000, #00CC44, #0088FF, #8B00FF);
   --bg-main: #F0ECF3;
   --white: #FFFFFF;
   --text-dark: #4A3F55;
@@ -71,7 +71,7 @@ button {
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(135deg, #FFF0F5, #F0E6FF, #E6F7FF, #F0FFF0, #FFFDE6, #FFF0F5);
+  background: linear-gradient(135deg, #FFE0EB, #FFD6E0, #E0D6FF, #D6EEFF, #D6FFE0, #FFEED6, #FFE0EB);
   background-size: 400% 400%;
   animation: bg-rainbow-shift 8s ease infinite;
   pointer-events: none;
@@ -82,9 +82,9 @@ button {
   position: absolute;
   inset: 0;
   background-image:
-    radial-gradient(circle 2px, rgba(255,107,157,0.6) 1px, transparent 1px),
-    radial-gradient(circle 1.5px, rgba(255,217,61,0.5) 1px, transparent 1px),
-    radial-gradient(circle 1px, rgba(77,150,255,0.5) 1px, transparent 1px);
+    radial-gradient(circle 2px, rgba(255,45,123,0.7) 1px, transparent 1px),
+    radial-gradient(circle 1.5px, rgba(255,208,0,0.6) 1px, transparent 1px),
+    radial-gradient(circle 1px, rgba(0,136,255,0.6) 1px, transparent 1px);
   background-size: 40px 40px, 30px 30px, 50px 50px;
   background-position: 0 0, 15px 15px, 25px 5px;
   animation: glitter-twinkle 2s ease-in-out infinite alternate;
@@ -301,7 +301,7 @@ button {
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(155,89,182,0.65) 0%, rgba(255,107,157,0.3) 30%, rgba(255,217,61,0.15) 60%, transparent 100%);
+  background: linear-gradient(to top, rgba(139,0,255,0.6) 0%, rgba(255,45,123,0.35) 30%, rgba(255,208,0,0.2) 60%, transparent 100%);
   z-index: 1;
 }
 
@@ -316,7 +316,7 @@ button {
   max-width: min(400px, 70vw);
   height: auto;
   margin: 0 auto 20px;
-  filter: drop-shadow(0 4px 30px rgba(255,107,157,0.6)) drop-shadow(0 0 60px rgba(155,89,182,0.4)) drop-shadow(0 0 100px rgba(77,150,255,0.2));
+  filter: drop-shadow(0 4px 30px rgba(255,45,123,0.7)) drop-shadow(0 0 60px rgba(139,0,255,0.5)) drop-shadow(0 0 100px rgba(0,136,255,0.3));
   animation: hero-float 3s ease-in-out infinite alternate;
 }
 
@@ -559,7 +559,7 @@ button {
    ======================================== */
 #about {
   padding: var(--section-gap) 0;
-  background: linear-gradient(135deg, #FFF0F5 0%, #F5F0FF 25%, #F0FAFF 50%, #F0FFF5 75%, #FFFFF0 100%);
+  background: linear-gradient(135deg, #FFB8D0 0%, #D0B8FF 25%, #B8DFFF 50%, #B8FFD0 75%, #FFFAB8 100%);
   position: relative;
   overflow: hidden;
 }
@@ -654,15 +654,15 @@ button {
 }
 
 .tag-pink {
-  background: rgba(255,107,157,0.15);
+  background: rgba(255,45,123,0.18);
   color: var(--rainbow-1);
-  border: 1px solid rgba(255,107,157,0.3);
+  border: 1px solid rgba(255,45,123,0.4);
 }
 
 .tag-green {
-  background: rgba(107,203,119,0.15);
+  background: rgba(0,204,68,0.18);
   color: var(--rainbow-4);
-  border: 1px solid rgba(107,203,119,0.3);
+  border: 1px solid rgba(0,204,68,0.4);
 }
 
 .about-stats {
@@ -702,7 +702,7 @@ button {
    ======================================== */
 #gallery {
   padding: var(--section-gap) 0;
-  background: linear-gradient(160deg, #FFE6F0 0%, #E6E0FF 33%, #E0F4FF 66%, #E6FFE6 100%);
+  background: linear-gradient(160deg, #FFB0D0 0%, #C8B0FF 33%, #B0D8FF 66%, #B0FFB8 100%);
   position: relative;
 }
 
@@ -830,7 +830,7 @@ button {
 
 #services {
   padding: var(--section-gap) 0;
-  background: linear-gradient(135deg, #FFE0EC 0%, #FFE8D0 25%, #FFFBD0 50%, #D0FFE0 75%, #D0E8FF 100%);
+  background: linear-gradient(135deg, #FF90B8 0%, #FFB870 25%, #FFE070 50%, #70E890 75%, #70B8FF 100%);
 }
 
 .services-grid {
@@ -904,7 +904,7 @@ button {
 
 #process {
   padding: var(--section-gap) 0;
-  background: linear-gradient(135deg, #FFF5E6 0%, #FFE6F5 33%, #E6F5FF 66%, #E6FFE6 100%);
+  background: linear-gradient(135deg, #FFC870 0%, #FF90C8 33%, #80C8FF 66%, #80FFB0 100%);
 }
 
 .process-steps {
@@ -1060,7 +1060,7 @@ button {
 
 #contact {
   padding: var(--section-gap) 0;
-  background: linear-gradient(135deg, #FFD0E0 0%, #FFE0D0 33%, #FFFFD0 66%, #D0FFE0 100%);
+  background: linear-gradient(135deg, #FF80B0 0%, #FFB060 33%, #FFE060 66%, #60E880 100%);
 }
 
 .contact-inner {
@@ -1159,7 +1159,7 @@ button {
    ======================================== */
 
 footer {
-  background: linear-gradient(135deg, #3D1F5C, #5C1F4A, #1F3D5C);
+  background: linear-gradient(135deg, #5B00A0, #A0004B, #004BA0);
   color: rgba(255,255,255,0.6);
   padding: 40px 48px;
   display: flex;
