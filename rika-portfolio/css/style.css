@@ -312,12 +312,14 @@ button {
   padding: 0 48px;
 }
 
-.hero-logo {
-  max-width: min(400px, 70vw);
-  height: auto;
-  margin: 0 auto 20px;
-  filter: drop-shadow(0 4px 30px rgba(255,45,123,0.7)) drop-shadow(0 0 60px rgba(139,0,255,0.5)) drop-shadow(0 0 100px rgba(0,136,255,0.3));
-  /* animation removed */
+.hero-title {
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  color: var(--white);
+  text-shadow: 0 4px 30px rgba(255,45,123,0.7), 0 0 60px rgba(139,0,255,0.5);
+  margin-bottom: 8px;
+  line-height: 1.2;
 }
 
 @keyframes hero-float {
