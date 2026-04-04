@@ -3,22 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RICA — Makeup Artist Portfolio</title>
-  <meta name="description" content="Rica のメイクアップアーティストポートフォリオ。ブライダル・撮影・スタジオ・パーティーなど幅広いシーンに対応します。" />
-  <meta property="og:title" content="RICA — Makeup Artist Portfolio" />
-  <meta property="og:description" content="Rica のメイクアップアーティストポートフォリオ" />
+  <title>ひとりっ子遊び場 — Makeup Artist Portfolio</title>
+  <meta name="description" content="ひとりっ子遊び場 メイクアップアーティストポートフォリオ。ブライダル・撮影・スタジオ・パーティーなど幅広いシーンに対応します。" />
+  <meta property="og:title" content="ひとりっ子遊び場 — Makeup Artist Portfolio" />
+  <meta property="og:description" content="ひとりっ子遊び場 メイクアップアーティストポートフォリオ" />
   <meta property="og:type" content="website" />
+  <meta property="og:image" content="images/hero_main.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;500;700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <div class="glitter-bg" aria-hidden="true"></div>
 
   <!-- ─── Navigation ─── -->
   <nav id="nav">
-    <a href="#hero" class="nav-logo">RICA</a>
-    <button class="nav-hamburger" aria-label="メニューを開く" aria-expanded="false">
+    <a href="#hero" class="nav-logo"><img src="images/logo.png" alt="ひとりっ子遊び場" class="nav-logo-img"></a>
+    <button type="button" class="nav-hamburger" aria-label="メニューを開く" aria-expanded="false">
       <span class="hamburger-line"></span>
       <span class="hamburger-line"></span>
       <span class="hamburger-line"></span>
@@ -32,282 +34,271 @@
   </nav>
   <div class="nav-backdrop"></div>
 
-  <!-- ─── Hero ─── -->
-  <section id="hero">
-    <div class="hero-bg">
-      <img src="images/hero_main.jpg" alt="Rica Makeup Artist">
-    </div>
-    <div class="hero-overlay"></div>
-    <div class="hero-accent"></div>
-    <div class="hero-content">
-      <p class="hero-eyebrow">Makeup Artist Portfolio</p>
-      <h1 class="hero-title">
-        <span class="accent-green">R</span>ica<br>
-        <span class="accent">Make</span>up
-      </h1>
-      <p class="hero-tagline">Tokyo Based · Since 2020</p>
-      <div class="hero-btns">
-        <a href="#gallery" class="btn-pink">View Works</a>
-        <a href="#contact" class="btn-outline-white">Contact</a>
-      </div>
-    </div>
-  </section>
+  <main>
 
-  <!-- ─── Marquee ─── -->
-  <div class="marquee-strip" aria-hidden="true">
-    <div class="marquee-track">
-      <span>Bridal</span><span class="dot">✦</span>
-      <span>Studio Shooting</span><span class="dot">✦</span>
-      <span>Fashion</span><span class="dot">✦</span>
-      <span>Party &amp; Event</span><span class="dot">✦</span>
-      <span>Natural Makeup</span><span class="dot">✦</span>
-      <span>Vivid Color</span><span class="dot">✦</span>
-      <span>Bridal</span><span class="dot">✦</span>
-      <span>Studio Shooting</span><span class="dot">✦</span>
-      <span>Fashion</span><span class="dot">✦</span>
-      <span>Party &amp; Event</span><span class="dot">✦</span>
-      <span>Natural Makeup</span><span class="dot">✦</span>
-      <span>Vivid Color</span><span class="dot">✦</span>
-    </div>
-  </div>
-
-  <!-- ─── About ─── -->
-  <section id="about">
-    <div class="about-inner">
-      <div class="about-img-wrap fade-up">
-        <img src="images/profile_rica.jpg" alt="Rica" loading="lazy">
+    <!-- ─── Hero ─── -->
+    <section id="hero">
+      <div class="hero-bg">
+        <img src="images/hero_main.jpg" alt="Rica Makeup Artist">
       </div>
-      <div class="about-text fade-up">
-        <div class="section-header">
-          <span class="section-eyebrow">About</span>
-          <h2 class="section-title">Rica について</h2>
-          <div class="section-line"><span class="section-line-dot"></span></div>
-        </div>
-        <p class="about-body">
-          東京を拠点に活動するメイクアップアーティスト。<br>
-          ブライダルから広告・ファッション撮影まで、
-          クライアントの個性を引き出すメイクを提案します。<br><br>
-          ビビッドカラーや補色使いが得意で、
-          見る人の目を惹く大胆なルックから、
-          肌の美しさを活かしたナチュラルメイクまで幅広く対応。
-          あなただけのスタイルを一緒に作り上げましょう。
-        </p>
-        <div class="about-tags">
-          <span class="tag tag-pink">Bridal</span>
-          <span class="tag tag-green">Vivid Color</span>
-          <span class="tag tag-pink">Fashion</span>
-          <span class="tag tag-green">Studio</span>
-          <span class="tag tag-pink">Party</span>
-          <span class="tag tag-green">Natural</span>
-        </div>
-        <div class="about-stats">
-          <div class="stat-item">
-            <span class="stat-num">500<sup class="sup">+</sup></span>
-            <span class="stat-label">Clients</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-num">5<sup class="sup">yr</sup></span>
-            <span class="stat-label">Experience</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-num">100<sup class="sup">%</sup></span>
-            <span class="stat-label">Satisfaction</span>
-          </div>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <p class="hero-eyebrow">Makeup Artist Portfolio</p>
+        <h1 class="hero-title"><img src="images/logo.png" alt="ひとりっ子遊び場" class="hero-logo"></h1>
+        <p class="hero-tagline">Tokyo Based · Since 2020</p>
+        <div class="hero-btns">
+          <a href="#gallery" class="btn-pink">View Works</a>
+          <a href="#contact" class="btn-outline-white">Contact</a>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ─── Gallery ─── -->
-  <section id="gallery">
-    <div class="section-header fade-up">
-      <span class="section-eyebrow">Portfolio</span>
-      <h2 class="section-title">Works<span class="pink"> —</span></h2>
-      <div class="section-line"><span class="section-line-dot"></span></div>
+    <!-- ─── Marquee ─── -->
+    <div class="marquee-strip" aria-hidden="true">
+      <div class="marquee-track">
+        <span>Bridal</span><span class="dot">♥</span>
+        <span>Studio Shooting</span><span class="dot">♥</span>
+        <span>Fashion</span><span class="dot">♥</span>
+        <span>Party &amp; Event</span><span class="dot">♥</span>
+        <span>Natural Makeup</span><span class="dot">♥</span>
+        <span>Vivid Color</span><span class="dot">♥</span>
+        <span>Bridal</span><span class="dot">♥</span>
+        <span>Studio Shooting</span><span class="dot">♥</span>
+        <span>Fashion</span><span class="dot">♥</span>
+        <span>Party &amp; Event</span><span class="dot">♥</span>
+        <span>Natural Makeup</span><span class="dot">♥</span>
+        <span>Vivid Color</span><span class="dot">♥</span>
+      </div>
     </div>
 
-    <div class="gallery-filter fade-up">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="bridal">Bridal</button>
-      <button class="filter-btn" data-filter="studio">Studio</button>
-      <button class="filter-btn" data-filter="fashion">Fashion</button>
-      <button class="filter-btn" data-filter="party">Party</button>
-      <button class="filter-btn" data-filter="natural">Natural</button>
-    </div>
+    <!-- ─── About ─── -->
+    <section id="about">
+      <div class="about-inner">
+        <div class="about-img-wrap fade-up">
+          <img src="images/profile_rica.jpg" alt="Rica" loading="lazy">
+        </div>
+        <div class="about-text fade-up">
+          <div class="section-header">
+            <span class="section-eyebrow">About</span>
+            <h2 class="section-title">Rica について</h2>
+            <div class="section-line"><span class="section-line-dot"></span></div>
+          </div>
+          <p class="about-body">
+            東京を拠点に活動するメイクアップアーティスト。<br>
+            ブライダルから広告・ファッション撮影まで、
+            クライアントの個性を引き出すメイクを提案します。<br><br>
+            ビビッドカラーや補色使いが得意で、
+            見る人の目を惹く大胆なルックから、
+            肌の美しさを活かしたナチュラルメイクまで幅広く対応。
+            あなただけのスタイルを一緒に作り上げましょう。
+          </p>
+          <div class="about-tags">
+            <span class="tag tag-pink">Bridal</span>
+            <span class="tag tag-green">Vivid Color</span>
+            <span class="tag tag-pink">Fashion</span>
+            <span class="tag tag-green">Studio</span>
+            <span class="tag tag-pink">Party</span>
+            <span class="tag tag-green">Natural</span>
+          </div>
+          <div class="about-stats">
+            <div class="stat-item">
+              <span class="stat-num">500<sup class="sup">+</sup></span>
+              <span class="stat-label">Clients</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">5<sup class="sup">yr</sup></span>
+              <span class="stat-label">Experience</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">100<sup class="sup">%</sup></span>
+              <span class="stat-label">Satisfaction</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <div class="gallery-grid">
-      <!--
-        ★ 実際の画像に差し替えるときのテンプレート:
-        src の picsum URL をローカルパスに変更するだけでOK
-        例: src="images/gallery/bridal_01.jpg"
-      -->
-
-      <!-- Bridal -->
-      <div class="gallery-item" data-category="bridal" data-label="Bridal — ウェディング">
-        <img src="images/gallery/bridal_01.jpg" alt="Bridal Makeup 01" loading="lazy">
-        <div class="gallery-item-overlay"><span class="gallery-item-label">Bridal</span></div>
-      </div>
-      <div class="gallery-item" data-category="bridal" data-label="Bridal — 振袖・後撮り">
-        <img src="images/gallery/bridal_02.jpg" alt="Bridal Makeup 02" loading="lazy">
-        <div class="gallery-item-overlay"><span class="gallery-item-label">Bridal</span></div>
-      </div>
-      <!-- Studio -->
-      <div class="gallery-item" data-category="studio" data-label="Studio — スタジオ撮影">
-        <img src="images/gallery/studio_01.jpg" alt="Studio Makeup 01" loading="lazy">
-        <div class="gallery-item-overlay"><span class="gallery-item-label">Studio</span></div>
-      </div>
-      <div class="gallery-item" data-category="studio" data-label="Studio — ポートレート">
-        <img src="images/gallery/studio_02.jpg" alt="Studio Makeup 02" loading="lazy">
-        <div class="gallery-item-overlay"><span class="gallery-item-label">Studio</span></div>
-      </div>
-      <!-- Fashion -->
-      <div class="gallery-item" data-category="fashion" data-label="Fashion — ファッション撮影">
-        <img src="images/gallery/fashion_01.jpg" alt="Fashion Makeup 01" loading="lazy">
-        <div class="gallery-item-overlay"><span class="gallery-item-label">Fashion</span></div>
-      </div>
-      <div class="gallery-item" data-category="fashion" data-label="Fashion — アウトドア">
-        <img src="images/gallery/fashion_02.jpg" alt="Fashion Makeup 02" loading="lazy">
-        <div class="gallery-item-overlay"><span class="gallery-item-label">Fashion</span></div>
-      </div>
-      <!-- Party -->
-      <div class="gallery-item" data-category="party" data-label="Party — アートメイク">
-        <img src="images/gallery/party_01.jpg" alt="Party Makeup 01" loading="lazy">
-        <div class="gallery-item-overlay"><span class="gallery-item-label">Party</span></div>
-      </div>
-      <div class="gallery-item" data-category="party" data-label="Party — イベント">
-        <img src="images/gallery/party_02.jpg" alt="Party Makeup 02" loading="lazy">
-        <div class="gallery-item-overlay"><span class="gallery-item-label">Party</span></div>
-      </div>
-      <!-- Natural -->
-      <div class="gallery-item" data-category="natural" data-label="Natural — ナチュラル">
-        <img src="images/gallery/natural_01.jpg" alt="Natural Makeup 01" loading="lazy">
-        <div class="gallery-item-overlay"><span class="gallery-item-label">Natural</span></div>
-      </div>
-      <div class="gallery-item" data-category="natural" data-label="Natural — アウトドア">
-        <img src="images/gallery/natural_02.jpg" alt="Natural Makeup 02" loading="lazy">
-        <div class="gallery-item-overlay"><span class="gallery-item-label">Natural</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── Services ─── -->
-  <section id="services">
-    <div class="section-header fade-up">
-      <span class="section-eyebrow">Menu</span>
-      <h2 class="section-title">Services</h2>
-      <div class="section-line"><span class="section-line-dot"></span></div>
-    </div>
-    <div class="services-grid">
-      <div class="service-card fade-up">
-        <span class="service-icon">💍</span>
-        <p class="service-title">Bridal Makeup</p>
-        <span class="service-price">¥ご相談ください</span>
-        <p class="service-desc">
-          ウェディングメイク・ヘアセット。<br>
-          前撮り・当日・二次会をトータルサポート。<br>
-          花嫁の個性を最大限に引き出す仕上がりへ。
-        </p>
-      </div>
-      <div class="service-card fade-up">
-        <span class="service-icon">📸</span>
-        <p class="service-title">Studio / Shooting</p>
-        <span class="service-price">¥ご相談ください</span>
-        <p class="service-desc">
-          広告・ポートレート・ファッション撮影対応。<br>
-          カメラ映えを計算したビビッドな色彩表現が得意。<br>
-          クリエイティブなビジョンを一緒に実現します。
-        </p>
-      </div>
-      <div class="service-card fade-up">
-        <span class="service-icon">✨</span>
-        <p class="service-title">Party / Event</p>
-        <span class="service-price">¥ご相談ください</span>
-        <p class="service-desc">
-          成人式・パーティー・発表会・ハロウィン等。<br>
-          ナチュラルから大胆なカラーメイクまで幅広く。<br>
-          その場の雰囲気に合わせたスタイル提案も。
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── Process ─── -->
-  <section id="process">
-    <div class="section-header fade-up">
-      <span class="section-eyebrow">Flow</span>
-      <h2 class="section-title">ご依頼の流れ</h2>
-      <div class="section-line"><span class="section-line-dot"></span></div>
-    </div>
-    <div class="process-steps">
-      <div class="step-card fade-up">
-        <span class="step-num">01</span>
-        <p class="step-title">お問い合わせ</p>
-        <p class="step-desc">Instagram DM またはメールよりご連絡ください。</p>
-      </div>
-      <div class="step-card fade-up">
-        <span class="step-num">02</span>
-        <p class="step-title">カウンセリング</p>
-        <p class="step-desc">ご要望・イメージ・当日の流れを詳しく確認します。</p>
-      </div>
-      <div class="step-card fade-up">
-        <span class="step-num">03</span>
-        <p class="step-title">お見積もり</p>
-        <p class="step-desc">内容をもとにお見積もりをご提案します。</p>
-      </div>
-      <div class="step-card fade-up">
-        <span class="step-num">04</span>
-        <p class="step-title">当日施術</p>
-        <p class="step-desc">リラックスした雰囲気の中、丁寧に仕上げます。</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── Contact ─── -->
-  <section id="contact">
-    <div class="contact-inner fade-up">
-      <div class="section-header">
-        <span class="section-eyebrow">Contact</span>
-        <h2 class="section-title">お問い合わせ</h2>
+    <!-- ─── Gallery ─── -->
+    <section id="gallery">
+      <div class="section-header fade-up">
+        <span class="section-eyebrow">Portfolio</span>
+        <h2 class="section-title">Works<span class="pink"> —</span></h2>
         <div class="section-line"><span class="section-line-dot"></span></div>
       </div>
-      <p class="contact-body">
-        ブライダル・撮影・イベントなど、お気軽にご相談ください。<br>
-        Instagram DM または下記メールよりご連絡いただけます。
-      </p>
-      <div class="contact-card">
-        <div class="contact-card-inner">
-          <div class="contact-links">
-            <a href="https://www.instagram.com/rica_makeupportfolio/" target="_blank" rel="noopener" class="contact-link">
-              <span class="contact-link-icon">📷</span>
-              @rica_makeupportfolio
-            </a>
-            <div class="divider"></div>
-            <a href="mailto:rica.makeup@example.com" class="contact-link">
-              <span class="contact-link-icon">✉️</span>
-              rica.makeup@example.com
-            </a>
-          </div>
+
+      <div class="gallery-filter fade-up">
+        <button type="button" class="filter-btn active" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" class="filter-btn" data-filter="bridal" aria-pressed="false">Bridal</button>
+        <button type="button" class="filter-btn" data-filter="studio" aria-pressed="false">Studio</button>
+        <button type="button" class="filter-btn" data-filter="fashion" aria-pressed="false">Fashion</button>
+        <button type="button" class="filter-btn" data-filter="party" aria-pressed="false">Party</button>
+        <button type="button" class="filter-btn" data-filter="natural" aria-pressed="false">Natural</button>
+      </div>
+
+      <div class="gallery-grid">
+        <!-- Bridal -->
+        <div class="gallery-item" role="button" tabindex="0" data-category="bridal" data-label="Bridal — ウェディング">
+          <img src="images/gallery/bridal_01.jpg" alt="Bridal Makeup 01" loading="lazy">
+          <div class="gallery-item-overlay"><span class="gallery-item-label">Bridal</span></div>
+        </div>
+        <div class="gallery-item" role="button" tabindex="0" data-category="bridal" data-label="Bridal — 振袖・後撮り">
+          <img src="images/gallery/bridal_02.jpg" alt="Bridal Makeup 02" loading="lazy">
+          <div class="gallery-item-overlay"><span class="gallery-item-label">Bridal</span></div>
+        </div>
+        <!-- Studio -->
+        <div class="gallery-item" role="button" tabindex="0" data-category="studio" data-label="Studio — スタジオ撮影">
+          <img src="images/gallery/studio_01.jpg" alt="Studio Makeup 01" loading="lazy">
+          <div class="gallery-item-overlay"><span class="gallery-item-label">Studio</span></div>
+        </div>
+        <div class="gallery-item" role="button" tabindex="0" data-category="studio" data-label="Studio — ポートレート">
+          <img src="images/gallery/studio_02.jpg" alt="Studio Makeup 02" loading="lazy">
+          <div class="gallery-item-overlay"><span class="gallery-item-label">Studio</span></div>
+        </div>
+        <!-- Fashion -->
+        <div class="gallery-item" role="button" tabindex="0" data-category="fashion" data-label="Fashion — ファッション撮影">
+          <img src="images/gallery/fashion_01.jpg" alt="Fashion Makeup 01" loading="lazy">
+          <div class="gallery-item-overlay"><span class="gallery-item-label">Fashion</span></div>
+        </div>
+        <div class="gallery-item" role="button" tabindex="0" data-category="fashion" data-label="Fashion — アウトドア">
+          <img src="images/gallery/fashion_02.jpg" alt="Fashion Makeup 02" loading="lazy">
+          <div class="gallery-item-overlay"><span class="gallery-item-label">Fashion</span></div>
+        </div>
+        <!-- Party -->
+        <div class="gallery-item" role="button" tabindex="0" data-category="party" data-label="Party — アートメイク">
+          <img src="images/gallery/party_01.jpg" alt="Party Makeup 01" loading="lazy">
+          <div class="gallery-item-overlay"><span class="gallery-item-label">Party</span></div>
+        </div>
+        <div class="gallery-item" role="button" tabindex="0" data-category="party" data-label="Party — イベント">
+          <img src="images/gallery/party_02.jpg" alt="Party Makeup 02" loading="lazy">
+          <div class="gallery-item-overlay"><span class="gallery-item-label">Party</span></div>
+        </div>
+        <!-- Natural -->
+        <div class="gallery-item" role="button" tabindex="0" data-category="natural" data-label="Natural — ナチュラル">
+          <img src="images/gallery/natural_01.jpg" alt="Natural Makeup 01" loading="lazy">
+          <div class="gallery-item-overlay"><span class="gallery-item-label">Natural</span></div>
+        </div>
+        <div class="gallery-item" role="button" tabindex="0" data-category="natural" data-label="Natural — アウトドア">
+          <img src="images/gallery/natural_02.jpg" alt="Natural Makeup 02" loading="lazy">
+          <div class="gallery-item-overlay"><span class="gallery-item-label">Natural</span></div>
         </div>
       </div>
-      <a href="https://www.instagram.com/rica_makeupportfolio/" target="_blank" rel="noopener" class="btn-gradient">
-        Instagram で DM する
-      </a>
-    </div>
-  </section>
+    </section>
+
+    <!-- ─── Services ─── -->
+    <section id="services">
+      <div class="section-header fade-up">
+        <span class="section-eyebrow">Menu</span>
+        <h2 class="section-title">Services</h2>
+        <div class="section-line"><span class="section-line-dot"></span></div>
+      </div>
+      <div class="services-grid">
+        <div class="service-card fade-up">
+          <h3 class="service-title">Bridal Makeup</h3>
+          <span class="service-price">¥ご相談ください</span>
+          <p class="service-desc">
+            ウェディングメイク・ヘアセット。<br>
+            前撮り・当日・二次会をトータルサポート。<br>
+            花嫁の個性を最大限に引き出す仕上がりへ。
+          </p>
+        </div>
+        <div class="service-card fade-up">
+          <h3 class="service-title">Studio / Shooting</h3>
+          <span class="service-price">¥ご相談ください</span>
+          <p class="service-desc">
+            広告・ポートレート・ファッション撮影対応。<br>
+            カメラ映えを計算したビビッドな色彩表現が得意。<br>
+            クリエイティブなビジョンを一緒に実現します。
+          </p>
+        </div>
+        <div class="service-card fade-up">
+          <h3 class="service-title">Party / Event</h3>
+          <span class="service-price">¥ご相談ください</span>
+          <p class="service-desc">
+            成人式・パーティー・発表会・ハロウィン等。<br>
+            ナチュラルから大胆なカラーメイクまで幅広く。<br>
+            その場の雰囲気に合わせたスタイル提案も。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Process ─── -->
+    <section id="process">
+      <div class="section-header fade-up">
+        <span class="section-eyebrow">Flow</span>
+        <h2 class="section-title">ご依頼の流れ</h2>
+        <div class="section-line"><span class="section-line-dot"></span></div>
+      </div>
+      <div class="process-steps">
+        <div class="step-card fade-up">
+          <span class="step-num">01</span>
+          <h3 class="step-title">お問い合わせ</h3>
+          <p class="step-desc">Instagram DM またはメールよりご連絡ください。</p>
+        </div>
+        <div class="step-card fade-up">
+          <span class="step-num">02</span>
+          <h3 class="step-title">カウンセリング</h3>
+          <p class="step-desc">ご要望・イメージ・当日の流れを詳しく確認します。</p>
+        </div>
+        <div class="step-card fade-up">
+          <span class="step-num">03</span>
+          <h3 class="step-title">お見積もり</h3>
+          <p class="step-desc">内容をもとにお見積もりをご提案します。</p>
+        </div>
+        <div class="step-card fade-up">
+          <span class="step-num">04</span>
+          <h3 class="step-title">当日施術</h3>
+          <p class="step-desc">リラックスした雰囲気の中、丁寧に仕上げます。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Contact ─── -->
+    <section id="contact">
+      <div class="contact-inner fade-up">
+        <div class="section-header">
+          <span class="section-eyebrow">Contact</span>
+          <h2 class="section-title">お問い合わせ</h2>
+          <div class="section-line"><span class="section-line-dot"></span></div>
+        </div>
+        <p class="contact-body">
+          ブライダル・撮影・イベントなど、お気軽にご相談ください。<br>
+          Instagram DM または下記メールよりご連絡いただけます。
+        </p>
+        <div class="contact-card">
+          <div class="contact-card-inner">
+            <div class="contact-links">
+              <a href="https://www.instagram.com/rica_makeupportfolio/" target="_blank" rel="noopener" class="contact-link">
+                @rica_makeupportfolio
+              </a>
+              <div class="divider"></div>
+              <a href="mailto:rica.makeup@example.com" class="contact-link">
+                rica.makeup@example.com
+              </a>
+            </div>
+          </div>
+        </div>
+        <a href="https://www.instagram.com/rica_makeupportfolio/" target="_blank" rel="noopener" class="btn-gradient">
+          Instagram で DM する
+        </a>
+      </div>
+    </section>
+
+  </main>
 
   <!-- ─── Footer ─── -->
   <footer>
-    <span class="footer-logo">RICA</span>
-    <span>© <span class="footer-year"></span> Rica Makeup Artist</span>
+    <img src="images/logo.png" alt="ひとりっ子遊び場" class="footer-logo-img">
+    <span>© <span class="footer-year"></span> ひとりっ子遊び場</span>
     <a href="https://www.instagram.com/rica_makeupportfolio/" target="_blank" rel="noopener">@rica_makeupportfolio</a>
   </footer>
 
   <!-- ─── Lightbox ─── -->
-  <div id="lightbox">
-    <button id="lightbox-close">✕</button>
-    <button id="lightbox-prev">‹</button>
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="ギャラリー" aria-hidden="true">
+    <button type="button" id="lightbox-close" aria-label="閉じる">✕</button>
+    <button type="button" id="lightbox-prev" aria-label="前の画像">‹</button>
     <img id="lightbox-img" src="" alt="" />
-    <button id="lightbox-next">›</button>
+    <button type="button" id="lightbox-next" aria-label="次の画像">›</button>
     <span id="lightbox-caption"></span>
   </div>
 
