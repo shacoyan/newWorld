@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gray-900 text-white font-sans;
+}
+
+.neon-glow {
+  text-shadow:
+    0 0 7px #FF6B9D,
+    0 0 10px #FF6B9D,
+    0 0 21px #FF6B9D,
+    0 0 42px #00D4FF,
+    0 0 82px #00D4FF,
+    0 0 92px #00D4FF;
+}
+
+.neon-border {
+  box-shadow:
+    0 0 5px #00D4FF,
+    0 0 15px #00D4FF,
+    0 0 30px #00D4FF;
+}
+
+.btn-neon {
+  @apply bg-neonPink text-white font-bold py-3 px-8 rounded-lg transition-all duration-300;
+  box-shadow:
+    0 0 5px #FF6B9D,
+    0 0 15px #FF6B9D;
+}
+
+.btn-neon:hover {
+  box-shadow:
+    0 0 10px #FF6B9D,
+    0 0 30px #FF6B9D,
+    0 0 60px #FF6B9D;
+}
