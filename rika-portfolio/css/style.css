@@ -317,7 +317,7 @@ button {
   height: auto;
   margin: 0 auto 20px;
   filter: drop-shadow(0 4px 30px rgba(255,45,123,0.7)) drop-shadow(0 0 60px rgba(139,0,255,0.5)) drop-shadow(0 0 100px rgba(0,136,255,0.3));
-  animation: hero-float 3s ease-in-out infinite alternate;
+  /* animation removed */
 }
 
 @keyframes hero-float {
